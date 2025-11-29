@@ -3,7 +3,6 @@ const PROVIDER_IDS = [
   // "passkey",
   "credential",
   "google",
-  "pocket-id",
 ] as const;
 
 const PROVIDER_MAP: Record<
@@ -32,15 +31,6 @@ const PROVIDER_MAP: Record<
     is_oidc: true,
     is_social: true,
     force_email_verified: false,
-  },
-  "pocket-id": {
-    name: "Pocket ID",
-    icon: "lucide/pocket",
-
-    is_oidc: true,
-    is_social: false,
-    // NOTE: Pocket ID hasn't implemented email verification yet
-    force_email_verified: true,
   },
 };
 

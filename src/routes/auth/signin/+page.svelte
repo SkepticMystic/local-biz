@@ -2,9 +2,8 @@
   import { resolve } from "$app/paths";
   import { BetterAuthClient } from "$lib/auth-client.js";
   import CredentialSigninForm from "$lib/components/auth/authenticate/CredentialSigninForm.svelte";
-  import GenericOAuthSigninButton from "$lib/components/auth/GenericOAuthSigninButton.svelte";
+  import SocialSigninButton from "$lib/components/auth/authenticate/SocialSigninButton.svelte";
   import PasskeySigninButton from "$lib/components/auth/passkeys/PasskeySigninButton.svelte";
-  import SocialSigninButton from "$lib/components/auth/SocialSigninButton.svelte";
   import Badge from "$lib/components/ui/badge/badge.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
@@ -32,21 +31,14 @@
         {#each AUTH.PROVIDERS.IDS as provider_id (provider_id)}
           {@const { is_social, is_oidc } = AUTH.PROVIDERS.MAP[provider_id]}
 
-          {#if is_oidc}
-            <ButtonGroup class="w-full">
-              {#if is_social}
-                <SocialSigninButton
-                  {provider_id}
-                  redirect_uri={data.search.redirect_uri}
-                />
-              {:else}
-                <GenericOAuthSigninButton
-                  {provider_id}
-                  redirect_uri={data.search.redirect_uri}
-                />
-              {/if}
-            </ButtonGroup>
-          {/if}
+          <ButtonGroup class="w-full">
+            {#if is_social}
+              <SocialSigninButton
+                {provider_id}
+                redirect_uri={data.search.redirect_uri}
+              />
+            {/if}
+          </ButtonGroup>
         {/each}
 
         <ButtonGroup class="w-full">
