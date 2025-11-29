@@ -1,0 +1,5 @@
+onlyBuiltDependencies:
+  - "@sentry/cli"
+  - esbuild
+  - svelte-preprocess
+  - '@tailwindcss/oxide'
