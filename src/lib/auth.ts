@@ -17,7 +17,6 @@ import { APP } from "./const/app.const";
 import { AUTH, type IAuth } from "./const/auth/auth.const";
 import { EMAIL } from "./const/email.const";
 import { db } from "./server/db/drizzle.db";
-import { redis } from "./server/db/redis.db";
 import {
   AccountTable,
   InvitationTable,
@@ -27,7 +26,8 @@ import {
   SessionTable,
   UserTable,
   VerificationTable,
-} from "./server/db/schema/auth.models";
+} from "./server/db/models/auth.model";
+import { redis } from "./server/db/redis.db";
 import { EmailService } from "./services/email.service";
 import { Log } from "./utils/logger.util";
 
