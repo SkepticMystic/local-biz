@@ -12,21 +12,23 @@ const config = {
   plugins: [
     sentrySvelteKit({
       telemetry: false,
-      sourceMapsUploadOptions: { org: "ross-keenan", project: "app-starter" },
+      sourceMapsUploadOptions: { org: "ross-keenan", project: "local-biz" },
     }),
     tailwindcss(),
     sveltekit(),
-    partytownVite({ debug: false })
-  ]
+    partytownVite({ debug: false }),
+  ],
 };
 
 if (SONDA) {
-  config.plugins?.push(sonda({
-    server: true,
-    open: false,
-    deep: true,
-    sources: true
-  }));
+  config.plugins?.push(
+    sonda({
+      server: true,
+      open: false,
+      deep: true,
+      sources: true,
+    }),
+  );
 }
 
 export default config;
