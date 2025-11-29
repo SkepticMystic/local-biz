@@ -1,27 +1,15 @@
 import { getRequestEvent } from "$app/server";
-import {
-  BETTER_AUTH_SECRET,
-  GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET,
-  POCKETID_BASE_URL,
-  POCKETID_CLIENT_ID,
-  POCKETID_CLIENT_SECRET,
-} from "$env/static/private";
+import { BETTER_AUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "$env/static/private";
 import { passkey } from "@better-auth/passkey";
-import type { APIError, GenericEndpointContext } from "better-auth";
+import type { APIError } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { generateRandomString } from "better-auth/crypto";
 import { betterAuth } from "better-auth/minimal";
 import {
   admin,
-  genericOAuth,
   haveIBeenPwned,
   lastLoginMethod,
   organization,
-  type GenericOAuthConfig,
   type Member,
-  type Organization,
-  type OrganizationInput,
 } from "better-auth/plugins";
 import { sveltekitCookies } from "better-auth/svelte-kit";
 import { AccessControl } from "./auth/permissions";
@@ -39,8 +27,6 @@ import {
   SessionTable,
   UserTable,
   VerificationTable,
-  type Session,
-  type User,
 } from "./server/db/schema/auth.models";
 import { EmailService } from "./services/email.service";
 import { Log } from "./utils/logger.util";
@@ -49,13 +35,6 @@ import { Log } from "./utils/logger.util";
 export const auth = betterAuth({
   appName: APP.NAME,
 
-  // NOTE: Can't get this working...
-  // It seems like the behaviour is different when setting baseURL
-  // versus just using the BETTER_AUTH_URL env var
-  // baseURL: APP.URL,
-
-  // .env is not explicitly loaded in prod, so we import it
-  // Rather than running dotenv, or something
   secret: BETTER_AUTH_SECRET,
 
   logger: {
@@ -65,13 +44,9 @@ export const auth = betterAuth({
     },
   },
 
-  telemetry: {
-    enabled: false,
-  },
+  telemetry: { enabled: false },
 
-  experimental: {
-    joins: true,
-  },
+  experimental: { joins: true },
 
   advanced: {
     database: {
@@ -84,6 +59,7 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
     debugLogs: false,
+    transaction: true,
 
     schema: {
       user: UserTable,
@@ -142,14 +118,20 @@ export const auth = betterAuth({
             return { data: session };
           }
 
-          const data = await get_or_create_org_id(session, ctx);
+          const existing_member = await ctx.context.adapter.findOne<
+            Pick<Member, "id" | "organizationId" | "role">
+          >({
+            model: "member",
+            select: ["id", "organizationId", "role"],
+            where: [{ field: "userId", operator: "eq", value: session.userId }],
+          });
 
           return {
             data: {
               ...session,
-
-              member_id: data?.member_id,
-              activeOrganizationId: data?.org_id,
+              member_id: existing_member?.id ?? null,
+              member_role: existing_member?.role ?? null,
+              activeOrganizationId: existing_member?.organizationId ?? null,
             },
           };
         },
@@ -237,70 +219,14 @@ export const auth = betterAuth({
       },
     }),
 
-    // TODO: Lots of new builtin org features
-    // I probably don't need to be doing so much manually, especially on invites and member roles
     organization({
-      allowUserToCreateOrganization: false,
+      allowUserToCreateOrganization: true,
       cancelPendingInvitationsOnReInvite: true,
       requireEmailVerificationOnInvitation: true,
-
-      // schema: {
-      //   session: {
-      //     fields: {
-      //       activeOrganizationId: "org_id",
-      //     },
-      //   },
-      // },
-
-      // Doesn't seem to do anything?
-      // SOURCE: https://github.com/better-auth/better-auth/blob/eb691e213dbe44a3c177d10a2dfd2f39ace0bf98/packages/better-auth/src/plugins/organization/types.ts#L340
-      // autoCreateOrganizationOnSignUp: true,
 
       sendInvitationEmail: async (data) => {
         await EmailService.send(EMAIL.TEMPLATES["org-invite"](data));
       },
-    }),
-
-    genericOAuth({
-      config: [
-        POCKETID_CLIENT_ID && POCKETID_CLIENT_SECRET && POCKETID_BASE_URL
-          ? ((): GenericOAuthConfig => {
-              const providerId = "pocket-id" satisfies IAuth.ProviderId;
-
-              return {
-                providerId,
-                clientId: POCKETID_CLIENT_ID,
-                clientSecret: POCKETID_CLIENT_SECRET,
-
-                discoveryUrl: POCKETID_BASE_URL + "/.well-known/openid-configuration",
-                // ... other config options
-
-                mapProfileToUser: (profile: unknown) => {
-                  Log.info(profile, providerId + " profile");
-
-                  // NOTE: Typing profile directly in the callback arg gives a TS error, since better-auth expects Record<string, any>
-                  const typed = profile as IAuth.GenericOAuthProfile;
-
-                  const name = (
-                    typed.name ||
-                    (typed.given_name || "") + " " + (typed.family_name || "") ||
-                    ""
-                  )
-                    .trim()
-                    .replaceAll(/\s+/g, " ");
-
-                  return {
-                    name,
-                    email: typed.email,
-                    image: typed.picture,
-                    emailVerified:
-                      AUTH.PROVIDERS.MAP[providerId].force_email_verified || typed.email_verified,
-                  };
-                },
-              };
-            })()
-          : null,
-      ].flatMap((cfg) => (cfg ? [cfg] : [])),
     }),
 
     // NOTE: Must be last, as it needs the request event
@@ -329,84 +255,6 @@ export const auth = betterAuth({
     : undefined,
 });
 // !SECTION
-
-// SECTION: Helper functions
-const get_or_create_org_id = async (
-  session: Pick<Session, "userId">,
-  ctx: GenericEndpointContext,
-): Promise<{
-  org_id: string;
-  member_id: string;
-} | null> => {
-  // NOTE: Order is preserved when logging, so show ctx first
-  const log = Log.child({
-    ctx: "[auth.session.create.before]",
-    userId: session.userId,
-  });
-
-  const existing_member = await ctx.context.adapter.findOne<Pick<Member, "id" | "organizationId">>({
-    model: "member",
-    select: ["id", "organizationId"],
-    where: [{ field: "userId", operator: "eq", value: session.userId }],
-  });
-
-  if (existing_member) {
-    log.debug({ organizationId: existing_member.organizationId }, "Found existing organization");
-    return {
-      member_id: existing_member.id,
-      org_id: existing_member.organizationId,
-    };
-  }
-
-  log.info("Creating new organization");
-
-  const user = await ctx.context.adapter.findOne<Pick<User, "name" | "email">>({
-    model: "user",
-    select: ["name", "email"],
-    where: [{ field: "id", operator: "eq", value: session.userId }],
-  });
-
-  if (!user) {
-    log.error("User not found");
-    return null;
-  }
-
-  log.debug({ user }, "User info");
-
-  // SOURCE: https://github.com/better-auth/better-auth/blob/744e9e34c1eb8b75c373f00a71c85e5a599abae6/packages/better-auth/src/plugins/organization/adapter.ts#L186
-  const org = await ctx.context.adapter.create<OrganizationInput, Pick<Organization, "id">>({
-    model: "organization",
-    select: ["id"],
-    data: {
-      // NOTE: || because name is always defined, but may be empty
-      name: `${user.name || user.email}'s Org`,
-      slug: generateRandomString(8, "a-z", "0-9").toLowerCase(),
-
-      createdAt: new Date(),
-    },
-  });
-
-  if (!org.id) {
-    log.error("Failed to create organization");
-    return null;
-  }
-
-  const new_member = await ctx.context.adapter.create<Member>({
-    model: "member",
-    data: {
-      role: "owner",
-      organizationId: org.id,
-      userId: session.userId,
-
-      createdAt: new Date(),
-    },
-  });
-
-  return {
-    org_id: org.id,
-    member_id: new_member.id,
-  };
-};
 
 type ErrorCode = keyof typeof auth.$ERROR_CODES;
 
