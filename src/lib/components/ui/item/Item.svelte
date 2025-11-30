@@ -45,7 +45,9 @@
       <Icon {icon} />
     </ItemMedia>
   {:else if media}
-    <ItemMedia>{@render media()}</ItemMedia>
+    <ItemMedia variant="image">
+      {@render media()}
+    </ItemMedia>
   {/if}
 
   <ItemContent>

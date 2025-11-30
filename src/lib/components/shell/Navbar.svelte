@@ -32,6 +32,13 @@
     },
     {
       side: "right",
+      label: "Account",
+      href: "/account",
+      icon: "lucide/key",
+      authed: true,
+    },
+    {
+      side: "right",
       label: "Admin",
       href: "/admin",
       icon: "lucide/shield-check",

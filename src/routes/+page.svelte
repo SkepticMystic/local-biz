@@ -12,6 +12,10 @@
   <div class="my-14">
     <ButtonGroup>
       <ButtonGroup>
+        <Button href="/apply">Apply</Button>
+      </ButtonGroup>
+
+      <ButtonGroup>
         <Button
           href="/profile"
           variant="secondary"

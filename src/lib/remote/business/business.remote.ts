@@ -29,6 +29,25 @@ export const get_all_public_businesses_remote = query(async () => {
   return businesses;
 });
 
+export const get_all_my_businesses_remote = query(async () => {
+  const { session } = await get_session();
+
+  const businesses = await db.query.business.findMany({
+    where: (business, { eq }) => eq(business.user_id, session.userId),
+
+    columns: {
+      id: true,
+      name: true,
+      slug: true,
+      logo: true,
+      formatted_address: true,
+      createdAt: true,
+    },
+  });
+
+  return businesses;
+});
+
 export const create_business_remote = form(
   BusinessSchema.insert, //
   async (input) => {
@@ -42,6 +61,8 @@ export const create_business_remote = form(
       google_place_id: input.google_place_id,
       formatted_address: input.formatted_address,
     });
+
+    console.log("create_business_remote.res", res);
 
     return res;
   },
@@ -59,6 +80,8 @@ export const update_business_remote = form(
       user_id: session.userId,
     });
 
+    console.log("update_business_remote.res", res);
+
     return res;
   },
 );
@@ -72,14 +95,14 @@ export const admin_set_business_approved_remote = command(
     await get_session({ admin: true });
 
     try {
-      const [business] = await db
+      const res = await db
         .update(BusinessTable)
         .set({ admin_approved: input.admin_approved })
         .where(eq(BusinessTable.id, input.id))
-        .returning();
+        .execute();
 
-      return business //
-        ? result.suc(business)
+      return res.rowCount > 0 //
+        ? result.suc()
         : result.err({ message: "Business not found" });
     } catch (error) {
       Log.error(error, "admin_set_business_approved_remote.error unknown");

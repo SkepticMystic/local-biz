@@ -20,3 +20,4 @@
 - [ ] Cloudinary image stuff, copied from animal-shelter
 - [ ] A rating/thumbs-up system
 - [ ] Contact form
+- [ ] Implement carta markdown editor. We can view markdown, but currently only edit it in a Textarea

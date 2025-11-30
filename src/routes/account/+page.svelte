@@ -21,7 +21,7 @@
 
 <article>
   <header>
-    <h1>Profile</h1>
+    <h1>Account</h1>
   </header>
 
   <section class="flex items-center gap-3">

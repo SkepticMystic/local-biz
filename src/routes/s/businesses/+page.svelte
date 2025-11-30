@@ -5,14 +5,14 @@
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Item from "$lib/components/ui/item/Item.svelte";
   import ItemList from "$lib/components/ui/item/ItemList.svelte";
-  import { get_all_public_businesses_remote } from "$lib/remote/business/business.remote";
+  import { get_all_my_businesses_remote } from "$lib/remote/business/business.remote";
 
-  const businesses = get_all_public_businesses_remote();
+  const businesses = get_all_my_businesses_remote();
 </script>
 
 <article>
   <header>
-    <h1>Businesses</h1>
+    <h1>My Businesses</h1>
   </header>
 
   <ItemList
@@ -25,7 +25,7 @@
     }}
   >
     {#snippet item(business)}
-      {@const href = resolve("/businesses/[slug]", business)}
+      {@const href = resolve("/s/businesses/[slug]", business)}
 
       <Item title={business.name}>
         {#snippet media()}
@@ -45,7 +45,12 @@
         {/snippet}
 
         {#snippet actions()}
-          <Button {href}>View</Button>
+          <Button
+            icon="lucide/pencil"
+            href={resolve("/s/businesses/[slug]/edit", business)}
+          >
+            Edit
+          </Button>
         {/snippet}
       </Item>
     {/snippet}
