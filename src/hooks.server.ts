@@ -19,7 +19,7 @@ export const handleValidationError: HandleValidationError = ({
 export const handleError = Sentry.handleErrorWithSentry();
 
 export const handle = sequence(
-  Sentry.sentryHandle(),
+  Sentry.sentryHandle(), //
   async function _handle({ event, resolve }) {
     return svelteKitHandler({ event, resolve, auth, building });
   },

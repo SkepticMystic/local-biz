@@ -28,11 +28,17 @@ const build = (
   return url;
 };
 
-const strip_origin = (url: URL) => {
-  return url.pathname + url.search + url.hash;
+const safe = (url: string | URL) => {
+  try {
+    return new URL(url);
+  } catch {
+    return null;
+  }
 };
 
 export const Url = {
+  safe,
   build,
-  strip_origin,
+  add_search,
+  strip_origin: (url: URL) => url.pathname + url.search + url.hash,
 };

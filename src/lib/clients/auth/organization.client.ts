@@ -11,6 +11,7 @@ import {
   get_all_members_remote,
   remove_member_remote,
 } from "$lib/remote/auth/organization/member.remote";
+import { admin_delete_organization_remote } from "$lib/remote/auth/organization/organization.remote";
 import { session } from "$lib/stores/session.store";
 import { BetterAuth } from "$lib/utils/better-auth.util";
 import { result } from "$lib/utils/result.util";
@@ -47,6 +48,14 @@ export const OrganizationClient = {
   delete: Client.better_auth(
     (organizationId: string) =>
       BetterAuthClient.organization.delete({ organizationId }),
+    {
+      confirm: "Are you sure you want to delete this organization?",
+      suc_msg: "Organization deleted successfully.",
+    },
+  ),
+
+  admin_delete: Client.wrap(
+    (org_id: string) => admin_delete_organization_remote(org_id),
     {
       confirm: "Are you sure you want to delete this organization?",
       suc_msg: "Organization deleted successfully.",

@@ -121,8 +121,11 @@
     ]}
   >
     {#snippet header(table)}
-      <search class="flex flex-wrap gap-2">
-        <Field label="Name">
+      <search class="flex flex-wrap gap-3">
+        <Field
+          label="Name"
+          class="w-fit"
+        >
           {#snippet input({ props })}
             <Input
               {...props}
@@ -135,7 +138,10 @@
           {/snippet}
         </Field>
 
-        <Field label="Email">
+        <Field
+          label="Email"
+          class="w-fit"
+        >
           {#snippet input({ props })}
             <Input
               {...props}
@@ -148,7 +154,10 @@
           {/snippet}
         </Field>
 
-        <Field label="Role">
+        <Field
+          label="Role"
+          class="w-fit"
+        >
           {#snippet input({ props })}
             <NativeSelect
               {...props}
@@ -164,7 +173,10 @@
           {/snippet}
         </Field>
 
-        <Field label="Banned">
+        <Field
+          label="Banned"
+          class="w-fit"
+        >
           {#snippet input({ props })}
             <NativeSelect
               {...props}

@@ -15,24 +15,23 @@
 
   let { children } = $props();
 
+  $inspect('$session',$session)
+
   // NOTE: Currently this listener is _just_ for umami analytics
   // We unsub as soon as they're identified
-  const session_listener = session.listen(($session) => {
+   session.listen(($session) => {
     if ($session.isRefetching || $session.isPending) {
       return;
     } else {
-      console.log("$session loaded", $session.data);
-  
       if (browser && window.umami && $session.data?.user) {
         window.umami.identify($session.data.user.id, {
           name: $session.data.user.name,
           email: $session.data.user.email,
           session_id: $session.data.session.id,
           ip_address: $session.data.session.ipAddress,
-          user_agent: $session.data.session.userAgent
+          user_agent: $session.data.session.userAgent,
+          org_id: $session.data.session.activeOrganizationId,
         });
-
-        session_listener();
       }
     }
   });

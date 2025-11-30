@@ -16,6 +16,9 @@ export const result = {
   unwrap_or: <D, E>(res: Result<D, E> | undefined, d: D) =>
     res?.ok ? res.data : d,
 
+  from_nullable: <D, E>(d: D | null | undefined, e?: E): Result<D, E> =>
+    d === null || d === undefined ? err(e) : suc(d),
+
   pipe: <D1, E, D2>(
     r: Result<D1, E>,
     s: (d: D1) => D2,

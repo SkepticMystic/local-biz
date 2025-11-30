@@ -16,3 +16,7 @@
 - [ ] PWA on app store: https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable#installation_from_an_app_store
 - [ ] Zero sync?
 - [ ] Proper site.manifest and favicons: https://realfavicongenerator.net
+- [ ] Seller profiles. Similar to how we ensure_org_exists on business creation, we can have a profile for each seller. This will be separate to the account stuff, and can capture public facing info about the biz owner
+- [ ] Cloudinary image stuff, copied from animal-shelter
+- [ ] A rating/thumbs-up system
+- [ ] Contact form

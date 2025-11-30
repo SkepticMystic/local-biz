@@ -4,12 +4,13 @@
     type ButtonProps,
   } from "$lib/components/ui/button/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
-  import type { DialogRootProps } from "bits-ui";
+  import { mergeProps, type DialogRootProps } from "bits-ui";
   import type { Snippet } from "svelte";
 
   let {
     open,
     title,
+    disabled,
     description,
     size = "default",
     variant = "default",
@@ -22,6 +23,7 @@
     ...rest_props
   }: DialogRootProps & {
     title?: string;
+    disabled?: boolean;
     description?: string;
     size?: ButtonProps["size"];
     variant?: ButtonProps["variant"];
@@ -44,12 +46,14 @@
   {#if trigger_child}
     <Dialog.Trigger>
       {#snippet child({ props })}
-        {@render trigger_child({ props })}
+        {@render trigger_child({ props: mergeProps(props, { disabled }) })}
       {/snippet}
     </Dialog.Trigger>
   {:else}
     <Dialog.Trigger
       {title}
+      {disabled}
+      type="button"
       class={buttonVariants({ variant, size })}
     >
       {@render trigger?.()}

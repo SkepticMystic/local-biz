@@ -13,7 +13,7 @@
 
 <article>
   <header>
-    <h1>Organization</h1>
+    <h1>Team</h1>
   </header>
 
   <section>
@@ -29,7 +29,7 @@
           }
         })}
     >
-      Leave Organization
+      Leave Team
     </Button>
   </section>
 
