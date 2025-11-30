@@ -1,6 +1,5 @@
-import type { Invitation, Organization, User } from "$lib/server/db/models/auth.model";
+import type { User } from "$lib/server/db/models/auth.model";
 import type { SendEmailOptions } from "$lib/services/email.service";
-import { App } from "$lib/utils/app";
 import { APP } from "./app.const";
 
 const HTML_SIGNATURE = `
@@ -61,37 +60,9 @@ ${COMMON.SIGNATURE.HTML}`.trim();
       };
     },
 
-    "org-invite": (input: {
-      organization: Pick<Organization, "name">;
-      invitation: Pick<Invitation, "id" | "email">;
-      inviter: { user: Pick<User, "email" | "name"> };
+    "user-deleted": (input: {
+      user: Pick<User, "email" | "name">;
     }): SendEmailOptions => {
-      const href = App.full_url("/auth/organization/accept-invite", {
-        invite_id: input.invitation.id,
-      });
-
-      const html = `
-<p>Hi,</p>
-<p>
-  You have been invited by <strong>${input.inviter.user.email}</strong> to join the organization <strong>${input.organization.name}</strong>.
-</p>
-<p>
-  Click <a href="${href}">here</a> to accept the invitation.
-</p>
-<p>
-  If you did not request this, you can safely ignore this email.
-</p>
-
-${COMMON.SIGNATURE.HTML}`.trim();
-
-      return {
-        html,
-        to: input.invitation.email,
-        subject: `You have been invited to join ${input.organization.name}`,
-      };
-    },
-
-    "user-deleted": (input: { user: Pick<User, "email" | "name"> }): SendEmailOptions => {
       const html = `
 <p>Hi ${input.user.name ?? ""},</p>
 <p>

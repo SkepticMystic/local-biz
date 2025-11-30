@@ -10,12 +10,11 @@ import {
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 import { HTMLUtil, type IHTML } from "../../../utils/html/html.util";
-import { UserTable } from "./auth.model";
 import { Schema } from "./index.schema";
+import { UserTable } from "./auth.model";
 
-// Define Business table schema
-export const BusinessTable = pgTable(
-  "business",
+export const SellerProfileTable = pgTable(
+  "seller_profile",
   {
     ...Schema.id(),
 
@@ -23,8 +22,8 @@ export const BusinessTable = pgTable(
       .notNull()
       .references(() => UserTable.id, { onDelete: "cascade" }),
 
-    name: varchar({ length: 255 }).notNull(),
     slug: varchar({ length: 255 }).notNull().unique(),
+    name: varchar({ length: 255 }).default("").notNull(),
     logo: varchar({ length: 2047 }).default("").notNull(),
     description: text().default("").notNull().$type<IHTML.Sanitized>(),
 
@@ -35,17 +34,20 @@ export const BusinessTable = pgTable(
 
     ...Schema.timestamps,
   },
-  (table) => [index("idx_business_user_id").on(table["user_id"])],
+  (table) => [index("idx_seller_profile_user_id").on(table["user_id"])],
 );
 
-export const business_relations = relations(BusinessTable, ({ one }) => ({
-  user: one(UserTable, {
-    fields: [BusinessTable.user_id],
-    references: [UserTable.id],
+export const seller_profile_relations = relations(
+  SellerProfileTable,
+  ({ one }) => ({
+    user: one(UserTable, {
+      fields: [SellerProfileTable.user_id],
+      references: [UserTable.id],
+    }),
   }),
-}));
+);
 
-export type Business = typeof BusinessTable.$inferSelect;
+export type SellerProfile = typeof SellerProfileTable.$inferSelect;
 
 const pick = {
   name: true,
@@ -53,7 +55,7 @@ const pick = {
   description: true,
   google_place_id: true,
   formatted_address: true,
-} satisfies Partial<Record<keyof Business, true>>;
+} satisfies Partial<Record<keyof SellerProfile, true>>;
 
 const refinements = {
   name: z.string().trim().min(1, "Please enter a name for your business"),
@@ -68,14 +70,14 @@ const refinements = {
   formatted_address: z.string().trim(),
 };
 
-export const BusinessSchema = {
-  insert: createInsertSchema(BusinessTable, refinements).pick(pick),
-  update: createUpdateSchema(BusinessTable, refinements)
+export const SellerProfileSchema = {
+  insert: createInsertSchema(SellerProfileTable, refinements).pick(pick),
+  update: createUpdateSchema(SellerProfileTable, refinements)
     .pick(pick)
     .extend({ id: z.uuid() }),
 };
 
-export type BusinessSchema = {
-  insert: z.input<typeof BusinessSchema.insert>;
-  update: z.input<typeof BusinessSchema.update>;
+export type SellerProfileSchema = {
+  insert: z.input<typeof SellerProfileSchema.insert>;
+  update: z.input<typeof SellerProfileSchema.update>;
 };

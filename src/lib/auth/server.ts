@@ -12,7 +12,9 @@ type Options = {
 
   email_verified?: boolean;
 
-  permissions?: Parameters<typeof BetterAuthClient.admin.checkRolePermission>[0]["permissions"];
+  permissions?: Parameters<
+    typeof BetterAuthClient.admin.checkRolePermission
+  >[0]["permissions"];
 };
 
 /** Redirect to signin if not logged in. */
@@ -58,27 +60,4 @@ export const safe_get_session = async (options?: Options) => {
 
     return null;
   }
-};
-
-export const get_seller_session = async (options?: Options) => {
-  const session = await get_session(options);
-
-  if (
-    !session.session.member_id ||
-    !session.session.member_role ||
-    !session.session.activeOrganizationId
-  ) {
-    error(401, "Unauthorized");
-  }
-
-  return {
-    user: session.user,
-    session: {
-      ...session.session,
-      member_id: session.session.member_id!,
-      member_role: session.session.member_role!,
-      org_id: session.session.activeOrganizationId!,
-      activeOrganizationId: session.session.activeOrganizationId!,
-    },
-  };
 };

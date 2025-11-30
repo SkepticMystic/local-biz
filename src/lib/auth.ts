@@ -1,16 +1,14 @@
 import { getRequestEvent } from "$app/server";
-import { BETTER_AUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "$env/static/private";
+import {
+  BETTER_AUTH_SECRET,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+} from "$env/static/private";
 import { passkey } from "@better-auth/passkey";
 import type { APIError } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth/minimal";
-import {
-  admin,
-  haveIBeenPwned,
-  lastLoginMethod,
-  organization,
-  type Member,
-} from "better-auth/plugins";
+import { admin, haveIBeenPwned, lastLoginMethod } from "better-auth/plugins";
 import { sveltekitCookies } from "better-auth/svelte-kit";
 import { AccessControl } from "./auth/permissions";
 import { APP } from "./const/app.const";
@@ -19,9 +17,6 @@ import { EMAIL } from "./const/email.const";
 import { db } from "./server/db/drizzle.db";
 import {
   AccountTable,
-  InvitationTable,
-  MemberTable,
-  OrganizationTable,
   PasskeyTable,
   SessionTable,
   UserTable,
@@ -65,9 +60,6 @@ export const auth = betterAuth({
       account: AccountTable,
       session: SessionTable,
       verification: VerificationTable,
-      organization: OrganizationTable,
-      member: MemberTable,
-      invitation: InvitationTable,
       passkey: PasskeyTable,
     },
   }),
@@ -80,24 +72,6 @@ export const auth = betterAuth({
 
       refreshCache: true,
     },
-
-    additionalFields: {
-      // NOTE: These are set in the session create hook below
-      member_id: {
-        type: "string",
-        input: false,
-        returned: true,
-        required: false,
-        defaultValue: null,
-      },
-      member_role: {
-        type: "string",
-        input: false,
-        returned: true,
-        required: false,
-        defaultValue: null,
-      },
-    },
   },
 
   rateLimit: {
@@ -108,41 +82,14 @@ export const auth = betterAuth({
     // storage: redis ? "secondary-storage" : "memory",
   },
 
-  databaseHooks: {
-    session: {
-      create: {
-        before: async (session, ctx) => {
-          if (!ctx) {
-            Log.error({ ctx: "[auth.session.create.before]" }, "No ctx in hook callback");
-            return { data: session };
-          }
-
-          const existing_member = await ctx.context.adapter.findOne<
-            Pick<Member, "id" | "organizationId" | "role">
-          >({
-            model: "member",
-            select: ["id", "organizationId", "role"],
-            where: [{ field: "userId", operator: "eq", value: session.userId }],
-          });
-
-          return {
-            data: {
-              ...session,
-              member_id: existing_member?.id ?? null,
-              member_role: existing_member?.role ?? null,
-              activeOrganizationId: existing_member?.organizationId ?? null,
-            },
-          };
-        },
-      },
-    },
-  },
-
   user: {
     deleteUser: {
       enabled: true,
+
       sendDeleteAccountVerification: async ({ user, url }) => {
-        await EmailService.send(EMAIL.TEMPLATES["delete-account-verification"]({ url, user }));
+        await EmailService.send(
+          EMAIL.TEMPLATES["delete-account-verification"]({ url, user }),
+        );
       },
     },
   },
@@ -174,7 +121,9 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
 
     sendVerificationEmail: async ({ user, url }) => {
-      await EmailService.send(EMAIL.TEMPLATES["email-verification"]({ url, user }));
+      await EmailService.send(
+        EMAIL.TEMPLATES["email-verification"]({ url, user }),
+      );
     },
   },
 
@@ -215,16 +164,6 @@ export const auth = betterAuth({
           // Return null to use default logic
           return null;
         }
-      },
-    }),
-
-    organization({
-      allowUserToCreateOrganization: true,
-      cancelPendingInvitationsOnReInvite: true,
-      requireEmailVerificationOnInvitation: true,
-
-      sendInvitationEmail: async (data) => {
-        await EmailService.send(EMAIL.TEMPLATES["org-invite"](data));
       },
     }),
 

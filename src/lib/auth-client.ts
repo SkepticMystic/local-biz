@@ -2,7 +2,6 @@ import {
   adminClient,
   genericOAuthClient,
   lastLoginMethodClient,
-  organizationClient,
 } from "better-auth/client/plugins";
 import { passkeyClient } from "@better-auth/passkey/client";
 import { createAuthClient } from "better-auth/svelte";
@@ -12,7 +11,6 @@ import { toast } from "svelte-sonner";
 export const BetterAuthClient = createAuthClient({
   plugins: [
     passkeyClient(),
-    organizationClient(),
     genericOAuthClient(),
     lastLoginMethodClient(),
     adminClient({

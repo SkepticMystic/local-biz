@@ -13,8 +13,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { ACCESS_CONTROL } from "../../../const/auth/access_control.const";
 import { AUTH } from "../../../const/auth/auth.const";
-import { ORGANIZATION } from "../../../const/auth/organization.const";
-import { BusinessTable } from "./business.model";
 import { Schema } from "./index.schema";
 
 export const user_role_enum = pgEnum("user_role", ACCESS_CONTROL.ROLES.IDS);
@@ -45,9 +43,7 @@ export type NewUser = typeof UserTable.$inferInsert;
 export const user_relations = relations(UserTable, ({ many }) => ({
   accounts: many(AccountTable),
   sessions: many(SessionTable),
-  members: many(MemberTable),
   passkeys: many(PasskeyTable),
-  invitations: many(InvitationTable),
 }));
 
 export const SessionTable = pgTable(
@@ -69,15 +65,6 @@ export const SessionTable = pgTable(
       onDelete: "set null",
     }),
 
-    // Organization
-    member_id: uuid().references(() => MemberTable.id, {
-      onDelete: "set null",
-    }),
-
-    activeOrganizationId: uuid().references(() => OrganizationTable.id, {
-      onDelete: "set null",
-    }),
-
     expiresAt: timestamp({ mode: "date" }).notNull(),
     ...Schema.timestamps,
   },
@@ -91,14 +78,6 @@ export const session_relations = relations(SessionTable, ({ one }) => ({
   user: one(UserTable, {
     fields: [SessionTable.userId],
     references: [UserTable.id],
-  }),
-  member: one(MemberTable, {
-    fields: [SessionTable.member_id],
-    references: [MemberTable.id],
-  }),
-  organization: one(OrganizationTable, {
-    fields: [SessionTable.activeOrganizationId],
-    references: [OrganizationTable.id],
   }),
 }));
 
@@ -143,70 +122,6 @@ export const account_relations = relations(AccountTable, ({ one }) => ({
   }),
 }));
 
-export const OrganizationTable = pgTable("organization", {
-  ...Schema.id(),
-
-  name: varchar({ length: 255 }).notNull(),
-  slug: varchar({ length: 255 }).notNull().unique(),
-  logo: varchar({ length: 2048 }),
-
-  metadata: text(),
-
-  ...Schema.timestamps,
-});
-
-export type Organization = typeof OrganizationTable.$inferSelect;
-export type InsertOrganization = typeof OrganizationTable.$inferInsert;
-
-export const organization_relations = relations(
-  OrganizationTable,
-  ({ many }) => ({
-    members: many(MemberTable),
-    invitations: many(InvitationTable),
-
-    businesses: many(BusinessTable),
-  }),
-);
-
-export const member_role_enum = pgEnum("member_role", ORGANIZATION.ROLES.IDS);
-
-export const MemberTable = pgTable(
-  "member",
-  {
-    ...Schema.id(),
-
-    userId: uuid()
-      .notNull()
-      .references(() => UserTable.id, { onDelete: "cascade" }),
-
-    organizationId: uuid()
-      .notNull()
-      .references(() => OrganizationTable.id, { onDelete: "cascade" }),
-
-    role: member_role_enum().default("member").notNull(),
-
-    ...Schema.timestamps,
-  },
-  (table) => [
-    index("member_user_id_idx").on(table.userId),
-    index("member_organization_id_idx").on(table.organizationId),
-  ],
-);
-
-export type Member = typeof MemberTable.$inferSelect;
-export type InsertMember = typeof MemberTable.$inferInsert;
-
-export const member_relations = relations(MemberTable, ({ one }) => ({
-  organization: one(OrganizationTable, {
-    fields: [MemberTable.organizationId],
-    references: [OrganizationTable.id],
-  }),
-  user: one(UserTable, {
-    fields: [MemberTable.userId],
-    references: [UserTable.id],
-  }),
-}));
-
 export const PasskeyTable = pgTable(
   "passkey",
   {
@@ -237,51 +152,6 @@ export const passkey_relations = relations(PasskeyTable, ({ one }) => ({
   user: one(UserTable, {
     fields: [PasskeyTable.userId],
     references: [UserTable.id],
-  }),
-}));
-
-export const invitation_status_enum = pgEnum(
-  "invitation_status",
-  ORGANIZATION.INVITATIONS.STATUSES.IDS,
-);
-
-export const InvitationTable = pgTable(
-  "invitation",
-  {
-    ...Schema.id(),
-
-    email: varchar({ length: 255 }).notNull(),
-
-    inviterId: uuid()
-      .notNull()
-      .references(() => UserTable.id, { onDelete: "cascade" }),
-    organizationId: uuid()
-      .notNull()
-      .references(() => OrganizationTable.id, { onDelete: "cascade" }),
-
-    role: member_role_enum().default("member").notNull(),
-    status: invitation_status_enum().default("pending").notNull(),
-
-    expiresAt: timestamp({ mode: "date" }).notNull(),
-    ...Schema.timestamps,
-  },
-  (table) => [
-    index("invitation_email_idx").on(table.email),
-    index("invitation_organization_id_idx").on(table.organizationId),
-  ],
-);
-
-export type Invitation = typeof InvitationTable.$inferSelect;
-export type NewInvitation = typeof InvitationTable.$inferInsert;
-
-export const invitation_relations = relations(InvitationTable, ({ one }) => ({
-  inviter: one(UserTable, {
-    fields: [InvitationTable.inviterId],
-    references: [UserTable.id],
-  }),
-  organization: one(OrganizationTable, {
-    fields: [InvitationTable.organizationId],
-    references: [OrganizationTable.id],
   }),
 }));
 

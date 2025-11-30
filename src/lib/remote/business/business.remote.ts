@@ -1,13 +1,14 @@
 import { command, form, query } from "$app/server";
-import { get_seller_session, get_session } from "$lib/auth/server";
+import { get_session } from "$lib/auth/server";
 import { db } from "$lib/server/db/drizzle.db";
-import { BusinessSchema, BusinessTable } from "$lib/server/db/models/business.model";
-import { OrganizationService } from "$lib/services/auth/organization.service";
+import {
+  BusinessSchema,
+  BusinessTable,
+} from "$lib/server/db/models/business.model";
 import { BusinessService } from "$lib/services/business/business.service";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
-import { invalid } from "@sveltejs/kit";
 import { eq } from "drizzle-orm";
 import z from "zod";
 
@@ -30,35 +31,14 @@ export const get_all_public_businesses_remote = query(async () => {
 
 export const create_business_remote = form(
   BusinessSchema.insert, //
-  async (input, issue) => {
+  async (input) => {
     console.log("create_business_remote.input", input);
     const { session } = await get_session();
-
-    // NOTE: Get active org, or create a new one
-    // This implies that an org can have multiple businesses
-    const org = session.activeOrganizationId
-      ? await db.query.organization
-          .findFirst({
-            where: (org, { eq }) => eq(org.id, session.activeOrganizationId!),
-          })
-          .then((org) =>
-            result.from_nullable(org, { path: undefined, message: "Organization not found" }),
-          )
-      : await OrganizationService.create({ name: input.name, logo: input.logo });
-
-    if (!org.ok) {
-      if (org.error.path) {
-        invalid(issue[org.error.path[0]](org.error.message));
-      } else {
-        return result.err({ message: org.error.message });
-      }
-    }
 
     const res = await BusinessService.create({
       name: input.name,
       logo: input.logo,
-      slug: org.data.slug,
-      org_id: org.data.id,
+      user_id: session.userId,
       google_place_id: input.google_place_id,
       formatted_address: input.formatted_address,
     });
@@ -72,11 +52,11 @@ export const update_business_remote = form(
   async (input) => {
     console.log("update_business_remote.input", input);
 
-    const { session } = await get_seller_session();
+    const { session } = await get_session();
 
     const res = await BusinessService.update({
       ...input,
-      org_id: session.org_id,
+      user_id: session.userId,
     });
 
     return res;

@@ -1,14 +1,23 @@
 import { E } from "$lib/const/error/error.const";
 import { db } from "$lib/server/db/drizzle.db";
-import { BusinessTable, type Business } from "$lib/server/db/models/business.model";
+import {
+  BusinessTable,
+  type Business,
+} from "$lib/server/db/models/business.model";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
 import { and, DrizzleQueryError, eq } from "drizzle-orm";
+import { Strings } from "$lib/utils/strings.util";
 
-const create = async (input: typeof BusinessTable.$inferInsert): Promise<App.Result<Business>> => {
+const create = async (
+  input: Omit<typeof BusinessTable.$inferInsert, "slug">,
+): Promise<App.Result<Business>> => {
   try {
-    const [business] = await db.insert(BusinessTable).values(input).returning();
+    const [business] = await db
+      .insert(BusinessTable)
+      .values({ ...input, slug: Strings.slugify(input.name) })
+      .returning();
 
     if (!business) {
       Log.error({ input }, "BusinessService.create.error not found");
@@ -19,7 +28,10 @@ const create = async (input: typeof BusinessTable.$inferInsert): Promise<App.Res
     }
   } catch (error) {
     if (error instanceof DrizzleQueryError) {
-      Log.error({ message: error.message }, "create_business_remote.error DrizzleQueryError");
+      Log.error(
+        { message: error.message },
+        "create_business_remote.error DrizzleQueryError",
+      );
 
       captureException(error);
 
@@ -37,7 +49,7 @@ const create = async (input: typeof BusinessTable.$inferInsert): Promise<App.Res
 const update = async (
   input: Partial<typeof BusinessTable.$inferInsert> & {
     id: string;
-    org_id: string;
+    user_id: string;
   },
 ): Promise<App.Result<Business>> => {
   console.log("update_business_remote.input", input);
@@ -49,7 +61,7 @@ const update = async (
       .where(
         and(
           eq(BusinessTable.id, input.id),
-          eq(BusinessTable.org_id, input.org_id), //
+          eq(BusinessTable.user_id, input.user_id), //
         ),
       )
       .returning();
@@ -63,7 +75,10 @@ const update = async (
     }
   } catch (error) {
     if (error instanceof DrizzleQueryError) {
-      Log.error({ message: error.message }, "update_business_remote.error DrizzleQueryError");
+      Log.error(
+        { message: error.message },
+        "update_business_remote.error DrizzleQueryError",
+      );
 
       captureException(error);
 

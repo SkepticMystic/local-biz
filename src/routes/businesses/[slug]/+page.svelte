@@ -15,9 +15,11 @@
     />
   </header>
 
-  <section>
-    <PrerenderedMarkdown html={data.prerendered.description} />
-  </section>
+  {#if data.prerendered.description}
+    <section>
+      <PrerenderedMarkdown html={data.prerendered.description} />
+    </section>
+  {/if}
 
   <section>
     <GoogleMapIFrame

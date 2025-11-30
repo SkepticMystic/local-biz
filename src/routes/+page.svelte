@@ -12,24 +12,11 @@
   <div class="my-14">
     <ButtonGroup>
       <ButtonGroup>
-        <Button href="/tasks">Tasks</Button>
-      </ButtonGroup>
-
-      <ButtonGroup>
         <Button
           href="/profile"
           variant="secondary"
         >
           Profile
-        </Button>
-      </ButtonGroup>
-
-      <ButtonGroup>
-        <Button
-          href="/organization"
-          variant="outline"
-        >
-          Team
         </Button>
       </ButtonGroup>
     </ButtonGroup>

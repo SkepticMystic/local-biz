@@ -3,23 +3,17 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as AuthModels from "./models/auth.model";
 import * as BusinessModel from "./models/business.model";
-import * as TaskModel from "./models/task.model";
 
 const client = neon(DATABASE_URL);
 
 const {
   AccountTable,
-  InvitationTable,
-  MemberTable,
-  OrganizationTable,
   PasskeyTable,
   SessionTable,
   UserTable,
   VerificationTable,
   ...auth_rest
 } = AuthModels;
-
-const { TaskTable, ...task_rest } = TaskModel;
 
 const { BusinessTable, ...business_rest } = BusinessModel;
 
@@ -31,15 +25,8 @@ export const db = drizzle(client, {
     account: AccountTable,
     session: SessionTable,
     verification: VerificationTable,
-    organization: OrganizationTable,
-    member: MemberTable,
-    invitation: InvitationTable,
     passkey: PasskeyTable,
     ...auth_rest,
-
-    // Task
-    task: TaskTable,
-    ...task_rest,
 
     // Business
     business: BusinessTable,
