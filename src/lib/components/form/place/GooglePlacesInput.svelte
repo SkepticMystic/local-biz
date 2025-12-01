@@ -2,6 +2,7 @@
   import { dev } from "$app/environment";
   import { PUBLIC_GOOGLE_MAPS_API_KEY } from "$env/static/public";
   import GoogleMapIFrame from "$lib/components/map/GoogleMapIFrame.svelte";
+  import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Dialog from "$lib/components/ui/dialog/dialog.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import type { MaybePromise } from "$lib/interfaces";
@@ -107,7 +108,7 @@
   });
 </script>
 
-<div class="flex gap-1.5">
+<ButtonGroup>
   <PlaceAutocomplete
     {...rest_props}
     {options}
@@ -129,8 +130,8 @@
 
   <Dialog
     size="icon"
-    title="Location"
     variant="secondary"
+    title="View on map"
     disabled={!google_place_id}
     description={formatted_address}
   >
@@ -147,4 +148,4 @@
       {/if}
     {/snippet}
   </Dialog>
-</div>
+</ButtonGroup>

@@ -1,6 +1,9 @@
 <script lang="ts">
   import Button from "$lib/components/ui/button/button.svelte";
+  import FieldGroup from "$lib/components/ui/field/field-group.svelte";
+  import FieldSeparator from "$lib/components/ui/field/field-separator.svelte";
   import Field from "$lib/components/ui/field/Field.svelte";
+  import Fieldset from "$lib/components/ui/field/Fieldset.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
   import Textarea from "$lib/components/ui/textarea/textarea.svelte";
   import {
@@ -34,7 +37,6 @@
 </script>
 
 <form
-  class="space-y-3"
   {...form.enhance(async (e) => {
     console.log("form.enhance.e", e);
     await e.submit();
@@ -57,80 +59,97 @@
     }
   })}
 >
-  {#if props.mode === "update"}
-    <input {...form.fields.id.as("hidden", props.initial.id)} />
-  {/if}
+  <Fieldset legend="Business details">
+    <FieldSeparator />
 
-  <Field
-    label="Business name *"
-    field={form.fields.name}
-  >
-    {#snippet input({ props, field })}
-      <Input
-        {...props}
-        {...field?.as("text")}
-        required
-        autocomplete="organization"
-      />
-    {/snippet}
-  </Field>
+    <FieldGroup>
+      {#if props.mode === "update"}
+        <input {...form.fields.id.as("hidden", props.initial.id)} />
+      {/if}
 
-  <Field
-    label="Logo URL"
-    field={form.fields.logo}
-    description="A link to your logo"
-  >
-    {#snippet input({ props, field })}
-      <Input
-        {...props}
-        {...field?.as("url")}
-        placeholder="https://example.com/logo.png"
-      />
-    {/snippet}
-  </Field>
+      <Field
+        label="Business name *"
+        orientation="responsive"
+        field={form.fields.name}
+        description="This is how your business will be listed"
+      >
+        {#snippet input({ props, field })}
+          <Input
+            {...props}
+            {...field?.as("text")}
+            required
+            autocomplete="organization"
+          />
+        {/snippet}
+      </Field>
 
-  <Field
-    label="Bio"
-    field={form.fields.description}
-  >
-    {#snippet input({ props, field })}
-      <Textarea
-        {...props}
-        {...field?.as("text")}
-        placeholder="A short description of your business"
-      />
-    {/snippet}
-  </Field>
+      <Field
+        label="Logo URL"
+        orientation="responsive"
+        field={form.fields.logo}
+        description="A link to your logo"
+      >
+        {#snippet input({ props, field })}
+          <Input
+            {...props}
+            {...field?.as("url")}
+            placeholder="https://example.com/logo.png"
+          />
+        {/snippet}
+      </Field>
 
-  <Field label="Place">
-    {#snippet input({ props: snippet_props })}
-      <input
-        class="hidden"
-        {...form.fields.google_place_id.as("text")}
-      />
-      <input
-        class="hidden"
-        {...form.fields.formatted_address.as("text")}
-      />
+      <Field
+        label="Address"
+        orientation="responsive"
+        description="Where is your business located?"
+      >
+        {#snippet input({ props: snippet_props })}
+          <input
+            class="hidden"
+            {...form.fields.google_place_id.as("text")}
+          />
+          <input
+            class="hidden"
+            {...form.fields.formatted_address.as("text")}
+          />
+          <GooglePlacesInput
+            {...snippet_props}
+            google_place_id={form.fields.google_place_id.value()}
+            formatted_address={form.fields.formatted_address.value()}
+            on_change={(data) => {
+              form.fields.google_place_id.set(data.google_place_id);
+              form.fields.formatted_address.set(data.formatted_address ?? "");
+            }}
+          />
+        {/snippet}
+      </Field>
 
-      <GooglePlacesInput
-        {...snippet_props}
-        google_place_id={form.fields.google_place_id.value()}
-        formatted_address={form.fields.formatted_address.value()}
-        on_change={(data) => {
-          form.fields.google_place_id.set(data.google_place_id);
-          form.fields.formatted_address.set(data.formatted_address ?? "");
-        }}
-      />
-    {/snippet}
-  </Field>
+      <Field
+        label="Bio"
+        orientation="responsive"
+        field={form.fields.description}
+        description="Tell your customers what your business is about"
+      >
+        {#snippet input({ props, field })}
+          <Textarea
+            {...props}
+            {...field?.as("text")}
+            placeholder="A short description of your business"
+            class="min-h-32 resize-none sm:min-w-[300px]"
+          />
+        {/snippet}
+      </Field>
 
-  <Button
-    type="submit"
-    class="w-full"
-    icon="lucide/send"
-    loading={form.pending > 0}
-  >
-    Submit
-  </Button>
+      <FieldSeparator />
+
+      <Button
+        type="submit"
+        class="w-full"
+        icon="lucide/send"
+        loading={form.pending > 0}
+      >
+        Submit
+      </Button>
+    </FieldGroup>
+  </Fieldset>
 </form>
