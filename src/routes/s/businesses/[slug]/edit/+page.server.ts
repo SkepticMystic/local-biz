@@ -10,6 +10,16 @@ export const load = (async ({ params }) => {
 
     db.query.business.findFirst({
       where: (business, { eq }) => eq(business.slug, params.slug),
+
+      with: {
+        images: {
+          columns: {
+            id: true,
+            url: true,
+            thumbhash: true,
+          },
+        },
+      },
     }),
   ]);
 

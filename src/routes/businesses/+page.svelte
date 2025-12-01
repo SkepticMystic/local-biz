@@ -2,6 +2,7 @@
   import { resolve } from "$app/paths";
   import BusinessLikeToggle from "$lib/components/buttons/BusinessLikeToggle.svelte";
   import Picture from "$lib/components/image/Picture.svelte";
+  import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
@@ -29,7 +30,7 @@
     {#snippet item(business)}
       {@const href = resolve("/businesses/[slug]", business)}
 
-      <Item title={business.name}>
+      <Item>
         {#snippet media()}
           <Picture
             {href}
@@ -39,6 +40,12 @@
             alt={business.name}
             fallback={business.name[0]}
           />
+        {/snippet}
+
+        {#snippet title()}
+          <Anchor {href}>
+            {business.name}
+          </Anchor>
         {/snippet}
 
         {#snippet description()}

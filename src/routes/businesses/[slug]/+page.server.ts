@@ -12,6 +12,14 @@ export const load = (async ({ params }) => {
         eq(business.slug, params.slug), //
         eq(business.admin_approved, true),
       ),
+
+    with: {
+      images: {
+        columns: { url: true, thumbhash: true },
+
+        where: (image, { eq }) => eq(image.admin_approved, true),
+      },
+    },
   });
 
   if (!business) {
@@ -34,6 +42,11 @@ export const load = (async ({ params }) => {
 
       openGraph: {
         images: [{ url: business.logo }],
+
+        article: {
+          modifiedTime: business.updatedAt.toISOString(),
+          publishedTime: business.createdAt.toISOString(),
+        },
       },
     }),
   };

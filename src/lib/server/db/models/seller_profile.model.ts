@@ -11,6 +11,7 @@ import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 import { HTMLUtil, type IHTML } from "../../../utils/html/html.util";
 import { UserTable } from "./auth.model";
+import { ImageTable } from "./image.model";
 import { Schema } from "./index.schema";
 
 export const SellerProfileTable = pgTable(
@@ -36,11 +37,13 @@ export const SellerProfileTable = pgTable(
 
 export const seller_profile_relations = relations(
   SellerProfileTable,
-  ({ one }) => ({
+  ({ one, many }) => ({
     user: one(UserTable, {
       fields: [SellerProfileTable.user_id],
       references: [UserTable.id],
     }),
+
+    images: many(ImageTable),
   }),
 );
 

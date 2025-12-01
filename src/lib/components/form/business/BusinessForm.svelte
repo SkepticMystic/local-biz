@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import FieldGroup from "$lib/components/ui/field/field-group.svelte";
   import FieldSeparator from "$lib/components/ui/field/field-separator.svelte";
@@ -68,7 +69,7 @@
       {/if}
 
       <Field
-        label="Business name *"
+        label="Name *"
         orientation="responsive"
         field={form.fields.name}
         description="This is how your business will be listed"
@@ -128,8 +129,18 @@
         label="Bio"
         orientation="responsive"
         field={form.fields.description}
-        description="Tell your customers what your business is about"
       >
+        {#snippet description()}
+          Tell your customers what your business is about. <br />
+          You can use
+          <Anchor
+            target="_blank"
+            href="https://www.markdownguide.org/cheat-sheet/"
+          >
+            markdown
+          </Anchor> to format your text.
+        {/snippet}
+
         {#snippet input({ props, field })}
           <Textarea
             {...props}

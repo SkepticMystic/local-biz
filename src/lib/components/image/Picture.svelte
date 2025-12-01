@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { ImageClient } from "$lib/clients/image/image.client";
+  import type { Image } from "$lib/server/db/models/image.model";
   import { cn } from "$lib/utils/shadcn.util";
   import { Image as Picture, type ImageProps } from "@unpic/svelte";
   import type { ClassValue } from "svelte/elements";
@@ -7,19 +9,19 @@
   let {
     href,
     image,
-    loading,
     fallback,
     class: klass,
+    loading,
     fetchpriority,
     prioritize = false,
     ...props
   }: Omit<ImageProps, "src"> & {
     href?: string;
     fallback?: string;
+    class?: ClassValue;
     src?: string | null;
     prioritize?: boolean;
-    class?: ClassValue | null;
-    image?: { url: string };
+    image?: Pick<Image, "url" | "thumbhash">;
   } = $props();
 
   // NOTE: ...rest props are readonly,
@@ -28,6 +30,8 @@
     loading ??= "eager";
     fetchpriority ??= "high";
   }
+
+  const thumbhash_url = ImageClient.decode_thumbhash(image);
 
   const style = [
     props.width ? `width: ${props.width}px` : "",
@@ -38,30 +42,56 @@
     .trim();
 </script>
 
-{#snippet img()}
+{#snippet inner()}
   {#if image || props.src}
     <Picture
       {style}
       {loading}
       {fetchpriority}
-      src={image?.url}
+      src={image?.url ?? props.src}
       class={cn("h-full w-full rounded-md", klass)}
+      background={thumbhash_url}
+      operations={{
+        cloudinary: {
+          f: "auto",
+          q: "auto",
+
+          // "auto" seems fancy, but expensive
+          // "fill" seems like a cheaper alternative
+          c: "auto",
+          g: "auto",
+        },
+      }}
+      {@attach (node: HTMLImageElement) => {
+        // NOTE: unpic just spreads everything onto the img,
+        // so we need to remove the background attribute cause the style attr is what actually does the work
+        node.attributes.getNamedItem("background") &&
+          node.attributes.removeNamedItem("background");
+      }}
       {...props}
     />
-  {:else if fallback}
-    <div
-      {...props}
-      class={cn("flex items-center justify-center rounded-md bg-muted", klass)}
-    >
-      {fallback}
-    </div>
+
+    <!-- <div
+      style="object-fit: cover; 
+  background-image: url({thumbhash_url}); 
+  background-size: cover; 
+  background-repeat: no-repeat; 
+  max-width: 300px; 
+  max-height: 300px; 
+  aspect-ratio: 1 / 1; 
+  width: 300px; 
+  height: 300px;"
+    ></div> -->
+
+    <!-- {:else if fallback}
+    <PictureFallback {fallback} {style} class={klass} {...props} /> -->
   {/if}
 {/snippet}
 
 {#if href}
   <Anchor {href}>
-    {@render img()}
+    {@render inner()}
   </Anchor>
 {:else}
-  {@render img()}
+  {@render inner()}
 {/if}

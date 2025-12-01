@@ -24,6 +24,7 @@ import {
 } from "./server/db/models/auth.model";
 import { redis } from "./server/db/redis.db";
 import { EmailService } from "./services/email.service";
+import { ImageService } from "./services/image/image.service";
 import { Log } from "./utils/logger.util";
 
 // SECTION: betterAuth init
@@ -90,6 +91,12 @@ export const auth = betterAuth({
         await EmailService.send(
           EMAIL.TEMPLATES["delete-account-verification"]({ url, user }),
         );
+      },
+
+      // NOTE: Delete their images _before_ deleting user
+      // Otherwise it'll cascade to ImageTable, meaning we can't find the external_ids to delete on cloudinary
+      beforeDelete: async (user) => {
+        await Promise.all([ImageService.delete({ user_id: user.id })]);
       },
     },
   },

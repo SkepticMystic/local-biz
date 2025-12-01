@@ -4,6 +4,7 @@ import { drizzle } from "drizzle-orm/neon-http";
 import * as AuthModels from "./models/auth.model";
 import * as BusinessModel from "./models/business.model";
 import * as BusinessLikeModel from "./models/business_like.model";
+import * as ImageModel from "./models/image.model";
 import * as SellerProfileModel from "./models/seller_profile.model";
 
 const client = neon(DATABASE_URL);
@@ -22,6 +23,8 @@ const { BusinessTable, ...business_rest } = BusinessModel;
 const { BusinessLikeTable, ...business_like_rest } = BusinessLikeModel;
 
 const { SellerProfileTable, ...seller_profile_rest } = SellerProfileModel;
+
+const { ImageTable, ...image_rest } = ImageModel;
 
 export const db = drizzle(client, {
   casing: "snake_case",
@@ -45,5 +48,9 @@ export const db = drizzle(client, {
     // Seller Profile
     seller_profile: SellerProfileTable,
     ...seller_profile_rest,
+
+    // Image
+    image: ImageTable,
+    ...image_rest,
   },
 });

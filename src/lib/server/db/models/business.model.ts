@@ -12,6 +12,7 @@ import z from "zod";
 import { HTMLUtil, type IHTML } from "../../../utils/html/html.util";
 import { UserTable } from "./auth.model";
 import { BusinessLikeTable } from "./business_like.model";
+import { ImageTable } from "./image.model";
 import { Schema } from "./index.schema";
 
 // Define Business table schema
@@ -44,6 +45,8 @@ export const business_relations = relations(BusinessTable, ({ one, many }) => ({
     fields: [BusinessTable.user_id],
     references: [UserTable.id],
   }),
+
+  images: many(ImageTable),
   likes: many(BusinessLikeTable),
 }));
 

@@ -1,10 +1,12 @@
 <script lang="ts">
   import BusinessLikeToggle from "$lib/components/buttons/BusinessLikeToggle.svelte";
   import ShareButton from "$lib/components/buttons/ShareButton.svelte";
+  import Picture from "$lib/components/image/Picture.svelte";
   import GoogleMapIFrame from "$lib/components/map/GoogleMapIFrame.svelte";
   import PrerenderedMarkdown from "$lib/components/text/markdown/PrerenderedMarkdown.svelte";
   import Avatar from "$lib/components/ui/avatar/avatar.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
+  import { IMAGES } from "$lib/const/image/image.const.js";
 
   let { data } = $props();
   const business = $state(data.business);
@@ -40,6 +42,19 @@
   {#if data.prerendered.description}
     <section>
       <PrerenderedMarkdown html={data.prerendered.description} />
+    </section>
+  {/if}
+
+  {#if business.images.length}
+    <section>
+      <div class="flex flex-wrap gap-3">
+        {#each business.images as image (image.url)}
+          <Picture
+            {image}
+            {...IMAGES.SIZES.THUMBNAIL}
+          />
+        {/each}
+      </div>
     </section>
   {/if}
 

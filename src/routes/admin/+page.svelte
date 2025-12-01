@@ -18,6 +18,10 @@
       label: "Businesses",
       href: "/admin/businesses",
     },
+    {
+      label: "Images",
+      href: "/admin/images",
+    },
   ];
 </script>
 
