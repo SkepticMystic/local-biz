@@ -1,18 +1,10 @@
 import { command, form, query } from "$app/server";
 import { get_session } from "$lib/auth/server";
-import { db } from "$lib/server/db/drizzle.db";
-import {
-  BusinessSchema,
-  BusinessTable,
-} from "$lib/server/db/models/business.model";
+import { BusinessSchema } from "$lib/server/db/models/business.model";
 import { BusinessRepo } from "$lib/repos/business.repo";
 import { BusinessService } from "$lib/services/business/business.service";
-import { Log } from "$lib/utils/logger.util";
-import { result } from "$lib/utils/result.util";
-import { captureException } from "@sentry/sveltekit";
-import { eq } from "drizzle-orm";
-import z from "zod";
 import { error } from "@sveltejs/kit";
+import z from "zod";
 
 export const get_all_public_businesses_remote = query(async () => {
   const res = await BusinessRepo.get_all_public();
@@ -82,6 +74,6 @@ export const admin_set_business_approved_remote = command(
   async (input) => {
     await get_session({ admin: true });
 
-    return await BusinessRepo.set_admin_approved(input);
+    return await BusinessService.set_admin_approved(input);
   },
 );

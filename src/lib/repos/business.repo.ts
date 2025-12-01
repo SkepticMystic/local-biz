@@ -1,14 +1,10 @@
 import { E } from "$lib/const/error/error.const";
 import { db } from "$lib/server/db/drizzle.db";
-import {
-  BusinessTable,
-  type Business,
-} from "$lib/server/db/models/business.model";
+import { BusinessTable } from "$lib/server/db/models/business.model";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
 import { and, DrizzleQueryError, eq } from "drizzle-orm";
-import { Strings } from "$lib/utils/strings.util";
 
 const create = async (input: typeof BusinessTable.$inferInsert) => {
   try {

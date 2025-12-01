@@ -10,8 +10,8 @@ import {
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 import { HTMLUtil, type IHTML } from "../../../utils/html/html.util";
-import { Schema } from "./index.schema";
 import { UserTable } from "./auth.model";
+import { Schema } from "./index.schema";
 
 export const SellerProfileTable = pgTable(
   "seller_profile",
@@ -22,13 +22,10 @@ export const SellerProfileTable = pgTable(
       .notNull()
       .references(() => UserTable.id, { onDelete: "cascade" }),
 
+    name: varchar({ length: 255 }).notNull(),
     slug: varchar({ length: 255 }).notNull().unique(),
-    name: varchar({ length: 255 }).default("").notNull(),
     logo: varchar({ length: 2047 }).default("").notNull(),
     description: text().default("").notNull().$type<IHTML.Sanitized>(),
-
-    google_place_id: varchar({ length: 255 }).default("").notNull(),
-    formatted_address: varchar({ length: 511 }).default("").notNull(),
 
     admin_approved: boolean().default(false).notNull(),
 
@@ -53,12 +50,10 @@ const pick = {
   name: true,
   logo: true,
   description: true,
-  google_place_id: true,
-  formatted_address: true,
 } satisfies Partial<Record<keyof SellerProfile, true>>;
 
 const refinements = {
-  name: z.string().trim().min(1, "Please enter a name for your business"),
+  name: z.string().trim().min(1, "Please enter a name for your seller_profile"),
   logo: z.string().trim(),
 
   description: z
@@ -66,8 +61,6 @@ const refinements = {
     .trim()
     .max(5000, "Description must be at most 5000 characters")
     .transform(HTMLUtil.sanitize),
-
-  formatted_address: z.string().trim(),
 };
 
 export const SellerProfileSchema = {
