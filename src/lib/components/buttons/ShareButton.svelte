@@ -2,6 +2,7 @@
   import { page } from "$app/state";
   import { SHARE } from "$lib/const/share/share.const";
   import { Share } from "$lib/utils/share/share.util";
+  import { toast } from "svelte-sonner";
   import Button from "../ui/button/button.svelte";
   import Dialog from "../ui/dialog/dialog.svelte";
   import Icon from "../ui/icon/Icon.svelte";
@@ -41,6 +42,19 @@
 
     {#snippet content()}
       <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 md:grid-cols-3">
+        <Button
+          icon="lucide/copy"
+          variant="outline"
+          title="Copy link"
+          onclick={() =>
+            navigator.clipboard
+              .writeText(page.url.href)
+              .then(() => toast.success("Copied to clipboard"))
+              .catch(() => toast.error("Failed to copy to clipboard"))}
+        >
+          Copy link
+        </Button>
+
         {#each SHARE.SOCIAL.IDS as social_id (social_id)}
           {@const platform = SHARE.SOCIAL.MAP[social_id]}
 
