@@ -11,6 +11,7 @@ import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 import { HTMLUtil, type IHTML } from "../../../utils/html/html.util";
 import { UserTable } from "./auth.model";
+import { BusinessLikeTable } from "./business_like.model";
 import { Schema } from "./index.schema";
 
 // Define Business table schema
@@ -38,11 +39,12 @@ export const BusinessTable = pgTable(
   (table) => [index("idx_business_user_id").on(table["user_id"])],
 );
 
-export const business_relations = relations(BusinessTable, ({ one }) => ({
+export const business_relations = relations(BusinessTable, ({ one, many }) => ({
   user: one(UserTable, {
     fields: [BusinessTable.user_id],
     references: [UserTable.id],
   }),
+  likes: many(BusinessLikeTable),
 }));
 
 export type Business = typeof BusinessTable.$inferSelect;
