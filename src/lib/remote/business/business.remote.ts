@@ -5,47 +5,35 @@ import {
   BusinessSchema,
   BusinessTable,
 } from "$lib/server/db/models/business.model";
+import { BusinessRepo } from "$lib/repos/business.repo";
 import { BusinessService } from "$lib/services/business/business.service";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
 import { eq } from "drizzle-orm";
 import z from "zod";
+import { error } from "@sveltejs/kit";
 
 export const get_all_public_businesses_remote = query(async () => {
-  const businesses = await db.query.business.findMany({
-    where: (business, { eq }) => eq(business.admin_approved, true),
+  const res = await BusinessRepo.get_all_public();
 
-    columns: {
-      id: true,
-      name: true,
-      slug: true,
-      logo: true,
-      formatted_address: true,
-      createdAt: true,
-    },
-  });
+  if (!res.ok) {
+    error(res.error.status, res.error.message);
+  }
 
-  return businesses;
+  return res.data;
 });
 
 export const get_all_my_businesses_remote = query(async () => {
   const { session } = await get_session();
 
-  const businesses = await db.query.business.findMany({
-    where: (business, { eq }) => eq(business.user_id, session.userId),
+  const res = await BusinessRepo.get_all_by_user(session.userId);
 
-    columns: {
-      id: true,
-      name: true,
-      slug: true,
-      logo: true,
-      formatted_address: true,
-      createdAt: true,
-    },
-  });
+  if (!res.ok) {
+    error(res.error.status, res.error.message);
+  }
 
-  return businesses;
+  return res.data;
 });
 
 export const create_business_remote = form(
@@ -94,22 +82,6 @@ export const admin_set_business_approved_remote = command(
   async (input) => {
     await get_session({ admin: true });
 
-    try {
-      const res = await db
-        .update(BusinessTable)
-        .set({ admin_approved: input.admin_approved })
-        .where(eq(BusinessTable.id, input.id))
-        .execute();
-
-      return res.rowCount > 0 //
-        ? result.suc()
-        : result.err({ message: "Business not found" });
-    } catch (error) {
-      Log.error(error, "admin_set_business_approved_remote.error unknown");
-
-      captureException(error);
-
-      return result.err({ message: "Internal server error" });
-    }
+    return await BusinessRepo.set_admin_approved(input);
   },
 );

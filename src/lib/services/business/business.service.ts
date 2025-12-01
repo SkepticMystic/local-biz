@@ -9,40 +9,24 @@ import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
 import { and, DrizzleQueryError, eq } from "drizzle-orm";
 import { Strings } from "$lib/utils/strings.util";
+import { BusinessRepo } from "$lib/repos/business.repo";
 
 const create = async (
   input: Omit<typeof BusinessTable.$inferInsert, "slug">,
 ): Promise<App.Result<Business>> => {
   try {
-    const [business] = await db
-      .insert(BusinessTable)
-      .values({ ...input, slug: Strings.slugify(input.name) })
-      .returning();
+    const res = await BusinessRepo.create({
+      ...input,
+      slug: Strings.slugify(input.name),
+    });
 
-    if (!business) {
-      Log.error({ input }, "BusinessService.create.error not found");
-
-      return result.err({ message: "Failed to create business" });
-    } else {
-      return result.suc(business);
-    }
+    return res;
   } catch (error) {
-    if (error instanceof DrizzleQueryError) {
-      Log.error(
-        { message: error.message },
-        "create_business_remote.error DrizzleQueryError",
-      );
+    Log.error(error, "BusinessService.create.error unknown");
 
-      captureException(error);
+    captureException(error);
 
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    } else {
-      Log.error(error, "create_business_remote.error unknown");
-
-      captureException(error);
-
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    }
+    return result.err(E.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -52,44 +36,16 @@ const update = async (
     user_id: string;
   },
 ): Promise<App.Result<Business>> => {
-  console.log("update_business_remote.input", input);
-
   try {
-    const [business] = await db
-      .update(BusinessTable)
-      .set(input)
-      .where(
-        and(
-          eq(BusinessTable.id, input.id),
-          eq(BusinessTable.user_id, input.user_id), //
-        ),
-      )
-      .returning();
+    const res = await BusinessRepo.update(input);
 
-    if (!business) {
-      Log.error({ input }, "BusinessService.update.error not found");
-
-      return result.err(E.NOT_FOUND);
-    } else {
-      return result.suc(business);
-    }
+    return res;
   } catch (error) {
-    if (error instanceof DrizzleQueryError) {
-      Log.error(
-        { message: error.message },
-        "update_business_remote.error DrizzleQueryError",
-      );
+    Log.error(error, "BusinessService.update.error unknown");
 
-      captureException(error);
+    captureException(error);
 
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    } else {
-      Log.error(error, "update_business_remote.error unknown");
-
-      captureException(error);
-
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    }
+    return result.err(E.INTERNAL_SERVER_ERROR);
   }
 };
 
