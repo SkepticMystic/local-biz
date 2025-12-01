@@ -39,6 +39,15 @@
 
 <form
   {...form.enhance(async (e) => {
+    if (
+      props.mode === "update" &&
+      !confirm(
+        "Are you sure you want to update this business? This will require admin approval before it will be visible to the public again.",
+      )
+    ) {
+      return;
+    }
+
     console.log("form.enhance.e", e);
     await e.submit();
 
@@ -79,6 +88,7 @@
             {...props}
             {...field?.as("text")}
             required
+            class="sm:min-w-[300px]"
             autocomplete="organization"
           />
         {/snippet}
@@ -94,7 +104,56 @@
           <Input
             {...props}
             {...field?.as("url")}
+            class="sm:min-w-[300px]"
             placeholder="https://example.com/logo.png"
+          />
+        {/snippet}
+      </Field>
+
+      <Field
+        label="Email address"
+        orientation="responsive"
+        field={form.fields.emails[0]!.data}
+        description="Your business's email address"
+      >
+        {#snippet input({ props, field })}
+          <Input
+            {...props}
+            {...field?.as("email")}
+            class="sm:min-w-[300px]"
+            placeholder="business@example.com"
+          />
+        {/snippet}
+      </Field>
+
+      <Field
+        label="Phone number"
+        orientation="responsive"
+        field={form.fields.phones[0]!.data}
+        description="Your business's phone number"
+      >
+        {#snippet input({ props, field })}
+          <Input
+            {...props}
+            {...field?.as("tel")}
+            class="sm:min-w-[300px]"
+            placeholder="012 345 6789"
+          />
+        {/snippet}
+      </Field>
+
+      <Field
+        label="Website"
+        orientation="responsive"
+        field={form.fields.urls[0]!.data}
+        description="Your business's website"
+      >
+        {#snippet input({ props, field })}
+          <Input
+            {...props}
+            {...field?.as("url")}
+            class="sm:min-w-[300px]"
+            placeholder="https://example.com"
           />
         {/snippet}
       </Field>
@@ -150,8 +209,6 @@
           />
         {/snippet}
       </Field>
-
-      <FieldSeparator />
 
       <Button
         type="submit"

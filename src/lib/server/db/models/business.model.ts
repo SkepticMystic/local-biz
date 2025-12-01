@@ -1,7 +1,9 @@
+import type { Branded } from "$lib/interfaces/zod/zod.types";
 import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
+  jsonb,
   pgTable,
   text,
   uuid,
@@ -30,6 +32,19 @@ export const BusinessTable = pgTable(
     logo: varchar({ length: 2047 }).default("").notNull(),
     description: text().default("").notNull().$type<IHTML.Sanitized>(),
 
+    urls: jsonb()
+      .default([])
+      .notNull()
+      .$type<{ data: Branded<"Url">; label: string }[]>(),
+    phones: jsonb()
+      .default([])
+      .notNull()
+      .$type<{ data: Branded<"Phone">; label: string }[]>(),
+    emails: jsonb()
+      .default([])
+      .notNull()
+      .$type<{ data: Branded<"Email">; label: string }[]>(),
+
     google_place_id: varchar({ length: 255 }).default("").notNull(),
     formatted_address: varchar({ length: 511 }).default("").notNull(),
 
@@ -56,13 +71,18 @@ const pick = {
   name: true,
   logo: true,
   description: true,
+
+  urls: true,
+  phones: true,
+  emails: true,
+
   google_place_id: true,
   formatted_address: true,
 } satisfies Partial<Record<keyof Business, true>>;
 
 const refinements = {
+  logo: z.union([z.literal(""), z.url()]),
   name: z.string().trim().min(1, "Please enter a name for your business"),
-  logo: z.string().trim(),
 
   description: z
     .string()
@@ -71,6 +91,40 @@ const refinements = {
     .transform(HTMLUtil.sanitize),
 
   formatted_address: z.string().trim(),
+
+  urls: z
+    .array(
+      z.object({
+        label: z.string().trim().default(""),
+        data: z.union([z.literal(""), z.url()]),
+      }),
+    )
+    .max(3)
+    .transform(
+      (v) => v.filter(Boolean) as { label: string; data: Branded<"Url"> }[],
+    ),
+  emails: z
+    .array(
+      z.object({
+        label: z.string().trim().default(""),
+        data: z.union([z.literal(""), z.email()]),
+      }),
+    )
+    .max(3)
+    .transform(
+      (v) => v.filter(Boolean) as { label: string; data: Branded<"Email"> }[],
+    ),
+  phones: z
+    .array(
+      z.object({
+        label: z.string().trim().default(""),
+        data: z.union([z.literal(""), z.string().trim()]),
+      }),
+    )
+    .max(3)
+    .transform(
+      (v) => v.filter(Boolean) as { label: string; data: Branded<"Phone"> }[],
+    ),
 };
 
 export const BusinessSchema = {

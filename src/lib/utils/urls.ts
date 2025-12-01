@@ -36,9 +36,25 @@ const safe = (url: string | URL) => {
   }
 };
 
+const strip_protocol = (href: string) => {
+  if (href.startsWith("https://")) {
+    return href.slice(8);
+  } else if (href.startsWith("http://")) {
+    return href.slice(7);
+  } else if (href.startsWith("mailto:")) {
+    return href.slice(7);
+  } else if (href.startsWith("tel:")) {
+    return href.slice(4);
+  } else {
+    return href;
+  }
+};
+
 export const Url = {
   safe,
   build,
   add_search,
+
+  strip_protocol,
   strip_origin: (url: URL) => url.pathname + url.search + url.hash,
 };

@@ -64,6 +64,7 @@
   class={cn(
     toggleVariants({ variant, size }),
     loading && "btn-loading",
+    "cursor-pointer",
     className,
   )}
   onPressedChange={async (e) => {

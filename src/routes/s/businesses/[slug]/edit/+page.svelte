@@ -3,12 +3,14 @@
   import BusinessForm from "$lib/components/form/business/BusinessForm.svelte";
   import UploadImageForm from "$lib/components/form/Image/UploadImageForm.svelte";
   import Picture from "$lib/components/image/Picture.svelte";
+  import Separator from "$lib/components/ui/separator/separator.svelte";
   import { IMAGES } from "$lib/const/image/image.const";
   import { Items } from "$lib/utils/items.util.js";
 
   let { data } = $props();
 
-  let business = $state(data.business);
+  const { business } = data;
+  let images = $state(data.business.images);
 </script>
 
 <article>
@@ -21,6 +23,8 @@
     initial={business}
   ></BusinessForm>
 
+  <Separator />
+
   <section>
     <h2>Images</h2>
 
@@ -28,12 +32,12 @@
       resource_kind="business"
       resource_id={business.id}
       on_upload={(image) => {
-        business.images = [...business.images, image];
+        images = [...images, image];
       }}
     />
 
     <div class="flex flex-wrap gap-3">
-      {#each business.images as image (image.id)}
+      {#each images as image (image.id)}
         <div class="flex flex-col gap-1">
           <Picture
             {image}
@@ -42,7 +46,7 @@
           <DeleteImageButton
             {image}
             on_delete={() => {
-              business.images = Items.remove(business.images, image.id);
+              images = Items.remove(images, image.id);
             }}
           />
         </div>

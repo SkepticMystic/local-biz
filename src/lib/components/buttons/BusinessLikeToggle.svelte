@@ -17,6 +17,7 @@
 <Toggle
   variant="outline"
   pressed={Boolean(my_business_like.current)}
+  title={my_business_like.current ? "Unlike" : "Like"}
   loading={business_like_count.loading || my_business_like.loading}
   onPressedChange={(pressing) =>
     pressing
