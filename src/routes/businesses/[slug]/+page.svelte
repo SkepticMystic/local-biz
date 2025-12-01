@@ -43,10 +43,12 @@
     </section>
   {/if}
 
-  <section>
-    <GoogleMapIFrame
-      google_place_id={business.google_place_id}
-      formatted_address={business.formatted_address}
-    />
-  </section>
+  {#if business.google_place_id}
+    <section>
+      <GoogleMapIFrame
+        google_place_id={business.google_place_id}
+        formatted_address={business.formatted_address}
+      />
+    </section>
+  {/if}
 </article>

@@ -1,13 +1,13 @@
 import { E } from "$lib/const/error/error.const";
+import { BusinessRepo } from "$lib/repos/business.repo";
 import {
   BusinessTable,
   type Business,
 } from "$lib/server/db/models/business.model";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
-import { captureException } from "@sentry/sveltekit";
 import { Strings } from "$lib/utils/strings.util";
-import { BusinessRepo } from "$lib/repos/business.repo";
+import { captureException } from "@sentry/sveltekit";
 
 const create = async (
   input: Omit<typeof BusinessTable.$inferInsert, "slug">,

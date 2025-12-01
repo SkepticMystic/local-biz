@@ -1,7 +1,7 @@
 import { command, form, query } from "$app/server";
 import { get_session } from "$lib/auth/server";
-import { BusinessSchema } from "$lib/server/db/models/business.model";
 import { BusinessRepo } from "$lib/repos/business.repo";
+import { BusinessSchema } from "$lib/server/db/models/business.model";
 import { BusinessService } from "$lib/services/business/business.service";
 import { error } from "@sveltejs/kit";
 import z from "zod";
@@ -35,11 +35,8 @@ export const create_business_remote = form(
     const { session } = await get_session();
 
     const res = await BusinessService.create({
-      name: input.name,
-      logo: input.logo,
+      ...input,
       user_id: session.userId,
-      google_place_id: input.google_place_id,
-      formatted_address: input.formatted_address,
     });
 
     console.log("create_business_remote.res", res);
@@ -63,6 +60,18 @@ export const update_business_remote = form(
     console.log("update_business_remote.res", res);
 
     return res;
+  },
+);
+
+export const delete_business_remote = command(
+  z.uuid(), //
+  async (business_id) => {
+    const { session } = await get_session();
+
+    return await BusinessRepo.delete_by_id({
+      id: business_id,
+      user_id: session.userId,
+    });
   },
 );
 

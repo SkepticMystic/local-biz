@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { BetterAuthClient } from "$lib/auth-client";
   import Button from "$lib/components/ui/button/button.svelte";
   import Field from "$lib/components/ui/field/Field.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
@@ -50,11 +49,6 @@
         toast.success(
           "Application submitted successfully. We'll get back to you soon.",
         );
-
-        // NOTE: Don't redirect to the organization page,
-        // The current session hasn't updated to have an activeOrganizationId yet
-        BetterAuthClient.$store.notify("$sessionSignal");
-        window.location.reload();
       } else {
         toast.success("Business updated successfully");
       }

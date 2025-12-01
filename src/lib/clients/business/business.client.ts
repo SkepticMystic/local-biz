@@ -1,5 +1,10 @@
-import { admin_set_business_approved_remote } from "$lib/remote/business/business.remote";
+import {
+  admin_set_business_approved_remote,
+  delete_business_remote,
+  get_all_my_businesses_remote,
+} from "$lib/remote/business/business.remote";
 import { session } from "$lib/stores/session.store";
+import { Items } from "$lib/utils/items.util";
 import {
   count_business_likes_remote,
   create_business_like_remote,
@@ -40,6 +45,26 @@ export const BusinessClient = {
         get_my_business_like_by_business_remote(input.business_id) //
           .withOverride(() => undefined),
       ),
+  ),
+
+  delete: Client.wrap(
+    (input: Parameters<typeof delete_business_remote>[0]) =>
+      delete_business_remote(input).updates(
+        get_all_my_businesses_remote() //
+          .withOverride((cur) => Items.remove(cur, input)),
+
+        // NOTE: We could update these remotes as well, but these buyer-facing metrics aren't as relevant to the seller when they're deleting a business
+
+        // get_my_business_like_by_business_remote(input) //
+        //   .withOverride(() => undefined),
+
+        // count_business_likes_remote(input) //
+        //   .withOverride((cur) => Math.max(0, cur - 1)),
+      ),
+    {
+      confirm: "Are you sure you want to delete this business?",
+      suc_msg: "Business deleted",
+    },
   ),
 
   set_admin_approved: Client.wrap(

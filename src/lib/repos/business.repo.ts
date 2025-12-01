@@ -156,6 +156,45 @@ const get_all_by_user = async (user_id: string) => {
   }
 };
 
+const delete_by_id = async (input: { id: string; user_id: string }) => {
+  try {
+    const res = await db
+      .delete(BusinessTable)
+      .where(
+        and(
+          eq(BusinessTable.id, input.id), //
+          eq(BusinessTable.user_id, input.user_id),
+        ),
+      )
+      .execute();
+
+    if (res.rowCount === 0) {
+      Log.error({ input }, "BusinessRepo.delete_by_id.error not found");
+
+      return result.err(E.NOT_FOUND);
+    } else {
+      return result.suc();
+    }
+  } catch (error) {
+    if (error instanceof DrizzleQueryError) {
+      Log.error(
+        { message: error.message },
+        "BusinessRepo.delete_by_id.error DrizzleQueryError",
+      );
+
+      captureException(error);
+
+      return result.err(E.INTERNAL_SERVER_ERROR);
+    } else {
+      Log.error(error, "BusinessRepo.delete_by_id.error unknown");
+
+      captureException(error);
+
+      return result.err(E.INTERNAL_SERVER_ERROR);
+    }
+  }
+};
+
 const set_admin_approved = async (input: {
   id: string;
   admin_approved: boolean;
@@ -199,5 +238,6 @@ export const BusinessRepo = {
   update,
   get_all_public,
   get_all_by_user,
+  delete_by_id,
   set_admin_approved,
 };

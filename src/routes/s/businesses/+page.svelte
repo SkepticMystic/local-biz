@@ -1,6 +1,8 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
+  import { BusinessClient } from "$lib/clients/business/business.client";
   import Picture from "$lib/components/image/Picture.svelte";
+  import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Item from "$lib/components/ui/item/Item.svelte";
@@ -45,12 +47,26 @@
         {/snippet}
 
         {#snippet actions()}
-          <Button
-            icon="lucide/pencil"
-            href={resolve("/s/businesses/[slug]/edit", business)}
-          >
-            Edit
-          </Button>
+          <ButtonGroup>
+            <ButtonGroup>
+              <Button
+                icon="lucide/pencil"
+                href={resolve("/s/businesses/[slug]/edit", business)}
+              >
+                Edit
+              </Button>
+            </ButtonGroup>
+
+            <ButtonGroup>
+              <Button
+                icon="lucide/trash"
+                variant="destructive"
+                onclick={() => BusinessClient.delete(business.id)}
+              >
+                Delete
+              </Button>
+            </ButtonGroup>
+          </ButtonGroup>
         {/snippet}
       </Item>
     {/snippet}

@@ -19,7 +19,9 @@ export const load = (async ({ params }) => {
   }
 
   const prerendered = {
-    description: business.description ? Markdown.to_html(business.description) : null,
+    description: business.description
+      ? Markdown.to_html(business.description)
+      : null,
   };
 
   return {
