@@ -1,6 +1,8 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
+  import BusinessLikeToggle from "$lib/components/buttons/BusinessLikeToggle.svelte";
   import Picture from "$lib/components/image/Picture.svelte";
+  import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Item from "$lib/components/ui/item/Item.svelte";
@@ -45,7 +47,15 @@
         {/snippet}
 
         {#snippet actions()}
-          <Button {href}>View</Button>
+          <ButtonGroup>
+            <ButtonGroup>
+              <BusinessLikeToggle business_id={business.id} />
+            </ButtonGroup>
+
+            <ButtonGroup>
+              <Button {href}>View</Button>
+            </ButtonGroup>
+          </ButtonGroup>
         {/snippet}
       </Item>
     {/snippet}

@@ -27,14 +27,19 @@ const create = async (
     }
   } catch (error) {
     if (error instanceof DrizzleQueryError) {
-      Log.error(
-        { message: error.message },
-        "BusinessLikeRepo.create.error DrizzleQueryError",
-      );
+      if (
+        error.cause?.message.includes(
+          "duplicate key value violates unique constraint",
+        )
+      ) {
+        return result.err({ message: "Business already liked" });
+      } else {
+        Log.error(error, "BusinessLikeRepo.create.error DrizzleQueryError");
 
-      captureException(error);
+        captureException(error);
 
-      return result.err(E.INTERNAL_SERVER_ERROR);
+        return result.err(E.INTERNAL_SERVER_ERROR);
+      }
     } else {
       Log.error(error, "BusinessLikeRepo.create.error unknown");
 

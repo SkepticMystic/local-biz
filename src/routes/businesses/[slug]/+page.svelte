@@ -1,26 +1,40 @@
 <script lang="ts">
+  import BusinessLikeToggle from "$lib/components/buttons/BusinessLikeToggle.svelte";
   import ShareButton from "$lib/components/buttons/ShareButton.svelte";
   import GoogleMapIFrame from "$lib/components/map/GoogleMapIFrame.svelte";
   import PrerenderedMarkdown from "$lib/components/text/markdown/PrerenderedMarkdown.svelte";
   import Avatar from "$lib/components/ui/avatar/avatar.svelte";
+  import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
 
   let { data } = $props();
+  const business = $state(data.business);
 </script>
 
 <article>
   <header class="flex items-center justify-between gap-3">
     <div class="flex items-center gap-2">
       <Avatar
-        src={data.business.logo}
-        fallback={data.business.name[0]}
+        src={business.logo}
+        fallback={business.name[0]}
       ></Avatar>
 
-      <h1>{data.business.name}</h1>
+      <h1>{business.name}</h1>
     </div>
 
-    <ShareButton
-      data={{ title: data.business.name, text: data.seo.description }}
-    />
+    <ButtonGroup>
+      <ButtonGroup>
+        <BusinessLikeToggle business_id={business.id} />
+      </ButtonGroup>
+
+      <ButtonGroup>
+        <ShareButton
+          data={{
+            title: business.name,
+            text: data.seo.description,
+          }}
+        />
+      </ButtonGroup>
+    </ButtonGroup>
   </header>
 
   {#if data.prerendered.description}
@@ -31,8 +45,8 @@
 
   <section>
     <GoogleMapIFrame
-      google_place_id={data.business.google_place_id}
-      formatted_address={data.business.formatted_address}
+      google_place_id={business.google_place_id}
+      formatted_address={business.formatted_address}
     />
   </section>
 </article>
