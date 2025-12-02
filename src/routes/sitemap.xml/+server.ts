@@ -1,7 +1,8 @@
+import type { RouteId } from "$app/types";
 import { APP } from "$lib/const/app.const";
+import { db } from "$lib/server/db/drizzle.db";
 import type { RequestHandler } from "@sveltejs/kit";
 import * as sitemap from "super-sitemap";
-import { db } from "$lib/server/db/drizzle.db";
 
 export const prerender = true;
 
