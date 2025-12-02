@@ -13,4 +13,6 @@ export const E = {
     code: "INTERNAL_SERVER_ERROR",
     message: "Internal server error",
   },
-} satisfies { [C in (typeof CODES)[number]]: App.Error & { code: C; status: number } };
+} satisfies {
+  [C in (typeof CODES)[number]]: App.Error & { code: C; status: number };
+};
