@@ -19,6 +19,10 @@
       href: "/admin/businesses",
     },
     {
+      label: "Seller Profiles",
+      href: "/admin/seller-profiles",
+    },
+    {
       label: "Images",
       href: "/admin/images",
     },

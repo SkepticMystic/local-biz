@@ -4,6 +4,7 @@
   import Favicon from "$lib/components/image/Favicon.svelte";
   import GoogleMapIFrame from "$lib/components/map/GoogleMapIFrame.svelte";
   import PrerenderedMarkdown from "$lib/components/text/markdown/PrerenderedMarkdown.svelte";
+  import RenderMarkdown from "$lib/components/text/markdown/RenderMarkdown.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Avatar from "$lib/components/ui/avatar/avatar.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
@@ -44,7 +45,9 @@
   </header>
 
   <section>
-    <div class="flex flex-wrap gap-3">
+    <h2 class="sr-only">Business URLs & Contact Info</h2>
+
+    <address class="flex flex-wrap gap-3">
       {#each data.business.urls as url (url.data)}
         <Anchor
           target="_blank"
@@ -74,17 +77,21 @@
           {phone.label || phone.data}
         </Anchor>
       {/each}
-    </div>
+    </address>
   </section>
 
   {#if data.prerendered.description}
     <section>
+      <h2 class="sr-only">Description</h2>
+
       <PrerenderedMarkdown html={data.prerendered.description} />
     </section>
   {/if}
 
   {#if business.images.length}
     <section>
+      <h2 class="sr-only">Images</h2>
+
       <div class="flex flex-wrap gap-3">
         <ImageZoom>
           {#each business.images as image (image.url)}
@@ -100,6 +107,8 @@
 
   {#if business.google_place_id}
     <section>
+      <h2 class="sr-only">Location/Address</h2>
+
       <GoogleMapIFrame
         google_place_id={business.google_place_id}
         formatted_address={business.formatted_address}
@@ -107,3 +116,26 @@
     </section>
   {/if}
 </article>
+
+<svelte:boundary>
+  {@const seller_profile = await data.streamed.seller_profile}
+
+  {#snippet pending()}{/snippet}
+
+  {#if seller_profile}
+    <aside>
+      <div class="flex items-center gap-2">
+        <Avatar
+          src={seller_profile.logo}
+          fallback={seller_profile.name[0]}
+          alt={seller_profile.name}
+        />
+        <h2>
+          {seller_profile.name}
+        </h2>
+      </div>
+
+      <RenderMarkdown value={seller_profile.description} />
+    </aside>
+  {/if}
+</svelte:boundary>

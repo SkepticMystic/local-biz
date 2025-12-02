@@ -50,6 +50,16 @@
           <ButtonGroup>
             <ButtonGroup>
               <Button
+                variant="outline"
+                icon="lucide/eye"
+                href={resolve("/businesses/[slug]", business)}
+              >
+                View
+              </Button>
+            </ButtonGroup>
+
+            <ButtonGroup>
+              <Button
                 icon="lucide/pencil"
                 href={resolve("/s/businesses/[slug]/edit", business)}
               >

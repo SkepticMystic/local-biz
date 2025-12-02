@@ -32,8 +32,26 @@ export const load = (async ({ params }) => {
       : null,
   };
 
+  const streamed = {
+    seller_profile: db.query.seller_profile.findFirst({
+      where: (seller_profile, { and, eq }) =>
+        and(
+          eq(seller_profile.admin_approved, true),
+          eq(seller_profile.user_id, business.user_id), //
+        ),
+
+      columns: {
+        name: true,
+        slug: true,
+        logo: true,
+        description: true,
+      },
+    }),
+  };
+
   return {
     business,
+    streamed,
     prerendered,
 
     seo: SEOUtil.transform({
