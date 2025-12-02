@@ -9,6 +9,7 @@ const SONDA = process.env.SONDA;
 /** @type {import('vite').UserConfig} */
 const config = {
   build: { sourcemap: Boolean(SONDA) },
+
   plugins: [
     sentrySvelteKit({ telemetry: false }),
     tailwindcss(),

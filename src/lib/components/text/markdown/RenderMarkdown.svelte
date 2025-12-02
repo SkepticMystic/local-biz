@@ -1,15 +1,10 @@
 <script lang="ts">
-  import { HTMLUtil, type IHTML } from "$lib/utils/html/html.util";
-  import { Carta, Markdown } from "carta-md";
+  import { HTMLUtil } from "$lib/utils/html/html.util";
+  import { Markdown } from "$lib/utils/markdown/markdown.util";
 
-  let { value }: { value: IHTML.Sanitized } = $props();
-
-  const carta = new Carta({
-    sanitizer: HTMLUtil.sanitize,
-  });
+  let { value }: { value: string } = $props();
 </script>
 
-<Markdown
-  {carta}
-  {value}
-/>
+<div class="prose">
+  {@html HTMLUtil.sanitize(await Markdown.to_html(value))}
+</div>

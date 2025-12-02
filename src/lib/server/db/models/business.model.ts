@@ -14,7 +14,6 @@ import {
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 import { BUSINESS } from "../../../const/business/business.const";
-import { HTMLUtil, type IHTML } from "../../../utils/html/html.util";
 import { UserTable } from "./auth.model";
 import { BusinessLikeTable } from "./business_like.model";
 import { ImageTable } from "./image.model";
@@ -38,7 +37,7 @@ export const BusinessTable = pgTable(
     name: varchar({ length: 255 }).notNull(),
     slug: varchar({ length: 255 }).notNull().unique(),
     logo: varchar({ length: 2047 }).default("").notNull(),
-    description: text().default("").notNull().$type<IHTML.Sanitized>(),
+    description: text().default("").notNull(),
 
     urls: jsonb()
       .default([])
@@ -105,9 +104,7 @@ const refinements = {
   description: z
     .string()
     .trim()
-    .max(5000, "Description must be at most 5000 characters")
-    .transform(HTMLUtil.sanitize),
-
+    .max(5000, "Description must be at most 5000 characters"),
   formatted_address: z.string().trim(),
 
   category: z.union([z.literal(""), z.enum(BUSINESS.CATEGORY.IDS)]).default(""),

@@ -1,8 +1,9 @@
 <script lang="ts">
-  import type { IHTML } from "$lib/utils/html/html.util";
-  import { PreRendered } from "carta-md";
+  import { HTMLUtil, type IHTML } from "$lib/utils/html/html.util";
 
   let { html }: { html: IHTML.Prerendered } = $props();
 </script>
 
-<PreRendered {html} />
+<div class="prose">
+  {@html HTMLUtil.sanitize(html)}
+</div>

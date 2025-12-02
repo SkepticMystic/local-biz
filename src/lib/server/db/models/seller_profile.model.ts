@@ -2,7 +2,6 @@ import { relations } from "drizzle-orm";
 import { boolean, pgTable, text, uuid, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
-import { HTMLUtil, type IHTML } from "../../../utils/html/html.util";
 import { UserTable } from "./auth.model";
 import { ImageTable } from "./image.model";
 import { Schema } from "./index.schema";
@@ -18,7 +17,7 @@ export const SellerProfileTable = pgTable("seller_profile", {
   name: varchar({ length: 255 }).notNull(),
   slug: varchar({ length: 255 }).notNull().unique(),
   logo: varchar({ length: 2047 }).default("").notNull(),
-  description: text().default("").notNull().$type<IHTML.Sanitized>(),
+  description: text().default("").notNull(),
 
   admin_approved: boolean().default(false).notNull(),
 
@@ -52,8 +51,7 @@ const refinements = {
   description: z
     .string()
     .trim()
-    .max(5000, "Description must be at most 5000 characters")
-    .transform(HTMLUtil.sanitize),
+    .max(5000, "Description must be at most 5000 characters"),
 };
 
 export const SellerProfileSchema = {
