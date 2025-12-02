@@ -35,10 +35,7 @@ const update = async (
   },
 ): Promise<App.Result<Business>> => {
   try {
-    const res = await BusinessRepo.update({
-      ...input,
-      admin_approved: false,
-    });
+    const res = await BusinessRepo.update(input);
 
     return res;
   } catch (error) {

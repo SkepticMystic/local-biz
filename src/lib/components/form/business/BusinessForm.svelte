@@ -44,15 +44,6 @@
 
 <form
   {...form.enhance(async (e) => {
-    if (
-      props.mode === "update" &&
-      !confirm(
-        "Are you sure you want to update this business? This will require admin approval before being visible to the public again.",
-      )
-    ) {
-      return;
-    }
-
     console.log("form.enhance.e", e);
     await e.submit();
 

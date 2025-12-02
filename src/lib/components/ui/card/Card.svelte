@@ -1,5 +1,7 @@
 <script lang="ts">
   import * as Card from "$lib/components/ui/card/index.js";
+  import ExtractSnippet from "$lib/components/util/ExtractSnippet.svelte";
+  import type { MaybeSnippet } from "$lib/interfaces/svelte/svelte.types";
   import type { Snippet } from "svelte";
   import type { ClassValue } from "svelte/elements";
 
@@ -11,9 +13,9 @@
     content,
     actions,
   }: {
-    title?: string;
-    description?: string;
     class?: ClassValue;
+    title?: MaybeSnippet;
+    description?: MaybeSnippet;
 
     content: Snippet;
     actions?: Snippet;
@@ -24,11 +26,15 @@
   {#if title || description}
     <Card.Header>
       {#if title}
-        <Card.Title>{title}</Card.Title>
+        <Card.Title>
+          <ExtractSnippet snippet={title} />
+        </Card.Title>
       {/if}
 
       {#if description}
-        <Card.Description>{description}</Card.Description>
+        <Card.Description>
+          <ExtractSnippet snippet={description} />
+        </Card.Description>
       {/if}
     </Card.Header>
   {/if}

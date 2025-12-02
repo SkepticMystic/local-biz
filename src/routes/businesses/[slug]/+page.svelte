@@ -8,6 +8,7 @@
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Avatar from "$lib/components/ui/avatar/avatar.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
+  import Card from "$lib/components/ui/card/Card.svelte";
   import ImageZoomTrigger from "$lib/components/ui/image-zoom/image-zoom-trigger.svelte";
   import ImageZoom from "$lib/components/ui/image-zoom/image-zoom.svelte";
   import { IMAGES } from "$lib/const/image/image.const.js";
@@ -115,27 +116,34 @@
       />
     </section>
   {/if}
+
+  <svelte:boundary>
+    {@const seller_profile = await data.streamed.seller_profile}
+
+    {#snippet pending()}{/snippet}
+
+    {#if seller_profile}
+      <aside>
+        <Card>
+          {#snippet title()}
+            <div class="flex items-center gap-2">
+              <Avatar
+                src={seller_profile.logo}
+                alt={seller_profile.name}
+                fallback={seller_profile.name[0]}
+              />
+
+              <h3>
+                {seller_profile.name}
+              </h3>
+            </div>
+          {/snippet}
+
+          {#snippet content()}
+            <RenderMarkdown value={seller_profile.description} />
+          {/snippet}
+        </Card>
+      </aside>
+    {/if}
+  </svelte:boundary>
 </article>
-
-<svelte:boundary>
-  {@const seller_profile = await data.streamed.seller_profile}
-
-  {#snippet pending()}{/snippet}
-
-  {#if seller_profile}
-    <aside>
-      <div class="flex items-center gap-2">
-        <Avatar
-          src={seller_profile.logo}
-          fallback={seller_profile.name[0]}
-          alt={seller_profile.name}
-        />
-        <h2>
-          {seller_profile.name}
-        </h2>
-      </div>
-
-      <RenderMarkdown value={seller_profile.description} />
-    </aside>
-  {/if}
-</svelte:boundary>
