@@ -33,19 +33,19 @@
 
   const thumbhash_url = ImageClient.decode_thumbhash(image);
 
-  // const style = [
-  //   props.width ? `width: ${props.width}px` : "",
-  //   props.height ? `height: ${props.height}px` : "",
-  // ]
-  //   .filter(Boolean)
-  //   .join("; ")
-  //   .trim();
+  const style = [
+    props.width ? `min-width: ${props.width}px` : "",
+    props.height ? `min-height: ${props.height}px` : "",
+  ]
+    .filter(Boolean)
+    .join("; ")
+    .trim();
 </script>
 
 {#snippet inner()}
   {#if image || props.src}
-    <!-- {style} -->
     <Picture
+      {style}
       {loading}
       {fetchpriority}
       src={image?.url ?? props.src}

@@ -18,13 +18,10 @@ export const AdminClient = {
     },
   ),
 
-  impersonate_user: (userId: string) =>
-    Client.better_auth(
-      () => BetterAuthClient.admin.impersonateUser({ userId }),
-      {
-        suc_msg: "Impersonation started",
-      },
-    ),
+  impersonate_user: Client.better_auth(
+    (userId: string) => BetterAuthClient.admin.impersonateUser({ userId }),
+    { suc_msg: "Impersonation started" },
+  ),
 
   stop_impersonating: Client.better_auth(
     () => BetterAuthClient.admin.stopImpersonating(),

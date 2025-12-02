@@ -42,7 +42,7 @@
     if (
       props.mode === "update" &&
       !confirm(
-        "Are you sure you want to update this business? This will require admin approval before it will be visible to the public again.",
+        "Are you sure you want to update this business? This will require admin approval before being visible to the public again.",
       )
     ) {
       return;
@@ -205,7 +205,7 @@
             {...props}
             {...field?.as("text")}
             placeholder="A short description of your business"
-            class="min-h-32 resize-none sm:min-w-[300px]"
+            class="min-h-32 resize-none sm:max-w-[500px] sm:min-w-[300px]"
           />
         {/snippet}
       </Field>

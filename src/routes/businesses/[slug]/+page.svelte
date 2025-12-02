@@ -17,8 +17,8 @@
 </script>
 
 <article>
-  <header class="flex items-center justify-between gap-3">
-    <div class="flex items-center gap-2">
+  <header class="flex flex-wrap items-center justify-between gap-3">
+    <div class="flex flex-wrap items-center gap-2">
       <Avatar
         src={business.logo}
         fallback={business.name[0]}

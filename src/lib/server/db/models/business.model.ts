@@ -101,7 +101,11 @@ const refinements = {
     )
     .max(3)
     .transform(
-      (v) => v.filter(Boolean) as { label: string; data: Branded<"Url"> }[],
+      (arr) =>
+        arr.filter((v) => v.data) as {
+          label: string;
+          data: Branded<"Url">;
+        }[],
     ),
   emails: z
     .array(
@@ -112,7 +116,11 @@ const refinements = {
     )
     .max(3)
     .transform(
-      (v) => v.filter(Boolean) as { label: string; data: Branded<"Email"> }[],
+      (arr) =>
+        arr.filter((v) => v.data) as {
+          label: string;
+          data: Branded<"Email">;
+        }[],
     ),
   phones: z
     .array(
@@ -123,7 +131,11 @@ const refinements = {
     )
     .max(3)
     .transform(
-      (v) => v.filter(Boolean) as { label: string; data: Branded<"Phone"> }[],
+      (arr) =>
+        arr.filter((v) => v.data) as {
+          label: string;
+          data: Branded<"Phone">;
+        }[],
     ),
 };
 
