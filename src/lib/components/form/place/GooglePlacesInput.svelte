@@ -35,22 +35,25 @@
   } = $props();
 
   const geolocation = dev ? null : useGeolocation();
+  const coords = $derived(
+    !geolocation || geolocation.error
+      ? undefined
+      : {
+          lat: geolocation.position.coords.latitude,
+          lng: geolocation.position.coords.longitude,
+        },
+  );
 
   // Control API request parameters
-  const requestParams: Partial<RequestParams> = $state({
+  const requestParams: Partial<RequestParams> = $derived({
     region: "ZA",
     language: "en-ZA",
     includedRegionCodes: ["ZA"], // Only show results in the specified regions,
     input: formatted_address ?? "",
 
     // The origin point from which to calculate geodesic distance to the destination
-    origin:
-      !geolocation || geolocation.error
-        ? undefined
-        : {
-            lat: geolocation.position.coords.latitude,
-            lng: geolocation.position.coords.longitude,
-          },
+    origin: coords,
+    locationBias: coords,
   });
 
   // Control which data fields are fetched for Place Details (affects cost!)

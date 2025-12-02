@@ -211,12 +211,13 @@
           />
           <input
             class="hidden"
-            {...form.fields.coord_lat.as("number")}
+            {...form.fields.coord_lat.as("text")}
           />
           <input
             class="hidden"
-            {...form.fields.coord_lng.as("number")}
+            {...form.fields.coord_lng.as("text")}
           />
+
           <GooglePlacesInput
             {...snippet_props}
             google_place_id={form.fields.google_place_id.value()}

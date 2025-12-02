@@ -105,6 +105,9 @@ const refinements = {
     .string()
     .trim()
     .max(5000, "Description must be at most 5000 characters"),
+
+  coord_lat: z.coerce.number<string | number>(),
+  coord_lng: z.coerce.number<string | number>(),
   formatted_address: z.string().trim(),
 
   category: z.enum(BUSINESS.CATEGORY.IDS),
