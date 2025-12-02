@@ -1,12 +1,5 @@
 import { relations } from "drizzle-orm";
-import {
-  boolean,
-  index,
-  pgTable,
-  text,
-  uuid,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { boolean, pgTable, text, uuid, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 import { HTMLUtil, type IHTML } from "../../../utils/html/html.util";
@@ -14,26 +7,23 @@ import { UserTable } from "./auth.model";
 import { ImageTable } from "./image.model";
 import { Schema } from "./index.schema";
 
-export const SellerProfileTable = pgTable(
-  "seller_profile",
-  {
-    ...Schema.id(),
+export const SellerProfileTable = pgTable("seller_profile", {
+  ...Schema.id(),
 
-    user_id: uuid()
-      .notNull()
-      .references(() => UserTable.id, { onDelete: "cascade" }),
+  user_id: uuid()
+    .notNull()
+    .unique()
+    .references(() => UserTable.id, { onDelete: "cascade" }),
 
-    name: varchar({ length: 255 }).notNull(),
-    slug: varchar({ length: 255 }).notNull().unique(),
-    logo: varchar({ length: 2047 }).default("").notNull(),
-    description: text().default("").notNull().$type<IHTML.Sanitized>(),
+  name: varchar({ length: 255 }).notNull(),
+  slug: varchar({ length: 255 }).notNull().unique(),
+  logo: varchar({ length: 2047 }).default("").notNull(),
+  description: text().default("").notNull().$type<IHTML.Sanitized>(),
 
-    admin_approved: boolean().default(false).notNull(),
+  admin_approved: boolean().default(false).notNull(),
 
-    ...Schema.timestamps,
-  },
-  (table) => [index("idx_seller_profile_user_id").on(table["user_id"])],
-);
+  ...Schema.timestamps,
+});
 
 export const seller_profile_relations = relations(
   SellerProfileTable,

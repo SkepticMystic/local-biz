@@ -1,7 +1,6 @@
 <script lang="ts">
   import Picture from "$lib/components/image/Picture.svelte";
   import { Button } from "$lib/components/ui/button";
-  import { IMAGES } from "$lib/const/image/image.const";
   import { cn } from "$lib/utils/shadcn.util";
   import { type Snippet } from "svelte";
   import { writable } from "svelte/store";
@@ -122,7 +121,6 @@
           url: currentImageData.src,
           thumbhash: currentImageData.thumbhash,
         }}
-        {...IMAGES.SIZES.FULL}
       />
     </div>
 

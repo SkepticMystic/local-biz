@@ -1,7 +1,7 @@
 import { command, form, query } from "$app/server";
 import { get_session } from "$lib/auth/server";
-import { SellerProfileSchema } from "$lib/server/db/models/seller_profile.model";
 import { SellerProfileRepo } from "$lib/repos/seller_profile.repo";
+import { SellerProfileSchema } from "$lib/server/db/models/seller_profile.model";
 import { SellerProfileService } from "$lib/services/seller_profile/seller_profile.service";
 import { error } from "@sveltejs/kit";
 import z from "zod";
@@ -37,13 +37,11 @@ export const create_seller_profile_remote = form(
   SellerProfileSchema.insert,
   async (input) => {
     console.log("create_seller_profile_remote.input", input);
-    const { session } = await get_session();
+    const { user } = await get_session();
 
     const res = await SellerProfileService.create({
-      name: input.name,
-      logo: input.logo,
-      user_id: session.userId,
-      description: input.description,
+      ...input,
+      user_id: user.id,
     });
 
     console.log("create_seller_profile_remote.res", res);
@@ -57,14 +55,35 @@ export const update_seller_profile_remote = form(
   async (input) => {
     console.log("update_seller_profile_remote.input", input);
 
-    const { session } = await get_session();
+    const { user } = await get_session();
 
     const res = await SellerProfileService.update({
       ...input,
-      user_id: session.userId,
+      user_id: user.id,
     });
 
     console.log("update_seller_profile_remote.res", res);
+
+    return res;
+  },
+);
+
+export const upsert_seller_profile_remote = form(
+  SellerProfileSchema.insert.extend({ id: z.uuid().optional() }),
+  async (input) => {
+    console.log("upsert_seller_profile_remote.input", input);
+
+    const { user } = await get_session();
+
+    const res = input.id
+      ? await SellerProfileService.update({
+          ...input,
+          id: input.id,
+          user_id: user.id,
+        })
+      : await SellerProfileService.create({ ...input, user_id: user.id });
+
+    console.log("upsert_seller_profile_remote.res", res);
 
     return res;
   },

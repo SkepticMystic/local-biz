@@ -26,7 +26,7 @@
     {
       side: "right",
       label: "Profile",
-      href: "/profile",
+      href: "/s/profile",
       icon: "lucide/user",
       authed: true,
     },

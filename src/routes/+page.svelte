@@ -17,10 +17,10 @@
 
       <ButtonGroup>
         <Button
-          href="/profile"
           variant="secondary"
+          href="/s/businesses"
         >
-          Profile
+          My Businesses
         </Button>
       </ButtonGroup>
     </ButtonGroup>

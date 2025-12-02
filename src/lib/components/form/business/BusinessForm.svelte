@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
+  import { resolve } from "$app/paths";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import FieldGroup from "$lib/components/ui/field/field-group.svelte";
@@ -59,7 +61,13 @@
     if (res?.ok) {
       if (props.mode === "create") {
         toast.success(
-          "Application submitted successfully. We'll get back to you soon.",
+          "Application submitted successfully. We'll get back to you soon. In the meantime, you can update your profile.",
+          {
+            action: {
+              label: "Profile",
+              onClick: () => goto(resolve("/s/profile")),
+            },
+          },
         );
       } else {
         toast.success("Business updated successfully");
