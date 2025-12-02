@@ -5,6 +5,7 @@ import {
   doublePrecision,
   index,
   jsonb,
+  pgEnum,
   pgTable,
   text,
   uuid,
@@ -12,11 +13,17 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
+import { BUSINESS } from "../../../const/business/business.const";
 import { HTMLUtil, type IHTML } from "../../../utils/html/html.util";
 import { UserTable } from "./auth.model";
 import { BusinessLikeTable } from "./business_like.model";
 import { ImageTable } from "./image.model";
 import { Schema } from "./index.schema";
+
+export const business_category_enum = pgEnum(
+  "business_category",
+  BUSINESS.CATEGORY.IDS,
+);
 
 // Define Business table schema
 export const BusinessTable = pgTable(
@@ -51,6 +58,9 @@ export const BusinessTable = pgTable(
     coord_lat: doublePrecision().default(0).notNull(),
     coord_lng: doublePrecision().default(0).notNull(),
 
+    tags: jsonb().default([]).notNull().$type<string[]>(),
+    category: business_category_enum().default("other").notNull(),
+
     admin_approved: boolean().default(false).notNull(),
 
     ...Schema.timestamps,
@@ -75,6 +85,9 @@ const pick = {
   logo: true,
   description: true,
 
+  category: true,
+  tags: true,
+
   urls: true,
   phones: true,
   emails: true,
@@ -96,6 +109,33 @@ const refinements = {
     .transform(HTMLUtil.sanitize),
 
   formatted_address: z.string().trim(),
+
+  category: z.union([z.literal(""), z.enum(BUSINESS.CATEGORY.IDS)]).default(""),
+
+  tags: z
+    .array(
+      z
+        .string()
+        .trim()
+        .toLowerCase()
+        .min(
+          BUSINESS.TAGS.LIMITS.MIN_LENGTH,
+          `Tags must be at least ${BUSINESS.TAGS.LIMITS.MIN_LENGTH} characters`,
+        )
+        .max(
+          BUSINESS.TAGS.LIMITS.MAX_LENGTH,
+          `Tags must be at most ${BUSINESS.TAGS.LIMITS.MAX_LENGTH} characters`,
+        ),
+    )
+    .max(
+      BUSINESS.TAGS.LIMITS.MAX_PER_RESOURCE,
+      `You can add up to ${BUSINESS.TAGS.LIMITS.MAX_PER_RESOURCE} tags`,
+    )
+    .default([])
+    .transform((tags) =>
+      // Remove duplicates and empty strings
+      [...new Set(tags.filter((t) => t.length > 0))],
+    ),
 
   urls: z
     .array(

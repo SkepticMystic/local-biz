@@ -8,7 +8,10 @@
   import Field from "$lib/components/ui/field/Field.svelte";
   import Fieldset from "$lib/components/ui/field/Fieldset.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
+  import NativeSelect from "$lib/components/ui/native-select/native-select.svelte";
+  import TagsInput from "$lib/components/ui/tags-input/tags-input.svelte";
   import Textarea from "$lib/components/ui/textarea/textarea.svelte";
+  import { BUSINESS } from "$lib/const/business/business.const";
   import {
     create_business_remote,
     update_business_remote,
@@ -98,6 +101,41 @@
             required
             class="sm:min-w-[300px]"
             autocomplete="organization"
+          />
+        {/snippet}
+      </Field>
+
+      <Field
+        label="Category *"
+        orientation="responsive"
+        field={form.fields.category}
+        description="What category best describes your business?"
+      >
+        {#snippet input({ props, field })}
+          <NativeSelect
+            {...props}
+            {...field?.as("select")}
+            required
+            class="sm:min-w-[300px]"
+            options={BUSINESS.CATEGORY.IDS.map((id) => ({
+              value: id,
+              icon: BUSINESS.CATEGORY.MAP[id].icon,
+              label: BUSINESS.CATEGORY.MAP[id].label,
+            }))}
+          />
+        {/snippet}
+      </Field>
+
+      <Field
+        label="Tags"
+        orientation="responsive"
+        field={form.fields.tags}
+        description="Keywords that describe your business"
+      >
+        {#snippet input({ props, field })}
+          <TagsInput
+            {...props}
+            value={field?.value()}
           />
         {/snippet}
       </Field>

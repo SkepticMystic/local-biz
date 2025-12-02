@@ -5,9 +5,12 @@
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
+  import ChipGroup from "$lib/components/ui/chip/chip-group.svelte";
+  import Chip from "$lib/components/ui/chip/chip.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Item from "$lib/components/ui/item/Item.svelte";
   import ItemList from "$lib/components/ui/item/ItemList.svelte";
+  import { BUSINESS } from "$lib/const/business/business.const";
   import { get_all_public_businesses_remote } from "$lib/remote/business/business.remote";
 
   const businesses = get_all_public_businesses_remote();
@@ -49,8 +52,30 @@
         {/snippet}
 
         {#snippet description()}
-          <Icon icon="lucide/map-pin" />
-          {business.formatted_address}
+          <div class="flex flex-wrap gap-3">
+            <span>
+              <Icon icon="lucide/map-pin" />
+              {business.formatted_address}
+            </span>
+
+            <span>
+              <Icon
+                icon={BUSINESS.CATEGORY.MAP[business.category].icon}
+                label={BUSINESS.CATEGORY.MAP[business.category].label}
+              />
+            </span>
+
+            <ChipGroup>
+              {#each business.tags as tag}
+                <Chip
+                  size="sm"
+                  variant="outline"
+                >
+                  #{tag}
+                </Chip>
+              {/each}
+            </ChipGroup>
+          </div>
         {/snippet}
 
         {#snippet actions()}

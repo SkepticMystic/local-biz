@@ -13,6 +13,8 @@ export const load = (async () => {
         id: true,
         name: true,
         logo: true,
+        category: true,
+        tags: true,
         createdAt: true,
         admin_approved: true,
         formatted_address: true,
