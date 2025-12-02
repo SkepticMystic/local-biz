@@ -5,12 +5,15 @@
   import { BetterAuthClient } from "$lib/auth-client";
   import { AdminClient } from "$lib/clients/auth/admin.client";
   import { APP } from "$lib/const/app.const";
+  import { get_all_my_businesses_remote } from "$lib/remote/business/business.remote";
   import { session } from "$lib/stores/session.store";
   import { toast } from "svelte-sonner";
   import ButtonGroup from "../ui/button-group/button-group.svelte";
   import Button from "../ui/button/button.svelte";
   import DropdownMenu from "../ui/dropdown-menu/DropdownMenu.svelte";
   import ThemeSelector from "./ThemeSelector.svelte";
+
+  const my_businesses = get_all_my_businesses_remote();
 
   interface Route {
     side: "center" | "right";
@@ -20,6 +23,7 @@
     /** Only show if user is authenticated */
     authed: boolean;
     admin?: boolean;
+    hide?: boolean;
   }
 
   const routes: Route[] = [
@@ -29,6 +33,7 @@
       href: "/s/profile",
       icon: "lucide/user",
       authed: true,
+      hide: !my_businesses.current?.length,
     },
     {
       side: "right",
@@ -67,6 +72,8 @@
     } else if (route.authed !== !!$session?.data?.session) {
       return false;
     } else if (route.admin && $session?.data?.user?.role !== "admin") {
+      return false;
+    } else if (route.hide) {
       return false;
     } else {
       return true;

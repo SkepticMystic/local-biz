@@ -1,5 +1,5 @@
 import { command, form, query } from "$app/server";
-import { get_session } from "$lib/auth/server";
+import { get_session, safe_get_session } from "$lib/auth/server";
 import { BusinessRepo } from "$lib/repos/business.repo";
 import { BusinessSchema } from "$lib/server/db/models/business.model";
 import { BusinessService } from "$lib/services/business/business.service";
@@ -17,10 +17,12 @@ export const get_all_public_businesses_remote = query(async () => {
 });
 
 export const get_all_my_businesses_remote = query(async () => {
-  const { session } = await get_session();
+  const session = await safe_get_session();
+  if (!session) {
+    return [];
+  }
 
-  const res = await BusinessRepo.get_all_by_user(session.userId);
-
+  const res = await BusinessRepo.get_all_by_user(session.user.id);
   if (!res.ok) {
     error(res.error.status, res.error.message);
   }

@@ -107,7 +107,7 @@ const refinements = {
     .max(5000, "Description must be at most 5000 characters"),
   formatted_address: z.string().trim(),
 
-  category: z.union([z.literal(""), z.enum(BUSINESS.CATEGORY.IDS)]).default(""),
+  category: z.enum(BUSINESS.CATEGORY.IDS),
 
   tags: z
     .array(
