@@ -46,12 +46,12 @@
 
   const actions = {
     set_approval: (
-      input: Parameters<typeof ImageClient.set_admin_approved>[0],
+      ...args: Parameters<typeof ImageClient.set_admin_approved>
     ) =>
-      ImageClient.set_admin_approved(input).then((res) => {
+      ImageClient.set_admin_approved(...args).then((res) => {
         if (res.ok) {
-          images = Items.patch(images, input.id, {
-            admin_approved: input.admin_approved,
+          images = Items.patch(images, args[0].id, {
+            admin_approved: args[0].admin_approved,
           });
         }
       }),
@@ -66,6 +66,7 @@
   <DataTable
     {columns}
     data={images}
+    states={{ selection: {} }}
     actions={(row) => [
       {
         title: row.original.admin_approved ? "Deny" : "Approve",
@@ -76,6 +77,34 @@
             id: row.id,
             admin_approved: !row.original.admin_approved,
           }),
+      },
+    ]}
+    bulk_actions={(rows) => [
+      {
+        title: "Approve",
+        icon: "lucide/check",
+        onselect: () =>
+          Promise.all(
+            rows.map((row) =>
+              actions.set_approval(
+                { id: row.id, admin_approved: true },
+                { confirm: null },
+              ),
+            ),
+          ),
+      },
+      {
+        title: "Deny",
+        icon: "lucide/x",
+        onselect: () =>
+          Promise.all(
+            rows.map((row) =>
+              actions.set_approval(
+                { id: row.id, admin_approved: false },
+                { confirm: null },
+              ),
+            ),
+          ),
       },
     ]}
   >

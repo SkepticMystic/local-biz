@@ -29,8 +29,6 @@ export const ImageClient = {
     (input: Parameters<typeof admin_set_image_approved_remote>[0]) =>
       admin_set_image_approved_remote(input),
     {
-      confirm: (input) =>
-        `Are you sure you want to ${input.admin_approved ? "approve" : "deny"} this image?`,
       suc_msg: (input) =>
         `Image ${input.admin_approved ? "approved" : "denied"}`,
     },

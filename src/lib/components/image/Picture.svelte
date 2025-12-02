@@ -33,19 +33,19 @@
 
   const thumbhash_url = ImageClient.decode_thumbhash(image);
 
-  const style = [
-    props.width ? `width: ${props.width}px` : "",
-    props.height ? `height: ${props.height}px` : "",
-  ]
-    .filter(Boolean)
-    .join("; ")
-    .trim();
+  // const style = [
+  //   props.width ? `width: ${props.width}px` : "",
+  //   props.height ? `height: ${props.height}px` : "",
+  // ]
+  //   .filter(Boolean)
+  //   .join("; ")
+  //   .trim();
 </script>
 
 {#snippet inner()}
   {#if image || props.src}
+    <!-- {style} -->
     <Picture
-      {style}
       {loading}
       {fetchpriority}
       src={image?.url ?? props.src}
@@ -55,20 +55,20 @@
         cloudinary: {
           f: "auto",
           q: "auto",
+          g: "auto",
 
           // "auto" seems fancy, but expensive
           // "fill" seems like a cheaper alternative
           c: "auto",
-          g: "auto",
         },
       }}
+      {...props}
       {@attach (node: HTMLImageElement) => {
         // NOTE: unpic just spreads everything onto the img,
         // so we need to remove the background attribute cause the style attr is what actually does the work
         node.attributes.getNamedItem("background") &&
           node.attributes.removeNamedItem("background");
       }}
-      {...props}
     />
 
     <!-- <div

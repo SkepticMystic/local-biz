@@ -2,12 +2,13 @@
   import BusinessLikeToggle from "$lib/components/buttons/BusinessLikeToggle.svelte";
   import ShareButton from "$lib/components/buttons/ShareButton.svelte";
   import Favicon from "$lib/components/image/Favicon.svelte";
-  import Picture from "$lib/components/image/Picture.svelte";
   import GoogleMapIFrame from "$lib/components/map/GoogleMapIFrame.svelte";
   import PrerenderedMarkdown from "$lib/components/text/markdown/PrerenderedMarkdown.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Avatar from "$lib/components/ui/avatar/avatar.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
+  import ImageZoomTrigger from "$lib/components/ui/image-zoom/image-zoom-trigger.svelte";
+  import ImageZoom from "$lib/components/ui/image-zoom/image-zoom.svelte";
   import { IMAGES } from "$lib/const/image/image.const.js";
   import { Url } from "$lib/utils/urls.js";
 
@@ -85,12 +86,14 @@
   {#if business.images.length}
     <section>
       <div class="flex flex-wrap gap-3">
-        {#each business.images as image (image.url)}
-          <Picture
-            {image}
-            {...IMAGES.SIZES.THUMBNAIL}
-          />
-        {/each}
+        <ImageZoom>
+          {#each business.images as image (image.url)}
+            <ImageZoomTrigger
+              {image}
+              {...IMAGES.SIZES.THUMBNAIL}
+            ></ImageZoomTrigger>
+          {/each}
+        </ImageZoom>
       </div>
     </section>
   {/if}
