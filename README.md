@@ -22,3 +22,4 @@
 - [ ] https://more-shadcn.noair.fun/components/phone-input
 - [ ] https://www.shadcn-svelte-extras.com/components/phone-input
 - [ ] https://more-shadcn.noair.fun/components/qr-code
+- [ ] carta-md bundlesize is stupid big, remove it
