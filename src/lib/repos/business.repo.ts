@@ -19,14 +19,22 @@ const create = async (input: typeof BusinessTable.$inferInsert) => {
     }
   } catch (error) {
     if (error instanceof DrizzleQueryError) {
-      Log.error(
-        { message: error.message },
-        "BusinessRepo.create.error DrizzleQueryError",
-      );
+      if (
+        error.cause?.message.includes(
+          "duplicate key value violates unique constraint",
+        )
+      ) {
+        return result.err({
+          path: ["name"] as const,
+          message: "Business name already exists",
+        });
+      } else {
+        Log.error(error, "BusinessRepo.create.error DrizzleQueryError");
 
-      captureException(error);
+        captureException(error);
 
-      return result.err(E.INTERNAL_SERVER_ERROR);
+        return result.err(E.INTERNAL_SERVER_ERROR);
+      }
     } else {
       Log.error(error, "BusinessRepo.create.error unknown");
 

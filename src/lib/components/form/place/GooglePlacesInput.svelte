@@ -43,6 +43,7 @@
           lng: geolocation.position.coords.longitude,
         },
   );
+  $inspect("coords", coords);
 
   // Control API request parameters
   const requestParams: Partial<RequestParams> = $derived({
@@ -53,7 +54,7 @@
 
     // The origin point from which to calculate geodesic distance to the destination
     origin: coords,
-    locationBias: coords,
+    // locationBias: coords,
   });
 
   // Control which data fields are fetched for Place Details (affects cost!)

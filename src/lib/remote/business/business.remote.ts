@@ -3,7 +3,7 @@ import { get_session, safe_get_session } from "$lib/auth/server";
 import { BusinessRepo } from "$lib/repos/business.repo";
 import { BusinessSchema } from "$lib/server/db/models/business.model";
 import { BusinessService } from "$lib/services/business/business.service";
-import { error } from "@sveltejs/kit";
+import { error, invalid } from "@sveltejs/kit";
 import z from "zod";
 
 export const get_all_public_businesses_remote = query(async () => {
@@ -32,7 +32,7 @@ export const get_all_my_businesses_remote = query(async () => {
 
 export const create_business_remote = form(
   BusinessSchema.insert, //
-  async (input) => {
+  async (input, issue) => {
     console.log("create_business_remote.input", input);
     const { session } = await get_session();
 
@@ -43,7 +43,11 @@ export const create_business_remote = form(
 
     console.log("create_business_remote.res", res);
 
-    return res;
+    if (!res.ok && res.error.path) {
+      invalid(res.error);
+    } else {
+      return res;
+    }
   },
 );
 
