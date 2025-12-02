@@ -23,7 +23,7 @@
   },
   "packageManager": "pnpm@10.24.0",
   "engines": {
-    "node": "22"
+    "node": "24"
   },
   "devDependencies": {
     "@cartamd/plugin-emoji": "^4.3.0",
