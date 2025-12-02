@@ -1,9 +1,9 @@
-import { CLOUDINARY_API_SECRET } from "$env/static/private";
 import {
-  PUBLIC_CLOUDINARY_API_KEY,
-  PUBLIC_CLOUDINARY_CLOUD_NAME,
-  PUBLIC_CLOUDINARY_UPLOAD_PRESET,
-} from "$env/static/public";
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_UPLOAD_PRESET,
+} from "$env/static/private";
 import type { IMAGE_HOSTING } from "$lib/const/image/image_hosting.const";
 import type { Result } from "$lib/interfaces/result.type";
 import { Log } from "$lib/utils/logger.util";
@@ -17,8 +17,8 @@ import {
 
 cloudinary.config({
   api_secret: CLOUDINARY_API_SECRET,
-  api_key: PUBLIC_CLOUDINARY_API_KEY,
-  cloud_name: PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  cloud_name: CLOUDINARY_CLOUD_NAME,
 });
 
 export const ImageHostingService = {
@@ -36,7 +36,7 @@ export const ImageHostingService = {
             {
               resource_type: "image",
               discard_original_filename: true,
-              upload_preset: PUBLIC_CLOUDINARY_UPLOAD_PRESET,
+              upload_preset: CLOUDINARY_UPLOAD_PRESET,
               // NOTE: We don't apply any transforms at upload time
               // Rather keep the original, then transform in Picture.svelte
             },
