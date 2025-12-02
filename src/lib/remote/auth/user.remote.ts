@@ -87,11 +87,11 @@ export const send_verification_email_remote = form(
   async (input) => {
     try {
       const res = await auth.api.sendVerificationEmail({
+        headers: getRequestEvent().request.headers,
         body: {
           callbackURL: "/",
           email: input.email,
         },
-        headers: getRequestEvent().request.headers,
       });
 
       return res.status

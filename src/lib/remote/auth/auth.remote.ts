@@ -17,16 +17,20 @@ export const signin_credentials_remote = form(
   async (input) => {
     try {
       await auth.api.signInEmail({
+        headers: getRequestEvent().request.headers,
         body: {
           email: input.email,
           password: input.password,
           rememberMe: input.remember,
         },
-        headers: getRequestEvent().request.headers,
       });
     } catch (error) {
       if (error instanceof APIError) {
         Log.info(error.body, "signin_remote.error better-auth");
+
+        if (is_ba_error_code(error, "EMAIL_NOT_VERIFIED")) {
+          redirect(302, "/auth/verify-email");
+        }
 
         return result.err({ message: error.message });
       } else {
@@ -56,6 +60,7 @@ export const signup_credentials_remote = form(
   async (input, issue) => {
     try {
       await auth.api.signUpEmail({
+        headers: getRequestEvent().request.headers,
         body: {
           name: input.name,
           email: input.email,
@@ -63,7 +68,6 @@ export const signup_credentials_remote = form(
           rememberMe: input.remember,
           callbackURL: input.redirect_uri,
         },
-        headers: getRequestEvent().request.headers,
       });
     } catch (error) {
       if (error instanceof APIError) {

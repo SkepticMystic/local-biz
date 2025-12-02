@@ -1,6 +1,5 @@
 import type { ResolvedPathname } from "$app/types";
 import { APP } from "$lib/const/app.const";
-import type { PartiallyTypedObject } from "$lib/interfaces";
 import { Url } from "./urls";
 
 const full_url = (
@@ -13,12 +12,6 @@ export const App = {
 
   url: (
     path: ResolvedPathname,
-    search?:
-      | URLSearchParams
-      | (PartiallyTypedObject<{
-          redirect_uri?: ResolvedPathname;
-        }> & {
-          [key: string]: unknown;
-        }),
+    search?: URLSearchParams | Record<string, unknown>,
   ) => Url.strip_origin(full_url(path, search)) as ResolvedPathname,
 };
