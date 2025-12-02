@@ -1,4 +1,3 @@
-import { resolve } from "$app/paths";
 import { getRequestEvent } from "$app/server";
 import { auth } from "$lib/auth";
 import { BetterAuthClient } from "$lib/auth-client";
@@ -33,9 +32,9 @@ export const get_session = async (options?: Options) => {
   });
 
   if (!session) {
-    redirect(302, resolve("/auth/signin"));
+    redirect(302, "/auth/signin");
   } else if (resolved.email_verified && !session.user.emailVerified) {
-    redirect(302, resolve("/auth/verify-email"));
+    redirect(302, "/auth/verify-email");
   } else if (resolved.admin && session.user.role !== "admin") {
     error(403, "Forbidden");
   } else if (options?.permissions) {

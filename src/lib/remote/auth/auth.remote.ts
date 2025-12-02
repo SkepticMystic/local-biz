@@ -1,4 +1,3 @@
-import { resolve } from "$app/paths";
 import { form, getRequestEvent } from "$app/server";
 import { auth, is_ba_error_code } from "$lib/auth";
 import { Log } from "$lib/utils/logger.util";
@@ -93,6 +92,6 @@ export const signup_credentials_remote = form(
       }
     }
 
-    redirect(302, resolve("/auth/verify-email"));
+    redirect(302, "/auth/verify-email");
   },
 );
