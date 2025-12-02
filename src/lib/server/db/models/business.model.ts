@@ -2,6 +2,7 @@ import type { Branded } from "$lib/interfaces/zod/zod.types";
 import { relations } from "drizzle-orm";
 import {
   boolean,
+  doublePrecision,
   index,
   jsonb,
   pgTable,
@@ -47,6 +48,8 @@ export const BusinessTable = pgTable(
 
     google_place_id: varchar({ length: 255 }).default("").notNull(),
     formatted_address: varchar({ length: 511 }).default("").notNull(),
+    coord_lat: doublePrecision().default(0).notNull(),
+    coord_lng: doublePrecision().default(0).notNull(),
 
     admin_approved: boolean().default(false).notNull(),
 
@@ -76,6 +79,8 @@ const pick = {
   phones: true,
   emails: true,
 
+  coord_lat: true,
+  coord_lng: true,
   google_place_id: true,
   formatted_address: true,
 } satisfies Partial<Record<keyof Business, true>>;

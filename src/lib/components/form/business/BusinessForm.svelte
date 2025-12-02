@@ -180,11 +180,21 @@
             class="hidden"
             {...form.fields.formatted_address.as("text")}
           />
+          <input
+            class="hidden"
+            {...form.fields.coord_lat.as("number")}
+          />
+          <input
+            class="hidden"
+            {...form.fields.coord_lng.as("number")}
+          />
           <GooglePlacesInput
             {...snippet_props}
             google_place_id={form.fields.google_place_id.value()}
             formatted_address={form.fields.formatted_address.value()}
             on_change={(data) => {
+              form.fields.coord_lat.set(data.coord_lat);
+              form.fields.coord_lng.set(data.coord_lng);
               form.fields.google_place_id.set(data.google_place_id);
               form.fields.formatted_address.set(data.formatted_address ?? "");
             }}

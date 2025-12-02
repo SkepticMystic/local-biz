@@ -26,6 +26,9 @@
     formatted_address?: string;
     on_change?: (data: {
       name?: string;
+
+      coord_lat: number;
+      coord_lng: number;
       google_place_id: string;
       formatted_address?: string;
     }) => MaybePromise<unknown>;
@@ -56,6 +59,7 @@
     "name", // string
     "displayName", // string
     "formattedAddress", // string
+    "location", // { lat: number, lng: number }
   ]);
 
   // Control component appearance and behavior
@@ -108,7 +112,7 @@
   });
 </script>
 
-<ButtonGroup>
+<ButtonGroup class="sm:min-w-[300px]">
   <PlaceAutocomplete
     {...rest_props}
     {options}
@@ -123,6 +127,8 @@
       on_change?.({
         google_place_id,
         formatted_address,
+        coord_lat: response.location?.lat ?? 0,
+        coord_lng: response.location?.lng ?? 0,
         name: (response.name ?? response.displayName) as string | undefined,
       });
     }}
