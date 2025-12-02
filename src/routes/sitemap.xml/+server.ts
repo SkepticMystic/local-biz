@@ -16,7 +16,7 @@ export const GET: RequestHandler = async () => {
   return await sitemap.response({
     origin: APP.URL,
 
-    excludeRoutePatterns: ["^/admin"],
+    excludeRoutePatterns: ["^/admin", "^/s/"],
 
     paramValues: {
       "/businesses/[slug]": businesses.map((business) => ({
