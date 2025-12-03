@@ -16,23 +16,6 @@ export const get_all_public_seller_profiles_remote = query(async () => {
   return res.data;
 });
 
-export const get_seller_profile_by_slug_remote = query.batch(
-  z.string(),
-  async (slugs) => {
-    const res = await SellerProfileRepo.get_many_by_slugs(slugs);
-
-    if (!res.ok) {
-      error(res.error.status ?? 500, res.error.message);
-    }
-
-    const map = new Map(
-      res.data.map((seller_profile) => [seller_profile.slug, seller_profile]),
-    );
-
-    return (slug) => map.get(slug);
-  },
-);
-
 export const create_seller_profile_remote = form(
   SellerProfileSchema.insert,
   async (input) => {

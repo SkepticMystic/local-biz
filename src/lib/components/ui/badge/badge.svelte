@@ -2,7 +2,7 @@
   lang="ts"
   module
 >
-  import { type VariantProps, tv } from "tailwind-variants";
+  import { tv, type VariantProps } from "tailwind-variants";
 
   export const badgeVariants = tv({
     base: "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-medium transition-[color,box-shadow] focus-visible:ring-[3px] [&>svg]:pointer-events-none [&>svg]:size-3",
@@ -14,6 +14,8 @@
           "bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90 border-transparent",
         destructive:
           "bg-destructive [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/70 border-transparent text-white",
+        warning:
+          "bg-warning [a&]:hover:bg-warning/90 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40 dark:bg-warning/70 border-transparent text-white",
         outline:
           "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
       },
@@ -27,8 +29,8 @@
 </script>
 
 <script lang="ts">
-  import type { HTMLAnchorAttributes } from "svelte/elements";
   import { cn, type WithElementRef } from "$lib/utils/shadcn.util.js";
+  import type { HTMLAnchorAttributes } from "svelte/elements";
 
   let {
     ref = $bindable(null),

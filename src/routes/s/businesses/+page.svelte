@@ -77,7 +77,7 @@
               <Button
                 variant="outline"
                 icon="lucide/eye"
-                href={resolve("/businesses/[slug]", business)}
+                href={resolve("/s/businesses/[slug]", business)}
               >
                 View
               </Button>

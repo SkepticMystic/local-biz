@@ -55,14 +55,17 @@
     if (res?.ok) {
       if (props.mode === "create") {
         toast.success(
-          "Application submitted successfully. We'll get back to you soon. In the meantime, you can update your profile.",
+          "Application submitted, we'll get back to you soon. In the meantime, update your profile to get started.",
           {
+            duration: Infinity,
             action: {
               label: "Profile",
               onClick: () => goto(resolve("/s/profile")),
             },
           },
         );
+
+        goto(resolve("/s/businesses/[slug]", res.data));
       } else {
         toast.success("Business updated successfully");
       }

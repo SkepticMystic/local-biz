@@ -60,7 +60,7 @@
 >
   <Fieldset
     legend="Seller Profile"
-    description="You've told us about your business, now you can tell us about yourself. This is how your customers will see you."
+    description="You've told us about your business, now you can tell us about yourself. Users will appreciate knowing who you are."
   >
     <FieldSeparator />
 

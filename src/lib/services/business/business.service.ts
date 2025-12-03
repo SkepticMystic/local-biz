@@ -1,5 +1,6 @@
 import { E } from "$lib/const/error/error.const";
 import { BusinessRepo } from "$lib/repos/business.repo";
+import { BusinessLikeRepo } from "$lib/repos/business_like.repo";
 import {
   BusinessTable,
   type Business,
@@ -17,6 +18,13 @@ const create = async (
       ...input,
       slug: Strings.slugify(input.name),
     });
+
+    if (res.ok) {
+      await BusinessLikeRepo.create({
+        user_id: input.user_id,
+        business_id: res.data.id,
+      });
+    }
 
     return res;
   } catch (error) {

@@ -12,11 +12,7 @@
     </h1>
   </header>
 
-  <section id="features">
-    <FeaturesBlock />
-  </section>
-
-  <div class="my-14">
+  <section class="mx-auto my-14">
     <ButtonGroup>
       <ButtonGroup>
         <Button href="/apply">Apply</Button>
@@ -31,5 +27,9 @@
         </Button>
       </ButtonGroup>
     </ButtonGroup>
-  </div>
+  </section>
+
+  <section id="features">
+    <FeaturesBlock />
+  </section>
 </article>
