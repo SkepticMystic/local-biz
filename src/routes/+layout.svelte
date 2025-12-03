@@ -4,6 +4,7 @@
       PUBLIC_UMAMI_BASE_URL,
       PUBLIC_UMAMI_WEBSITE_ID
   } from "$env/static/public";
+  import FooterBlock from "$lib/components/blocks/footer/FooterBlock.svelte";
   import Navbar from "$lib/components/shell/Navbar.svelte";
   import SEO from "$lib/components/shell/SEO.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
@@ -73,6 +74,8 @@
   <main class="mx-auto mt-1 mb-12 w-full max-w-4xl grow px-2 sm:px-3 md:px-5">
     {@render children?.()}
   </main>
+
+  <FooterBlock />
 </div>
 
 <!-- NOTE: I struggled to get shad semantic classes working to style the toasts

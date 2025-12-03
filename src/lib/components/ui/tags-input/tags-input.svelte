@@ -7,13 +7,13 @@
   const defaultValidate: TagsInputProps["validate"] = (val, tags) => {
     const transformed = val.trim();
 
-    // disallow empties
-    if (transformed.length === 0) return undefined;
-
-    // disallow duplicates
-    if (tags.find((t) => transformed === t)) return undefined;
-
-    return transformed;
+    if (transformed.length === 0) {
+      return undefined;
+    } else if (tags.find((t) => transformed === t)) {
+      return undefined;
+    } else {
+      return transformed;
+    }
   };
 
   let {
@@ -41,7 +41,13 @@
   });
 
   const enter = () => {
-    if (isComposing) return;
+    if (
+      isComposing ||
+      // Mine
+      inputValue.length === 0
+    ) {
+      return;
+    }
 
     const validated = validate(inputValue, value);
 
@@ -71,6 +77,13 @@
 
       if (isComposing) return;
 
+      enter();
+      return;
+    }
+
+    // Mine
+    if (e.key === ",") {
+      e.preventDefault();
       enter();
       return;
     }
@@ -179,6 +192,9 @@
 
   const blur = () => {
     tagIndex = undefined;
+
+    // Mine
+    enter();
   };
 </script>
 

@@ -1,51 +1,69 @@
 <script lang="ts">
-  import * as Card from "$lib/components/ui/card/index.js";
   import ExtractSnippet from "$lib/components/util/ExtractSnippet.svelte";
   import type { MaybeSnippet } from "$lib/interfaces/svelte/svelte.types";
   import type { Snippet } from "svelte";
   import type { ClassValue } from "svelte/elements";
+  import CardAction from "./card-action.svelte";
+  import CardContent from "./card-content.svelte";
+  import CardDescription from "./card-description.svelte";
+  import CardFooter from "./card-footer.svelte";
+  import CardHeader from "./card-header.svelte";
+  import CardRoot from "./card-root.svelte";
+  import CardTitle from "./card-title.svelte";
 
   let {
     title,
+    content,
+    header,
+    action,
+    footer,
     description,
     class: klass,
-
-    content,
-    actions,
   }: {
+    header?: Snippet;
     class?: ClassValue;
     title?: MaybeSnippet;
     description?: MaybeSnippet;
-
-    content: Snippet;
-    actions?: Snippet;
+    action?: Snippet;
+    content: MaybeSnippet;
+    footer?: Snippet;
   } = $props();
 </script>
 
-<Card.Root class={klass}>
-  {#if title || description}
-    <Card.Header>
+<CardRoot class={klass}>
+  {#if header}
+    <CardHeader>
+      {@render header()}
+    </CardHeader>
+  {:else if title || description || action}
+    <CardHeader>
       {#if title}
-        <Card.Title>
+        <CardTitle>
           <ExtractSnippet snippet={title} />
-        </Card.Title>
+        </CardTitle>
       {/if}
 
       {#if description}
-        <Card.Description>
+        <CardDescription>
           <ExtractSnippet snippet={description} />
-        </Card.Description>
+        </CardDescription>
       {/if}
-    </Card.Header>
+
+      {#if action}
+        <CardAction>
+          {@render action()}
+        </CardAction>
+      {/if}
+    </CardHeader>
   {/if}
 
-  <Card.Content>
-    {@render content()}
-  </Card.Content>
+  <CardContent>
+    <ExtractSnippet snippet={content} />
+  </CardContent>
 
-  {#if actions}
-    <Card.Footer>
-      {@render actions?.()}
-    </Card.Footer>
+  {#if footer}
+    <CardFooter>
+      {@render footer()}
+    </CardFooter>
   {/if}
-</Card.Root>
+</CardRoot>
