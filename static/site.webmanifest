@@ -1,24 +1,31 @@
 {
-  "short_name": "App",
-  "name": "App Starter Template",
-  "description": "A starter template for building web applications.",
-  "categories": ["utilities", "productivity"],
+  "name": "Local First",
+  "short_name": "Local First",
+  "description": "Local First is a platform for local businesses to connect with each other and grow their businesses.",
 
-  "theme_color": "black",
-  "background_color": "white",
-
-  "display": "minimal-ui",
-  "start_url": "/?source=pwa",
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
+  "categories": ["business"],
 
   "icons": [
     {
-      "src": "/favicon.png",
-      "sizes": "128x128",
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+
+  "display": "minimal-ui",
+  "start_url": "/?source=pwa",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }
