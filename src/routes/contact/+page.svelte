@@ -1,7 +1,10 @@
 <script lang="ts">
+  import Alert from "$lib/components/ui/alert/Alert.svelte";
+  import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import Card from "$lib/components/ui/card/Card.svelte";
   import Field from "$lib/components/ui/field/Field.svelte";
+  import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
   import Textarea from "$lib/components/ui/textarea/textarea.svelte";
   import { contact_us_remote } from "$lib/remote/contact/contact.remote";
@@ -40,6 +43,24 @@
   <header>
     <h1>Contact Us</h1>
   </header>
+
+  <Alert>
+    {#snippet title()}
+      <span class="text-lg">
+        <Icon
+          icon="lucide/circle-question-mark"
+          class="size-5"
+        />
+        Looking to register your business?
+      </span>
+    {/snippet}
+
+    {#snippet description()}
+      <p>
+        Visit our <Anchor href="/apply">Apply</Anchor> page to and fill in the form.
+      </p>
+    {/snippet}
+  </Alert>
 
   <Card>
     {#snippet content()}

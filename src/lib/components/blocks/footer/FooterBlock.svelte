@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { resolve } from "$app/paths";
+  import type { ResolvedPathname } from "$app/types";
   import Logo from "$lib/components/image/Logo.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
@@ -9,16 +9,19 @@
     title: string;
     links: {
       label: string;
-      href: string;
       icon?: string;
       external?: boolean;
+      href: ResolvedPathname;
     }[];
   };
 
   const sections: FooterSection[] = $derived([
     {
       title: "Pages",
-      links: [{ label: "Businesses", href: resolve("/businesses") }],
+      links: [
+        { label: "Apply", href: "/apply" },
+        { label: "Businesses", href: "/businesses" },
+      ],
     },
     {
       title: "About",

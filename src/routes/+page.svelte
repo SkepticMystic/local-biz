@@ -4,6 +4,9 @@
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import { APP } from "$lib/const/app.const";
+  import { get_all_my_businesses_remote } from "$lib/remote/business/business.remote";
+
+  const my_businesses = get_all_my_businesses_remote();
 </script>
 
 <article class="mx-auto mt-32 max-w-lg">
@@ -20,15 +23,19 @@
   <section class="flex flex-col items-center pt-6 pb-12">
     <ButtonGroup>
       <ButtonGroup>
-        <Button href="/apply">Apply</Button>
+        {#if my_businesses.current?.length}
+          <Button href="/s/businesses">My Businesses</Button>
+        {:else}
+          <Button href="/businesses">Businesses</Button>
+        {/if}
       </ButtonGroup>
 
       <ButtonGroup>
         <Button
           variant="secondary"
-          href="/s/businesses"
+          href="/apply"
         >
-          My Businesses
+          Apply
         </Button>
       </ButtonGroup>
     </ButtonGroup>

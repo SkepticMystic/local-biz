@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { resolve } from "$app/paths";
+  import TelInput from "$lib/components/inputs/TelInput.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import FieldGroup from "$lib/components/ui/field/field-group.svelte";
@@ -173,12 +174,13 @@
         description="Your business's phone number"
       >
         {#snippet input({ props, field })}
-          <Input
-            {...props}
-            {...field?.as("tel")}
-            class="sm:min-w-[300px]"
-            placeholder="012 345 6789"
-          />
+          {#if field}
+            <TelInput
+              {...props}
+              {field}
+              class="sm:min-w-[300px]"
+            />
+          {/if}
         {/snippet}
       </Field>
 

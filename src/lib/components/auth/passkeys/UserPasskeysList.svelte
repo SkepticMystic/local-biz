@@ -19,7 +19,7 @@
     loading: passkeys.loading,
     icon: "lucide/fingerprint",
     title: "No Passkeys",
-    description: "Add a passkey to your account to use it here",
+    description: "Add a passkey quicker, safer access",
   }}
 >
   {#snippet item(passkey)}

@@ -55,6 +55,7 @@
     "globals": "^16.5.0",
     "isomorphic-dompurify": "^2.33.0",
     "knip": "^5.71.0",
+    "libphonenumber-js": "^1.12.31",
     "marked": "^17.0.1",
     "oxfmt": "^0.15.0",
     "oxlint": "^1.31.0",

@@ -1,4 +1,5 @@
 import type { Branded } from "$lib/interfaces/zod/zod.types";
+import { tel_schema } from "$lib/schema/tel/tel.schema";
 import { relations } from "drizzle-orm";
 import {
   boolean,
@@ -171,7 +172,10 @@ const refinements = {
     .array(
       z.object({
         label: z.string().trim().default(""),
-        data: z.union([z.literal(""), z.string().trim()]),
+        data: z.union(
+          [z.literal(""), tel_schema],
+          "Please enter a valid phone number",
+        ),
       }),
     )
     .max(3)

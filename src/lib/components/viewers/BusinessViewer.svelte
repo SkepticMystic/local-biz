@@ -18,6 +18,7 @@
   import type { SellerProfile } from "$lib/server/db/models/seller_profile.model";
   import type { IHTML } from "$lib/utils/html/html.util";
   import { Url } from "$lib/utils/urls.js";
+  import parse_phone_number from "libphonenumber-js/min";
 
   let {
     business,
@@ -109,7 +110,9 @@
           icon="lucide/phone"
           href="tel:{phone.data}"
         >
-          {phone.label || phone.data}
+          {phone.label ||
+            parse_phone_number(phone.data)?.formatNational() ||
+            phone.data}
         </Anchor>
       {/each}
     </address>

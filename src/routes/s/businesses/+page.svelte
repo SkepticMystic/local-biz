@@ -4,10 +4,9 @@
   import Picture from "$lib/components/image/Picture.svelte";
   import GooglePlaceLink from "$lib/components/links/GooglePlaceLink.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
-  import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
-  import Button from "$lib/components/ui/button/button.svelte";
   import ChipGroup from "$lib/components/ui/chip/chip-group.svelte";
   import Chip from "$lib/components/ui/chip/chip.svelte";
+  import DropdownMenu from "$lib/components/ui/dropdown-menu/DropdownMenu.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Item from "$lib/components/ui/item/Item.svelte";
   import ItemList from "$lib/components/ui/item/ItemList.svelte";
@@ -91,36 +90,28 @@
         {/snippet}
 
         {#snippet actions()}
-          <ButtonGroup orientation="vertical">
-            <ButtonGroup>
-              <Button
-                variant="outline"
-                icon="lucide/eye"
-                href={resolve("/s/businesses/[slug]", business)}
-              >
-                View
-              </Button>
-            </ButtonGroup>
-
-            <ButtonGroup>
-              <Button
-                icon="lucide/pencil"
-                href={resolve("/s/businesses/[slug]/edit", business)}
-              >
-                Edit
-              </Button>
-            </ButtonGroup>
-
-            <ButtonGroup>
-              <Button
-                icon="lucide/trash"
-                variant="destructive"
-                onclick={() => BusinessClient.delete(business.id)}
-              >
-                Delete
-              </Button>
-            </ButtonGroup>
-          </ButtonGroup>
+          <DropdownMenu
+            variant="outline"
+            label="Actions"
+            items={[
+              {
+                title: "View",
+                icon: "lucide/eye",
+                href: resolve("/s/businesses/[slug]", business),
+              },
+              {
+                title: "Edit",
+                icon: "lucide/pencil",
+                href: resolve("/s/businesses/[slug]/edit", business),
+              },
+              {
+                title: "Delete",
+                icon: "lucide/trash",
+                variant: "destructive",
+                onselect: () => BusinessClient.delete(business.id),
+              },
+            ]}
+          />
         {/snippet}
       </Item>
     {/snippet}
