@@ -2,6 +2,7 @@
   import { resolve } from "$app/paths";
   import BusinessLikeToggle from "$lib/components/buttons/BusinessLikeToggle.svelte";
   import Picture from "$lib/components/image/Picture.svelte";
+  import GooglePlaceLink from "$lib/components/links/GooglePlaceLink.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
@@ -18,7 +19,11 @@
 
 <article>
   <header>
-    <h1>Businesses</h1>
+    <div class="flex flex-col gap-2">
+      <h1>Businesses</h1>
+
+      <p>See what the local community has to offer</p>
+    </div>
   </header>
 
   <ItemList
@@ -46,17 +51,27 @@
         {/snippet}
 
         {#snippet title()}
-          <Anchor {href}>
+          <Anchor
+            {href}
+            class="text-lg font-semibold"
+          >
             {business.name}
           </Anchor>
         {/snippet}
 
         {#snippet description()}
-          <div class="flex flex-wrap gap-3">
-            <span>
-              <Icon icon="lucide/map-pin" />
-              {business.formatted_address}
-            </span>
+          <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <!-- NOTE: We don't _need_ the place_id, google will still fallback to address -->
+            {#if business.formatted_address}
+              <span>
+                <Icon icon="lucide/map-pin" />
+                <GooglePlaceLink
+                  class="no-underline hover:underline"
+                  google_place_id={business.google_place_id}
+                  formatted_address={business.formatted_address}
+                />
+              </span>
+            {/if}
 
             <span>
               <Icon
@@ -67,10 +82,7 @@
 
             <ChipGroup>
               {#each business.tags as tag}
-                <Chip
-                  size="sm"
-                  variant="outline"
-                >
+                <Chip variant="outline">
                   #{tag}
                 </Chip>
               {/each}
@@ -79,7 +91,7 @@
         {/snippet}
 
         {#snippet actions()}
-          <ButtonGroup>
+          <ButtonGroup orientation="vertical">
             <ButtonGroup>
               <BusinessLikeToggle business_id={business.id} />
             </ButtonGroup>
