@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { resolve } from "$app/paths";
-  import TelInput from "$lib/components/inputs/TelInput.svelte";
+  import PhoneInput from "$lib/components/inputs/PhoneInput.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import FieldGroup from "$lib/components/ui/field/field-group.svelte";
@@ -175,7 +175,7 @@
       >
         {#snippet input({ props, field })}
           {#if field}
-            <TelInput
+            <PhoneInput
               {...props}
               {field}
               class="sm:min-w-[300px]"
