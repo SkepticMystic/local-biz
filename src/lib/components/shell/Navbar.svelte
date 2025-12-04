@@ -26,7 +26,7 @@
     hide?: boolean;
   }
 
-  const routes: Route[] = [
+  const routes: Route[] = $derived([
     {
       side: "right",
       label: "Profile",
@@ -64,7 +64,7 @@
       icon: "lucide/user-plus",
       authed: false,
     },
-  ];
+  ]);
 
   const show_route = (route: Route, side?: Route["side"]) => {
     if (side && route.side !== side) {

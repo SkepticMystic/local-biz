@@ -1,12 +1,27 @@
-import { form, getRequestEvent } from "$app/server";
+import { form, getRequestEvent, query } from "$app/server";
 import { auth, is_ba_error_code } from "$lib/auth";
+import { Repo } from "$lib/repos/index.repo";
+import { db } from "$lib/server/db/drizzle.db";
+import { UserTable } from "$lib/server/db/models/auth.model";
 import { App } from "$lib/utils/app";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
 import { invalid } from "@sveltejs/kit";
 import { APIError } from "better-auth";
+import { count } from "drizzle-orm";
 import z from "zod";
+
+export const count_users_remote = query(async () => {
+  const users = await Repo.query(() =>
+    db
+      .select({ count: count(UserTable.id) })
+      .from(UserTable)
+      .execute(),
+  );
+
+  return users.ok ? (users.data.at(0)?.count ?? 0) : 0;
+});
 
 export const request_password_reset_remote = form(
   z.object({ email: z.email("Please enter a valid email address") }),

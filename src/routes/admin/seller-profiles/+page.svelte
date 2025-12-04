@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import { SellerProfileClient } from "$lib/clients/seller_profile/seller_profile.client.js";
+  import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Avatar from "$lib/components/ui/avatar/avatar.svelte";
   import DataTable from "$lib/components/ui/data-table/data-table.svelte";
   import { renderComponent } from "$lib/components/ui/data-table/render-helpers.js";
@@ -28,8 +30,14 @@
         }),
     }),
 
-    column.accessor("name", {
+    column.accessor("slug", {
       meta: { label: "Name" },
+
+      cell: ({ row }) =>
+        renderComponent(Anchor, {
+          content: row.original.name,
+          href: resolve("/admin/seller-profiles/[slug]", row.original),
+        }),
     }),
 
     column.accessor("admin_approved", {

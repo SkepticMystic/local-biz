@@ -4,7 +4,8 @@ import { BusinessTable } from "$lib/server/db/models/business.model";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
-import { and, DrizzleQueryError, eq } from "drizzle-orm";
+import { and, count, DrizzleQueryError, eq } from "drizzle-orm";
+import { Repo } from "./index.repo";
 
 const create = async (input: typeof BusinessTable.$inferInsert) => {
   try {
@@ -92,9 +93,9 @@ const update = async (
   }
 };
 
-const get_all_public = async () => {
-  try {
-    const businesses = await db.query.business.findMany({
+const get_all_public = () =>
+  Repo.query(() =>
+    db.query.business.findMany({
       where: (business, { eq }) => eq(business.admin_approved, true),
 
       columns: {
@@ -107,32 +108,20 @@ const get_all_public = async () => {
         createdAt: true,
         formatted_address: true,
       },
-    });
+    }),
+  );
 
-    return result.suc(businesses);
-  } catch (error) {
-    if (error instanceof DrizzleQueryError) {
-      Log.error(
-        { message: error.message },
-        "BusinessRepo.get_all_public.error DrizzleQueryError",
-      );
+const count_all_public = () =>
+  Repo.query(() =>
+    db
+      .select({ count: count(BusinessTable.id) })
+      .from(BusinessTable)
+      .where(eq(BusinessTable.admin_approved, true)),
+  );
 
-      captureException(error);
-
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    } else {
-      Log.error(error, "BusinessRepo.get_all_public.error unknown");
-
-      captureException(error);
-
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    }
-  }
-};
-
-const get_all_by_user = async (user_id: string) => {
-  try {
-    const businesses = await db.query.business.findMany({
+const get_all_by_user = (user_id: string) =>
+  Repo.query(() =>
+    db.query.business.findMany({
       where: (business, { eq }) => eq(business.user_id, user_id),
 
       columns: {
@@ -145,28 +134,8 @@ const get_all_by_user = async (user_id: string) => {
         createdAt: true,
         formatted_address: true,
       },
-    });
-
-    return result.suc(businesses);
-  } catch (error) {
-    if (error instanceof DrizzleQueryError) {
-      Log.error(
-        { message: error.message },
-        "BusinessRepo.get_all_by_user.error DrizzleQueryError",
-      );
-
-      captureException(error);
-
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    } else {
-      Log.error(error, "BusinessRepo.get_all_by_user.error unknown");
-
-      captureException(error);
-
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    }
-  }
-};
+    }),
+  );
 
 const delete_by_id = async (input: { id: string; user_id: string }) => {
   try {
@@ -249,6 +218,7 @@ export const BusinessRepo = {
   create,
   update,
   get_all_public,
+  count_all_public,
   get_all_by_user,
   delete_by_id,
   set_admin_approved,

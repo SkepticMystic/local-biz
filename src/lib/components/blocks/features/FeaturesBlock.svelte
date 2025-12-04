@@ -2,6 +2,7 @@
   import Card from "$lib/components/ui/card/Card.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
 
+  // Customer-facing feature cards
   const FEATURES: {
     icon: string;
     title: string;
@@ -9,27 +10,26 @@
     description?: string;
   }[] = [
     {
-      icon: "lucide/zap",
-      title: "Customizable",
+      icon: "lucide/map-pin",
+      title: "Locally Owned",
       content:
-        "Extensive customization options, allowing you to tailor every aspect to meet your specific needs.",
+        "All business owners live in the same area they operate, so you can be sure that your support feeds back into your community.",
     },
     {
-      icon: "lucide/settings",
-      title: "You have full control",
-      content:
-        "From design elements to functionality, you have complete control to create a unique and personalized experience.",
+      icon: "lucide/thumbs-up",
+      title: "Publicly Visible",
+      content: "See ratings and reviews from other people in your area.",
     },
     {
-      icon: "lucide/sparkles",
-      title: "Powered By AI",
+      icon: "lucide/users",
+      title: "Community Support",
       content:
-        "Elements to functionality, you have complete control to create a unique experience.",
+        "Get help from other business owners in your area, and get feedback from them.",
     },
   ];
 </script>
 
-<div class="grid gap-x-8 gap-y-4 md:grid-cols-3">
+<div class="grid gap-x-4 gap-y-4 md:grid-cols-3">
   {#each FEATURES as feat}
     <Card content={feat.content}>
       {#snippet title()}

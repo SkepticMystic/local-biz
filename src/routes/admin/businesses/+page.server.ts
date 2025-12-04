@@ -12,6 +12,7 @@ export const load = (async () => {
       columns: {
         id: true,
         name: true,
+        slug: true,
         logo: true,
         category: true,
         tags: true,
