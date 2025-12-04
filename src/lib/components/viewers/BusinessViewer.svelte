@@ -18,7 +18,7 @@
   import type { SellerProfile } from "$lib/server/db/models/seller_profile.model";
   import type { IHTML } from "$lib/utils/html/html.util";
   import { Url } from "$lib/utils/urls.js";
-  import parse_phone_number from "libphonenumber-js/min";
+  import { parsePhoneNumberFromString as parse_phone_number } from "libphonenumber-js/min";
 
   let {
     business,
