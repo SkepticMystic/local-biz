@@ -1,6 +1,5 @@
 <script lang="ts">
-  import type { DialogRootProps } from "bits-ui";
-  import type { Snippet } from "svelte";
+  import type { ComponentProps, Snippet } from "svelte";
   import {
     buttonVariants,
     type ButtonSize,
@@ -28,7 +27,7 @@
     trigger_child,
 
     ...rest_props
-  }: DialogRootProps & {
+  }: ComponentProps<typeof DialogRoot> & {
     title?: string;
     disabled?: boolean;
     description?: string;

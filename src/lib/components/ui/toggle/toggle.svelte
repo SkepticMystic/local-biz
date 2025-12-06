@@ -1,6 +1,5 @@
 <script lang="ts">
   import { cn } from "$lib/utils/shadcn.util.js";
-  import { Toggle as TogglePrimitive } from "bits-ui";
   import type { ComponentProps } from "svelte";
   import Icon from "../icon/Icon.svelte";
   import Loading from "../loading/Loading.svelte";
@@ -22,7 +21,7 @@
   } = $props();
 </script>
 
-<TogglePrimitive.Root
+<ToggleRoot
   bind:ref
   bind:pressed
   data-slot="toggle"
@@ -39,4 +38,4 @@
   <Icon {icon} />
 
   {@render children?.({ pressed })}
-</TogglePrimitive.Root>
+</ToggleRoot>

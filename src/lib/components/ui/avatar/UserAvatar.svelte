@@ -1,9 +1,14 @@
 <script lang="ts">
   import type { User } from "$lib/server/db/models/auth.model";
-  import type { AvatarRootProps } from "bits-ui";
+  import type { ComponentProps } from "svelte";
   import Avatar from "./Avatar.svelte";
 
-  let { user, ...rest }: AvatarRootProps & { user: User } = $props();
+  let {
+    user,
+    ...rest
+  }: ComponentProps<typeof Avatar> & {
+    user: User;
+  } = $props();
 
   const label = user.name || user.email;
 </script>
