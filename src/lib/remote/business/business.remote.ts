@@ -40,42 +40,31 @@ export const get_all_my_businesses_remote = query(async () => {
   return res.data;
 });
 
-export const create_business_remote = form(
-  BusinessSchema.insert, //
+export const upsert_business_remote = form(
+  BusinessSchema.insert.extend({ id: z.uuid().optional() }),
   async (input) => {
-    console.log("create_business_remote.input", input);
+    console.log("upsert_business_remote.input", input);
+
     const { session } = await get_session();
 
-    const res = await BusinessService.create({
-      ...input,
-      user_id: session.userId,
-    });
+    const res = input.id
+      ? await BusinessService.update({
+          ...input,
+          id: input.id,
+          user_id: session.userId,
+        })
+      : await BusinessService.create({
+          ...input,
+          user_id: session.userId,
+        });
 
-    console.log("create_business_remote.res", res);
+    console.log("upsert_business_remote.res", res);
 
     if (!res.ok && res.error.path) {
       invalid(res.error);
     } else {
       return res;
     }
-  },
-);
-
-export const update_business_remote = form(
-  BusinessSchema.update, //
-  async (input) => {
-    console.log("update_business_remote.input", input);
-
-    const { session } = await get_session();
-
-    const res = await BusinessService.update({
-      ...input,
-      user_id: session.userId,
-    });
-
-    console.log("update_business_remote.res", res);
-
-    return res;
   },
 );
 

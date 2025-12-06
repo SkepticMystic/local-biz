@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from "$lib/components/ui/button/button.svelte";
+  import FormButton from "$lib/components/buttons/FormButton.svelte";
   import Field from "$lib/components/ui/field/Field.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
   import {
@@ -56,12 +56,11 @@
     {/snippet}
   </Field>
 
-  <Button
-    type="submit"
+  <FormButton
+    {form}
     class="w-full"
     icon="lucide/tag"
-    loading={form.pending > 0}
   >
     Update passkey
-  </Button>
+  </FormButton>
 </form>

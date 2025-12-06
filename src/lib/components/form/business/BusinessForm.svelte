@@ -1,10 +1,10 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { resolve } from "$app/paths";
+  import FormButton from "$lib/components/buttons/FormButton.svelte";
   import PhoneInput from "$lib/components/inputs/PhoneInput.svelte";
   import UrlInput from "$lib/components/inputs/UrlInput.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
-  import Button from "$lib/components/ui/button/button.svelte";
   import FieldGroup from "$lib/components/ui/field/field-group.svelte";
   import FieldSeparator from "$lib/components/ui/field/field-separator.svelte";
   import Field from "$lib/components/ui/field/Field.svelte";
@@ -14,10 +14,7 @@
   import TagsInput from "$lib/components/ui/tags-input/tags-input.svelte";
   import Textarea from "$lib/components/ui/textarea/textarea.svelte";
   import { BUSINESS } from "$lib/const/business/business.const";
-  import {
-    create_business_remote,
-    update_business_remote,
-  } from "$lib/remote/business/business.remote";
+  import { upsert_business_remote } from "$lib/remote/business/business.remote";
   import type { BusinessSchema } from "$lib/server/db/models/business.model";
   import { toast } from "svelte-sonner";
   import GooglePlacesInput from "../place/GooglePlacesInput.svelte";
@@ -29,8 +26,7 @@
         initial: BusinessSchema["update"];
       } = $props();
 
-  const form =
-    props.mode === "create" ? create_business_remote : update_business_remote;
+  const form = upsert_business_remote;
 
   if (props.mode === "update") {
     form.fields.set(props.initial);
@@ -65,7 +61,7 @@
           },
         );
 
-        goto(resolve("/s/businesses/[slug]", res.data));
+        await goto(resolve("/s/businesses/[slug]", res.data));
       } else {
         toast.success("Business updated successfully");
       }
@@ -144,7 +140,7 @@
           {#if field}
             <UrlInput
               {...props}
-              {field}
+              {...field.as("text")}
               class="sm:min-w-[300px]"
               placeholder="example.com/logo.png"
             />
@@ -180,7 +176,7 @@
           {#if field}
             <PhoneInput
               {...props}
-              {field}
+              {...field.as("tel")}
               class="sm:min-w-[300px]"
             />
           {/if}
@@ -197,7 +193,7 @@
           {#if field}
             <UrlInput
               {...props}
-              {field}
+              {...field.as("text")}
               class="sm:min-w-[300px]"
               placeholder="example.com"
             />
@@ -268,14 +264,10 @@
         {/snippet}
       </Field>
 
-      <Button
-        type="submit"
+      <FormButton
+        {form}
         class="w-full"
-        icon="lucide/send"
-        loading={form.pending > 0}
-      >
-        Submit
-      </Button>
+      />
     </FieldGroup>
   </Fieldset>
 </form>

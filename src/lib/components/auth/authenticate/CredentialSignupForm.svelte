@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ResolvedPathname } from "$app/types";
-  import Button from "$lib/components/ui/button/button.svelte";
+  import FormButton from "$lib/components/buttons/FormButton.svelte";
   import Checkbox from "$lib/components/ui/checkbox/checkbox.svelte";
   import Field from "$lib/components/ui/field/Field.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
@@ -89,12 +89,11 @@
 
   <input {...form.fields.redirect_uri.as("hidden", redirect_uri)} />
 
-  <Button
-    type="submit"
+  <FormButton
+    {form}
     class="w-full"
     icon={provider.icon}
-    loading={form.pending > 0}
   >
     Signup with {provider.name}
-  </Button>
+  </FormButton>
 </form>
