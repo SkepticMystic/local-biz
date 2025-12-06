@@ -20,6 +20,7 @@
   import type { IHTML } from "$lib/utils/html/html.util";
   import { Url } from "$lib/utils/urls.js";
   import { parsePhoneNumberFromString as parse_phone_number } from "libphonenumber-js/min";
+  import UserReportDialog from "../dialogs/user_report/UserReportDialog.svelte";
 
   let {
     business,
@@ -78,6 +79,13 @@
               page.data.seo?.description ||
               `Check out this business on ${APP.NAME}`,
           }}
+        />
+      </ButtonGroup>
+
+      <ButtonGroup>
+        <UserReportDialog
+          resource_kind="business"
+          resource_id={business.id}
         />
       </ButtonGroup>
     </ButtonGroup>

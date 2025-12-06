@@ -10,39 +10,7 @@ import { captureException } from "@sentry/sveltekit";
 import { and, count, eq } from "drizzle-orm";
 import { ImageHostingService } from "./image_hosting.service";
 import { ThumbhashService } from "./thumbhash.image.service";
-
-const get_image_resource = async (
-  input: Pick<Image, "resource_id" | "resource_kind" | "user_id">,
-) => {
-  switch (input.resource_kind) {
-    case "business": {
-      return db.query[input.resource_kind].findFirst({
-        columns: { id: true },
-        where: (res, { eq, and }) =>
-          and(
-            eq(res.user_id, input.user_id), //
-            eq(res.id, input.resource_id),
-          ),
-      });
-    }
-
-    case "seller_profile": {
-      return db.query[input.resource_kind].findFirst({
-        columns: { id: true },
-        where: (res, { eq, and }) =>
-          and(
-            eq(res.user_id, input.user_id), //
-            eq(res.id, input.resource_id),
-          ),
-      });
-    }
-
-    default: {
-      Log.warn(`Unsupported image resource kind: ${input.resource_kind}`);
-      return undefined;
-    }
-  }
-};
+import { ResourceService } from "../resource/resource.service";
 
 const build_image_where_clause = (
   input: Partial<Pick<Image, "id" | "resource_id" | "resource_kind">> & {
@@ -112,8 +80,6 @@ const set_admin_approved = async (input: {
 };
 
 export const ImageService = {
-  get_image_resource,
-
   upload: async (
     file: File,
     input: Pick<Image, "resource_id" | "resource_kind" | "user_id">,
@@ -133,12 +99,12 @@ export const ImageService = {
       });
     }
 
-    const [resource, count_limit] = await Promise.all([
-      get_image_resource(input),
+    const [count_limit, resource] = await Promise.all([
       check_count_limit(input),
+      ResourceService.get_by_kind_and_id(input),
     ]);
 
-    if (!resource) {
+    if (!resource || resource.user_id !== input.user_id) {
       return result.err({ message: "Resource not found" });
     } else if (!count_limit.ok) {
       return count_limit;

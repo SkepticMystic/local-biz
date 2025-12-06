@@ -1,5 +1,3 @@
-import type { Branded } from "$lib/interfaces/zod/zod.types";
-import { tel_schema } from "$lib/schema/tel/tel.schema";
 import { relations } from "drizzle-orm";
 import {
   boolean,
@@ -15,6 +13,8 @@ import {
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 import { BUSINESS } from "../../../const/business/business.const";
+import type { Branded } from "../../../interfaces/zod/zod.types";
+import { tel_schema } from "../../../schema/tel/tel.schema";
 import { UserTable } from "./auth.model";
 import { BusinessLikeTable } from "./business_like.model";
 import { ImageTable } from "./image.model";

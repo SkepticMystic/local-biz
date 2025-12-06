@@ -1,4 +1,5 @@
 import type { User } from "$lib/server/db/models/auth.model";
+import type { UserReport } from "$lib/server/db/models/user_report.model";
 import type { SendEmailOptions } from "$lib/services/email.service";
 import { APP } from "./app.const";
 
@@ -126,6 +127,27 @@ ${COMMON.SIGNATURE.HTML}`.trim();
         html,
         to: "rossk29@pm.me",
         subject: `New contact form submission from ${input.name}`,
+      };
+    },
+
+    "admin-user-report-form": (input: {
+      user_report: UserReport;
+    }): SendEmailOptions => {
+      const html = `
+<p>New user report on ${APP.NAME}.</p>
+
+<p><strong>Reason:</strong> ${input.user_report.reason}</p>
+<p><strong>Resource:</strong> ${input.user_report.resource_kind}: ${input.user_report.resource_id}</p>
+
+<p><strong>Message:</strong></p>
+<p>${input.user_report.details.replaceAll(/\n/g, "<br />")}</p>
+
+${COMMON.SIGNATURE.HTML}`.trim();
+
+      return {
+        html,
+        to: "rossk29@pm.me",
+        subject: `New user report`,
       };
     },
   },
