@@ -1,3 +1,4 @@
+import { friendly_url_schema } from "$lib/schema/url/url.schema";
 import { relations } from "drizzle-orm";
 import {
   boolean,
@@ -99,7 +100,7 @@ const pick = {
 } satisfies Partial<Record<keyof Business, true>>;
 
 const refinements = {
-  logo: z.union([z.literal(""), z.url()]),
+  logo: z.union([z.literal(""), friendly_url_schema]),
   name: z.string().trim().min(1, "Please enter a name for your business"),
 
   description: z
@@ -142,7 +143,7 @@ const refinements = {
     .array(
       z.object({
         label: z.string().trim().default(""),
-        data: z.union([z.literal(""), z.url()]),
+        data: z.union([z.literal(""), friendly_url_schema]),
       }),
     )
     .max(3)

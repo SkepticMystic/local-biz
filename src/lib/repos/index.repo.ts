@@ -9,10 +9,7 @@ const query = async <D>(cb: () => Promise<D>): Promise<App.Result<D>> => {
     return result.suc(await cb());
   } catch (error) {
     if (error instanceof DrizzleQueryError) {
-      Log.error(
-        { message: error.message },
-        "Repo.query.error DrizzleQueryError",
-      );
+      Log.error(error, "Repo.query.error DrizzleQueryError");
 
       captureException(error);
 

@@ -29,6 +29,8 @@
   {...field_props}
   inputmode="tel"
   autocomplete="tel"
+  icon="lucide/phone"
+  align="inline-start"
   value={picker.input}
   placeholder="011 234 5678"
   aria-label="Phone number input"

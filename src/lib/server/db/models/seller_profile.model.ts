@@ -1,3 +1,4 @@
+import { friendly_url_schema } from "$lib/schema/url/url.schema";
 import { relations } from "drizzle-orm";
 import { boolean, pgTable, text, uuid, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
@@ -46,7 +47,7 @@ const pick = {
 
 const refinements = {
   name: z.string().trim().min(1, "Please enter a name for your seller_profile"),
-  logo: z.string().trim(),
+  logo: z.union([z.literal(""), friendly_url_schema]),
 
   description: z
     .string()

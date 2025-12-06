@@ -9,7 +9,6 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
-import type z from "zod";
 import { IMAGE_HOSTING } from "../../../const/image/image_hosting.const";
 import { RESOURCES } from "../../../const/resource/resource.const";
 import { UserTable } from "./auth.model";
@@ -80,8 +79,6 @@ const pick = {
   resource_kind: true,
 } satisfies Partial<Record<keyof Image, true>>;
 
-export namespace ImageSchema {
-  export const insert = createInsertSchema(ImageTable).pick(pick);
-
-  export type Insert = z.infer<typeof insert>;
-}
+export const ImageSchema = {
+  insert: createInsertSchema(ImageTable).pick(pick),
+};

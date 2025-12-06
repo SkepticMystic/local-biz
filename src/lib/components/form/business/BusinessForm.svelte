@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import { resolve } from "$app/paths";
   import PhoneInput from "$lib/components/inputs/PhoneInput.svelte";
+  import UrlInput from "$lib/components/inputs/UrlInput.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import FieldGroup from "$lib/components/ui/field/field-group.svelte";
@@ -140,12 +141,14 @@
         description="A link to your logo"
       >
         {#snippet input({ props, field })}
-          <Input
-            {...props}
-            {...field?.as("url")}
-            class="sm:min-w-[300px]"
-            placeholder="https://example.com/logo.png"
-          />
+          {#if field}
+            <UrlInput
+              {...props}
+              {field}
+              class="sm:min-w-[300px]"
+              placeholder="example.com/logo.png"
+            />
+          {/if}
         {/snippet}
       </Field>
 
@@ -159,6 +162,8 @@
           <Input
             {...props}
             {...field?.as("email")}
+            icon="lucide/mail"
+            align="inline-start"
             class="sm:min-w-[300px]"
             placeholder="business@example.com"
           />
@@ -189,12 +194,14 @@
         description="Your business's website"
       >
         {#snippet input({ props, field })}
-          <Input
-            {...props}
-            {...field?.as("url")}
-            class="sm:min-w-[300px]"
-            placeholder="https://example.com"
-          />
+          {#if field}
+            <UrlInput
+              {...props}
+              {field}
+              class="sm:min-w-[300px]"
+              placeholder="example.com"
+            />
+          {/if}
         {/snippet}
       </Field>
 

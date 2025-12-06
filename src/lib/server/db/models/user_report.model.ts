@@ -7,7 +7,6 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
-import type z from "zod";
 import { RESOURCES } from "../../../const/resource/resource.const";
 import { USER_REPORT } from "../../../const/user_report/user_report.const";
 import { UserTable } from "./auth.model";
@@ -60,10 +59,8 @@ const pick = {
   details: true,
 } satisfies Partial<Record<keyof UserReport, true>>;
 
-export namespace UserReportSchema {
-  export const insert = createInsertSchema(UserReportTable, {
+export const UserReportSchema = {
+  insert: createInsertSchema(UserReportTable, {
     details: (s) => s.max(5000, "Details cannot be more than 5000 characters"),
-  }).pick(pick);
-
-  export type Insert = z.infer<typeof insert>;
-}
+  }).pick(pick),
+};

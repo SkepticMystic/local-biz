@@ -5,6 +5,10 @@ const slugify = (str: string) =>
     .replace(/[^\w ]+/g, "")
     .replace(/ +/g, "-");
 
+const ensure_starts_with = (s: string, prefix: string) =>
+  s.startsWith(prefix) ? s : prefix + s;
+
 export const Strings = {
   slugify,
+  ensure_starts_with,
 };
