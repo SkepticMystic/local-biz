@@ -59,7 +59,10 @@ export const load = (async ({ params }) => {
       description: business.description,
 
       openGraph: {
-        images: [{ url: business.logo }],
+        images: [
+          business.logo ? { url: business.logo } : null,
+          business.images.at(0) ? { url: business.images.at(0)!.url } : null,
+        ].flatMap((i) => (i ? [i] : [])),
 
         article: {
           modifiedTime: business.updatedAt.toISOString(),
