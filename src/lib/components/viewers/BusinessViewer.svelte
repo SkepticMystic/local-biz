@@ -12,6 +12,7 @@
   import Card from "$lib/components/ui/card/Card.svelte";
   import ImageZoomTrigger from "$lib/components/ui/image-zoom/image-zoom-trigger.svelte";
   import ImageZoom from "$lib/components/ui/image-zoom/image-zoom.svelte";
+  import { APP } from "$lib/const/app.const";
   import { IMAGES } from "$lib/const/image/image.const.js";
   import type { Business } from "$lib/server/db/models/business.model";
   import type { Image } from "$lib/server/db/models/image.model";
@@ -73,7 +74,9 @@
         <ShareButton
           data={{
             title: business.name,
-            text: page.data.seo?.description,
+            text:
+              page.data.seo?.description ||
+              `Check out this business on ${APP.NAME}`,
           }}
         />
       </ButtonGroup>
