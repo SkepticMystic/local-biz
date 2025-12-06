@@ -1,4 +1,3 @@
-import { partytownVite } from "@qwik.dev/partytown/utils";
 import { sentrySvelteKit } from "@sentry/sveltekit";
 import { sveltekit } from "@sveltejs/kit/vite";
 import tailwindcss from "@tailwindcss/vite";
@@ -10,12 +9,7 @@ const SONDA = process.env.SONDA;
 const config = {
   build: { sourcemap: Boolean(SONDA) },
 
-  plugins: [
-    sentrySvelteKit({ telemetry: false }),
-    tailwindcss(),
-    sveltekit(),
-    partytownVite({ debug: false }),
-  ],
+  plugins: [sentrySvelteKit({ telemetry: false }), tailwindcss(), sveltekit()],
 };
 
 if (SONDA) {

@@ -20,9 +20,6 @@ importers:
       '@neondatabase/serverless':
         specifier: ^1.0.2
         version: 1.0.2
-      '@qwik.dev/partytown':
-        specifier: ^0.11.2
-        version: 0.11.2
       '@sentry/sveltekit':
         specifier: ^10.29.0
         version: 10.29.0(@sveltejs/kit@2.49.1(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@6.2.1(svelte@5.45.2)(vite@8.0.0-beta.0(@types/node@24.10.1)(esbuild@0.25.12)(jiti@2.6.1)))(svelte@5.45.2)(vite@8.0.0-beta.0(@types/node@24.10.1)(esbuild@0.25.12)(jiti@2.6.1)))(svelte@5.45.2)(vite@8.0.0-beta.0(@types/node@24.10.1)(esbuild@0.25.12)(jiti@2.6.1))
@@ -120,9 +117,6 @@ importers:
       '@types/turndown':
         specifier: ^5.0.6
         version: 5.0.6
-      '@types/umami':
-        specifier: ^2.10.1
-        version: 2.10.1
       bits-ui:
         specifier: ^2.14.4
         version: 2.14.4(@internationalized/date@3.10.0)(@sveltejs/kit@2.49.1(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@6.2.1(svelte@5.45.2)(vite@8.0.0-beta.0(@types/node@24.10.1)(esbuild@0.25.12)(jiti@2.6.1)))(svelte@5.45.2)(vite@8.0.0-beta.0(@types/node@24.10.1)(esbuild@0.25.12)(jiti@2.6.1)))(svelte@5.45.2)
@@ -1590,11 +1584,6 @@ packages:
     peerDependencies:
       '@opentelemetry/api': ^1.8
 
-  '@qwik.dev/partytown@0.11.2':
-    resolution: {integrity: sha512-795y49CqBiKiwKAD+QBZlzlqEK275hVcazZ7wBPSfgC23L+vWuA7PJmMpgxojOucZHzYi5rAAQ+IP1I3BKVZxw==}
-    engines: {node: '>=18.0.0'}
-    hasBin: true
-
   '@rolldown/binding-android-arm64@1.0.0-beta.53':
     resolution: {integrity: sha512-Ok9V8o7o6YfSdTTYA/uHH30r3YtOxLD6G3wih/U9DO0ucBBFq8WPt/DslU53OgfteLRHITZny9N/qCUxMf9kjQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -2136,9 +2125,6 @@ packages:
 
   '@types/turndown@5.0.6':
     resolution: {integrity: sha512-ru00MoyeeouE5BX4gRL+6m/BsDfbRayOskWqUvh7CLGW+UXxHQItqALa38kKnOiZPqJrtzJUgAC2+F0rL1S4Pg==}
-
-  '@types/umami@2.10.1':
-    resolution: {integrity: sha512-CvOEMq+BFOUXj8yciq4hPsdOt0o9KBg5jQXnF1FrdOMKZMxJiwryyZNLa9Ud2NVO6nXSwU22YMKR3E+Xhbo+DA==}
 
   '@typescript-eslint/eslint-plugin@8.48.1':
     resolution: {integrity: sha512-X63hI1bxl5ohelzr0LY5coufyl0LJNthld+abwxpCoo6Gq+hSqhKwci7MUWkXo67mzgUK6YFByhmaHmUcuBJmA==}
@@ -5573,10 +5559,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@qwik.dev/partytown@0.11.2':
-    dependencies:
-      dotenv: 16.6.1
-
   '@rolldown/binding-android-arm64@1.0.0-beta.53':
     optional: true
 
@@ -6099,8 +6081,6 @@ snapshots:
     optional: true
 
   '@types/turndown@5.0.6': {}
-
-  '@types/umami@2.10.1': {}
 
   '@typescript-eslint/eslint-plugin@8.48.1(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
