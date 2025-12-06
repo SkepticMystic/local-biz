@@ -2,7 +2,7 @@
   import { resolve } from "$app/paths";
   import { SellerProfileClient } from "$lib/clients/seller_profile/seller_profile.client.js";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
-  import Avatar from "$lib/components/ui/avatar/avatar.svelte";
+  import Avatar from "$lib/components/ui/avatar/Avatar.svelte";
   import DataTable from "$lib/components/ui/data-table/data-table.svelte";
   import { renderComponent } from "$lib/components/ui/data-table/render-helpers.js";
   import Field from "$lib/components/ui/field/Field.svelte";

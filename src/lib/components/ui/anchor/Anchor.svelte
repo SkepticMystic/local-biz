@@ -43,9 +43,9 @@
   {...rest_props}
 >
   <span class="flex items-center gap-1.5">
-    <Loading {loading} />
-
-    <Icon {icon} />
+    <Loading {loading}>
+      <Icon {icon} />
+    </Loading>
 
     {#if children}
       {@render children()}

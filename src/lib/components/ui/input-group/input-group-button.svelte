@@ -26,30 +26,30 @@
 </script>
 
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button/index.js";
   import { cn } from "$lib/utils/shadcn.util.js";
   import type { ComponentProps } from "svelte";
+  import ButtonRoot from "../button/button-root.svelte";
 
   let {
+    ref = $bindable(null),
+    class: className,
     children,
-    size = "xs",
     type = "button",
     variant = "ghost",
-    class: className,
-    ref = $bindable(null),
+    size = "xs",
     ...restProps
-  }: Omit<ComponentProps<typeof Button>, "href" | "size" | "target"> & {
+  }: Omit<ComponentProps<typeof ButtonRoot>, "href" | "size"> & {
     size?: InputGroupButtonSize;
   } = $props();
 </script>
 
-<Button
-  {type}
-  {variant}
-  data-size={size}
-  class={cn(inputGroupButtonVariants({ size }), className)}
+<ButtonRoot
   bind:ref
+  {type}
+  data-size={size}
+  {variant}
+  class={cn(inputGroupButtonVariants({ size }), className)}
   {...restProps}
 >
   {@render children?.()}
-</Button>
+</ButtonRoot>

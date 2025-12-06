@@ -7,7 +7,7 @@
   import PrerenderedMarkdown from "$lib/components/text/markdown/PrerenderedMarkdown.svelte";
   import RenderMarkdown from "$lib/components/text/markdown/RenderMarkdown.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
-  import Avatar from "$lib/components/ui/avatar/avatar.svelte";
+  import Avatar from "$lib/components/ui/avatar/Avatar.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Card from "$lib/components/ui/card/Card.svelte";
   import ImageZoomTrigger from "$lib/components/ui/image-zoom/image-zoom-trigger.svelte";

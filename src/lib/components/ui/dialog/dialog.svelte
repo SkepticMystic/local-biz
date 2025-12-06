@@ -1,16 +1,22 @@
 <script lang="ts">
+  import type { DialogRootProps } from "bits-ui";
+  import type { Snippet } from "svelte";
   import {
     buttonVariants,
-    type ButtonProps,
-  } from "$lib/components/ui/button/index.js";
-  import * as Dialog from "$lib/components/ui/dialog/index.js";
-  import { mergeProps, type DialogRootProps } from "bits-ui";
-  import type { Snippet } from "svelte";
+    type ButtonSize,
+    type ButtonVariant,
+  } from "../button/button-root.svelte";
+  import DialogContent from "./dialog-content.svelte";
+  import DialogDescription from "./dialog-description.svelte";
+  import DialogFooter from "./dialog-footer.svelte";
+  import DialogHeader from "./dialog-header.svelte";
+  import DialogRoot from "./dialog-root.svelte";
+  import DialogTitle from "./dialog-title.svelte";
+  import DialogTrigger from "./dialog-trigger.svelte";
 
   let {
     open,
     title,
-    disabled,
     description,
     size = "default",
     variant = "default",
@@ -23,10 +29,9 @@
     ...rest_props
   }: DialogRootProps & {
     title?: string;
-    disabled?: boolean;
     description?: string;
-    size?: ButtonProps["size"];
-    variant?: ButtonProps["variant"];
+    size?: ButtonSize;
+    variant?: ButtonVariant;
 
     trigger?: Snippet;
     trigger_child?: Snippet<[{ props: Record<string, unknown> }]>;
@@ -39,48 +44,46 @@
   };
 </script>
 
-<Dialog.Root
+<DialogRoot
   {...rest_props}
   {open}
 >
   {#if trigger_child}
-    <Dialog.Trigger>
+    <DialogTrigger>
       {#snippet child({ props })}
-        {@render trigger_child({ props: mergeProps(props, { disabled }) })}
+        {@render trigger_child({ props })}
       {/snippet}
-    </Dialog.Trigger>
+    </DialogTrigger>
   {:else}
-    <Dialog.Trigger
+    <DialogTrigger
       {title}
-      {disabled}
-      type="button"
       class={buttonVariants({ variant, size })}
     >
       {@render trigger?.()}
-    </Dialog.Trigger>
+    </DialogTrigger>
   {/if}
 
-  <Dialog.Content class="sm:max-w-[425px]">
+  <DialogContent class="sm:max-w-[425px]">
     {#if title || description}
-      <Dialog.Header>
+      <DialogHeader>
         {#if title}
-          <Dialog.Title>{title}</Dialog.Title>
+          <DialogTitle>{title}</DialogTitle>
         {/if}
 
         {#if description}
-          <Dialog.Description>
+          <DialogDescription>
             {description}
-          </Dialog.Description>
+          </DialogDescription>
         {/if}
-      </Dialog.Header>
+      </DialogHeader>
     {/if}
 
     {@render content({ close })}
 
     {#if actions}
-      <Dialog.Footer>
+      <DialogFooter>
         {@render actions?.()}
-      </Dialog.Footer>
+      </DialogFooter>
     {/if}
-  </Dialog.Content>
-</Dialog.Root>
+  </DialogContent>
+</DialogRoot>

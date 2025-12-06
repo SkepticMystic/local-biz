@@ -8,10 +8,10 @@
   import Navbar from "$lib/components/shell/Navbar.svelte";
   import SEO from "$lib/components/shell/SEO.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
+  import Sonner from "$lib/components/ui/sonner/sonner.svelte";
   import { session } from "$lib/stores/session.store";
   import { partytownSnippet } from "@qwik.dev/partytown/integration";
-  import { mode, ModeWatcher } from "mode-watcher";
-  import { Toaster } from "svelte-sonner";
+  import { ModeWatcher } from "mode-watcher";
   import "./layout.css";
 
   let { children } = $props();
@@ -80,9 +80,8 @@
  It's possible to apply them, but only when toastOptions.unstyled: true
  And then ALL other styles are removed...
  So, richColors for now -->
-<Toaster
+<Sonner
   richColors
-  theme={mode.current}
   closeButton={true}
   duration={10_000}
 >
@@ -120,4 +119,4 @@
       class="size-5"
     />
   {/snippet}
-</Toaster>
+</Sonner>
