@@ -51,6 +51,9 @@
       type="submit"
       icon="lucide/upload"
       loading={form.pending > 0}
-    ></Button>
+      disabled={!form.fields.file.value()}
+    >
+      Upload
+    </Button>
   </ButtonGroup>
 </form>
