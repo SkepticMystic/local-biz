@@ -17,6 +17,7 @@
   let {
     open,
     title,
+    disabled,
     description,
     size = "default",
     variant = "default",
@@ -29,6 +30,7 @@
     ...rest_props
   }: DialogRootProps & {
     title?: string;
+    disabled?: boolean;
     description?: string;
     size?: ButtonSize;
     variant?: ButtonVariant;
@@ -51,12 +53,13 @@
   {#if trigger_child}
     <DialogTrigger>
       {#snippet child({ props })}
-        {@render trigger_child({ props })}
+        {@render trigger_child({ props: { ...props, disabled } })}
       {/snippet}
     </DialogTrigger>
   {:else}
     <DialogTrigger
       {title}
+      {disabled}
       class={buttonVariants({ variant, size })}
     >
       {@render trigger?.()}

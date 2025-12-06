@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { Popover as PopoverPrimitive } from "bits-ui";
   import type { Snippet } from "svelte";
   import {
     buttonVariants,
     type ButtonSize,
     type ButtonVariant,
-  } from "../button";
+  } from "../button/button-root.svelte";
   import PopoverContent from "./popover-content.svelte";
+  import PopoverRoot from "./popover-root.svelte";
   import PopoverTrigger from "./popover-trigger.svelte";
 
   let {
@@ -24,7 +24,7 @@
   } = $props();
 </script>
 
-<PopoverPrimitive.Root>
+<PopoverRoot>
   <PopoverTrigger class={buttonVariants({ size, variant })}>
     {@render trigger()}
   </PopoverTrigger>
@@ -32,4 +32,4 @@
   <PopoverContent>
     {@render content()}
   </PopoverContent>
-</PopoverPrimitive.Root>
+</PopoverRoot>

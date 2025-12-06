@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { ButtonVariant } from "$lib/components/ui/button/button.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import { cn } from "$lib/utils/shadcn.util";
   import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
   import type { ClassValue } from "svelte/elements";
   import Anchor from "../anchor/Anchor.svelte";
-  import Button, { type ButtonSize } from "../button/button.svelte";
+  import type { ButtonSize, ButtonVariant } from "../button/button-root.svelte";
+  import Button from "../button/button.svelte";
   import DropdownMenuContent from "./dropdown-menu-content.svelte";
   import DropdownMenuGroup from "./dropdown-menu-group.svelte";
   import DropdownMenuItem from "./dropdown-menu-item.svelte";

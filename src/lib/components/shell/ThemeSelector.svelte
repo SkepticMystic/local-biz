@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { buttonVariants } from "$lib/components/ui/button/index.js";
-  import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
   import { resetMode, setMode } from "mode-watcher";
+  import { buttonVariants } from "../ui/button/button-root.svelte";
   import DropdownMenuContent from "../ui/dropdown-menu/dropdown-menu-content.svelte";
   import DropdownMenuItem from "../ui/dropdown-menu/dropdown-menu-item.svelte";
+  import DropdownMenuRoot from "../ui/dropdown-menu/dropdown-menu-root.svelte";
   import DropdownMenuTrigger from "../ui/dropdown-menu/dropdown-menu-trigger.svelte";
   import Icon from "../ui/icon/Icon.svelte";
 </script>
 
-<DropdownMenuPrimitive.Root>
+<DropdownMenuRoot>
   <DropdownMenuTrigger
     class={buttonVariants({ variant: "outline", size: "icon" })}
   >
@@ -30,4 +30,4 @@
     <DropdownMenuItem onclick={() => setMode("dark")}>Dark</DropdownMenuItem>
     <DropdownMenuItem onclick={() => resetMode()}>System</DropdownMenuItem>
   </DropdownMenuContent>
-</DropdownMenuPrimitive.Root>
+</DropdownMenuRoot>
