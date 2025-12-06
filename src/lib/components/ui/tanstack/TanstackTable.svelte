@@ -8,11 +8,9 @@
   import type { Table } from "@tanstack/table-core";
   import {
     getCoreRowModel,
-    getExpandedRowModel,
     getFacetedRowModel,
     getFacetedUniqueValues,
     getFilteredRowModel,
-    getGroupedRowModel,
     getPaginationRowModel,
     getSortedRowModel,
   } from "@tanstack/table-core";
@@ -44,16 +42,9 @@
   );
   let selection = $state(states.selection);
 
-  let visibility = $state(
-    states.visibility === false ? undefined : (states.visibility ?? {}),
-  );
-
   let column_filters = $state(
     states.column_filters === false ? undefined : (states.column_filters ?? []),
   );
-
-  let grouping = $state(!states.grouping ? undefined : states.grouping);
-  let expanded = $state(!states.expanded ? undefined : states.expanded);
 
   let pagination = $state(
     states.pagination === false
@@ -84,10 +75,6 @@
     getFilteredRowModel:
       states.column_filters === false ? undefined : getFilteredRowModel(),
 
-    getGroupedRowModel: !states.grouping ? undefined : getGroupedRowModel(),
-
-    getExpandedRowModel: !states.expanded ? undefined : getExpandedRowModel(),
-
     getFacetedRowModel: faceting === true ? getFacetedRowModel() : undefined,
 
     getFacetedUniqueValues:
@@ -105,17 +92,6 @@
       },
       get columnFilters() {
         return column_filters;
-      },
-      get columnVisibility() {
-        return visibility;
-      },
-
-      get grouping() {
-        return grouping;
-      },
-
-      get expanded() {
-        return expanded;
       },
     },
 
@@ -138,34 +114,6 @@
     onRowSelectionChange: states.selection
       ? (updater) => (selection = resolve_updater(updater, selection!))
       : undefined,
-
-    onColumnVisibilityChange:
-      states.visibility === false
-        ? undefined
-        : (updater) => (visibility = resolve_updater(updater, visibility!)),
-
-    onGroupingChange: !states.grouping
-      ? undefined
-      : (updater) => {
-          grouping = resolve_updater(updater, grouping!);
-
-          // NOTE: A little jank...
-          // When grouping by some column, we hide the other groupable columns
-          // cause they usually don't have a meaningful aggregation
-          if (grouping?.length) {
-            table.getAllColumns().forEach((column) => {
-              if (grouping?.includes(column.id)) return;
-
-              column.toggleVisibility(column.columnDef.enableGrouping !== true);
-            });
-          } else {
-            table.resetColumnVisibility();
-          }
-        },
-
-    onExpandedChange: !states.expanded
-      ? undefined
-      : (updater) => (expanded = resolve_updater(updater, expanded!)),
   });
 </script>
 

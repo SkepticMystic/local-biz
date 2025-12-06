@@ -3,13 +3,10 @@ import "@tanstack/table-core";
 import type {
   ColumnDef,
   ColumnFiltersState,
-  ExpandedState,
-  GroupingState,
   PaginationState,
   Row,
   RowSelectionState,
   SortingState,
-  VisibilityState,
 } from "@tanstack/table-core";
 
 export type TanstackTableInput<TData extends Record<string, unknown>> = {
@@ -28,10 +25,7 @@ export type TanstackTableInput<TData extends Record<string, unknown>> = {
   states?: {
     selection?: RowSelectionState;
     sorting?: SortingState | false;
-    grouping?: GroupingState | false;
-    expanded?: ExpandedState | false;
     pagination?: PaginationState | false;
-    visibility?: VisibilityState | false;
     column_filters?: ColumnFiltersState | false;
   };
 };
