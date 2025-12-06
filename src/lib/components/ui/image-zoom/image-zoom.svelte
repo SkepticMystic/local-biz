@@ -1,10 +1,10 @@
 <script lang="ts">
   import Picture from "$lib/components/image/Picture.svelte";
-  import { Button } from "$lib/components/ui/button";
   import { cn } from "$lib/utils/shadcn.util";
   import { type Snippet } from "svelte";
   import { writable } from "svelte/store";
   import { fade } from "svelte/transition";
+  import ButtonRoot from "../button/button-root.svelte";
   import Icon from "../icon/Icon.svelte";
   import { setImageZoomContext, type ZoomImageData } from "./ctx";
 
@@ -125,7 +125,7 @@
     </div>
 
     {#if hasMultipleImages}
-      <Button
+      <ButtonRoot
         variant="ghost"
         size="icon"
         class="pointer-events-auto absolute top-1/2 left-4 -translate-y-1/2 cursor-pointer text-white hover:bg-primary hover:text-gray-300 disabled:pointer-events-none disabled:opacity-30"
@@ -137,9 +137,9 @@
           icon="lucide/chevron-left"
           class="h-8 w-8"
         />
-      </Button>
+      </ButtonRoot>
 
-      <Button
+      <ButtonRoot
         variant="ghost"
         size="icon"
         class="pointer-events-auto absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-white hover:bg-primary hover:text-gray-300 disabled:pointer-events-none disabled:opacity-30"
@@ -151,10 +151,10 @@
           icon="lucide/chevron-right"
           class="h-8 w-8"
         />
-      </Button>
+      </ButtonRoot>
     {/if}
 
-    <Button
+    <ButtonRoot
       variant="ghost"
       size="icon"
       class="pointer-events-auto absolute top-4 right-4 cursor-pointer text-white hover:bg-primary hover:text-gray-300"
@@ -165,7 +165,7 @@
         icon="lucide/x"
         class="h-6 w-6"
       />
-    </Button>
+    </ButtonRoot>
   </div>
 {/if}
 

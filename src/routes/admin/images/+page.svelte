@@ -66,7 +66,12 @@
   <DataTable
     {columns}
     data={images}
-    states={{ selection: {} }}
+    states={{
+      selection: {},
+      pagination: { pageIndex: 0, pageSize: 10 },
+      // NOTE: To save on hosting data, only show images that need to be approved
+      column_filters: [{ id: "admin_approved", value: false }],
+    }}
     actions={(row) => [
       {
         title: row.original.admin_approved ? "Deny" : "Approve",

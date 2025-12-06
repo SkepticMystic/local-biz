@@ -1,5 +1,4 @@
 import type { DropdownMenuItemInput } from "$lib/components/ui/dropdown-menu/dropdown-menu.types";
-import "@tanstack/table-core";
 import type {
   ColumnDef,
   ColumnFiltersState,
