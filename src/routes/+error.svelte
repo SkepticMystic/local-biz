@@ -9,15 +9,37 @@
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
   import Textarea from "$lib/components/ui/textarea/textarea.svelte";
-  import { user } from "$lib/stores/session.store";
+  import { session } from "$lib/stores/session.store";
   import { captureFeedback } from "@sentry/sveltekit";
+  import { onDestroy } from "svelte";
   import { toast } from "svelte-sonner";
   import { preventDefault } from "svelte/legacy";
 
   let form = $state({
-    name: $user?.name ?? "",
-    email: $user?.email ?? "",
+    name: "",
+    email: "",
     message: "",
+  });
+
+  const session_listener = session.subscribe(($session) => {
+    if ($session.data?.user) {
+      form.name = $session.data.user.name;
+      form.email = $session.data.user.email;
+
+      try {
+        session_listener();
+      } catch (error) {
+        console.log("session_listener.error", error);
+      }
+    }
+  });
+
+  onDestroy(() => {
+    try {
+      session_listener();
+    } catch (error) {
+      console.log("session_listener.error", error);
+    }
   });
 </script>
 
