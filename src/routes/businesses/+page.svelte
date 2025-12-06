@@ -81,7 +81,7 @@
             </span>
 
             <ChipGroup>
-              {#each business.tags as tag}
+              {#each business.tags as tag (tag)}
                 <Chip variant="outline">
                   #{tag}
                 </Chip>

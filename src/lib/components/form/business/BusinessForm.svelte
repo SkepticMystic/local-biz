@@ -39,8 +39,6 @@
       form.fields.set(props.initial);
     }
   });
-
-  $inspect(form.fields.value());
 </script>
 
 <form

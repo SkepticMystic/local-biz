@@ -75,7 +75,6 @@
     children?: Snippet;
     avatar?: Snippet;
     icon?: Snippet;
-    [key: string]: any;
   } = $props();
 
   const isInteractive = !!onclick || !!href || active !== undefined;

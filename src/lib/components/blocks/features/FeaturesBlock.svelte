@@ -30,7 +30,7 @@
 </script>
 
 <div class="grid gap-x-4 gap-y-4 md:grid-cols-3">
-  {#each FEATURES as feat}
+  {#each FEATURES as feat (feat.title)}
     <Card content={feat.content}>
       {#snippet title()}
         <Icon

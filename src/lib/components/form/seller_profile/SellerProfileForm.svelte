@@ -27,8 +27,6 @@
       form.fields.set(initial);
     }
   });
-
-  $inspect(form.fields.value());
 </script>
 
 <form

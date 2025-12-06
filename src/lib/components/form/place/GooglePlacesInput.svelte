@@ -43,7 +43,6 @@
           lng: geolocation.position.coords.longitude,
         },
   );
-  $inspect("coords", coords);
 
   // Control API request parameters
   const requestParams: Partial<RequestParams> = $derived({

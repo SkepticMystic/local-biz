@@ -42,7 +42,7 @@ export const get_all_my_businesses_remote = query(async () => {
 
 export const create_business_remote = form(
   BusinessSchema.insert, //
-  async (input, issue) => {
+  async (input) => {
     console.log("create_business_remote.input", input);
     const { session } = await get_session();
 

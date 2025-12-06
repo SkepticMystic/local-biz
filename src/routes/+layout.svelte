@@ -16,8 +16,6 @@
 
   let { children } = $props();
 
-  $inspect('$session',$session)
-
   // NOTE: Currently this listener is _just_ for umami analytics
   // We unsub as soon as they're identified
    session.listen(($session) => {

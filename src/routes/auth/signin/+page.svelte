@@ -29,7 +29,7 @@
         orientation="vertical"
       >
         {#each AUTH.PROVIDERS.IDS as provider_id (provider_id)}
-          {@const { is_social, is_oidc } = AUTH.PROVIDERS.MAP[provider_id]}
+          {@const { is_social } = AUTH.PROVIDERS.MAP[provider_id]}
 
           <ButtonGroup class="w-full">
             {#if is_social}
