@@ -1,20 +1,24 @@
 import { command, query } from "$app/server";
-import { get_session } from "$lib/auth/server";
+import { get_session, safe_get_session } from "$lib/auth/server";
 import { BusinessLikeRepo } from "$lib/repos/business_like.repo";
 import { db } from "$lib/server/db/drizzle.db";
 import { BusinessLikeSchema } from "$lib/server/db/models/business_like.model";
+import { result } from "$lib/utils/result.util";
 import { error } from "@sveltejs/kit";
 import z from "zod";
 
 export const get_my_business_like_by_business_remote = query.batch(
   z.uuid(),
   async (business_ids) => {
-    const { session } = await get_session();
+    const session = await safe_get_session();
+    if (!session) {
+      return () => undefined;
+    }
 
     const results = await db.query.business_like.findMany({
       where: (row, { and, eq, inArray }) =>
         and(
-          eq(row.user_id, session.userId), //
+          eq(row.user_id, session.user.id), //
           inArray(row.business_id, business_ids),
         ),
     });
@@ -42,10 +46,17 @@ export const count_business_likes_remote = query.batch(
 export const create_business_like_remote = command(
   BusinessLikeSchema.insert,
   async (input) => {
-    const { session } = await get_session();
+    const session = await safe_get_session();
+    if (!session) {
+      return result.err({
+        status: 401,
+        level: "warning",
+        message: "You must have an account to like a business",
+      } satisfies App.Error);
+    }
 
     return await BusinessLikeRepo.create({
-      user_id: session.userId,
+      user_id: session.user.id,
       business_id: input.business_id,
     });
   },
