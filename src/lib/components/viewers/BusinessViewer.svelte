@@ -162,7 +162,7 @@
 
     {#snippet pending()}{/snippet}
 
-    {#if seller_profile}
+    {#if seller_profile && seller_profile.name && seller_profile.description}
       <aside>
         <Card>
           {#snippet title()}

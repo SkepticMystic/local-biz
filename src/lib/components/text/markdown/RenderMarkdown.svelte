@@ -6,5 +6,5 @@
 </script>
 
 <div class="prose">
-  {@html HTMLUtil.sanitize(await Markdown.to_html(value))}
+  {@html HTMLUtil.sanitize(Markdown.to_html(value))}
 </div>
