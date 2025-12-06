@@ -39,7 +39,7 @@
   });
 </script>
 
-<article class="mx-auto max-w-[250px]">
+<article class="mx-auto max-w-sm">
   <header>
     <h1>Contact Us</h1>
   </header>
