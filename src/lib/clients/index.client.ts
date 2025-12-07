@@ -44,7 +44,7 @@ const wrap = <I, D>(
       !get(session).data?.session
     ) {
       toast.warning(
-        "Your session has expired. Please signin again to continue.",
+        "You must be signed in to do this. Please login or signup to continue.",
         {
           action: {
             label: "Sign in",

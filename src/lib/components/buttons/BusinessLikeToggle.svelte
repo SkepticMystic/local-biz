@@ -1,6 +1,5 @@
 <script lang="ts">
   import { BusinessClient } from "$lib/clients/business/business.client.js";
-  import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Toggle from "$lib/components/ui/toggle/toggle.svelte";
   import {
     count_business_likes_remote,
@@ -16,6 +15,7 @@
 
 <Toggle
   variant="outline"
+  icon="lucide/thumbs-up"
   pressed={Boolean(my_business_like.current)}
   title={my_business_like.current ? "Unlike" : "Like"}
   loading={business_like_count.loading || my_business_like.loading}
@@ -24,6 +24,5 @@
       ? BusinessClient.like({ business_id })
       : BusinessClient.unlike({ business_id })}
 >
-  <Icon icon="lucide/thumbs-up" />
   {Format.number(business_like_count.current ?? 0)}
 </Toggle>

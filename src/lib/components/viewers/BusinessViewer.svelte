@@ -19,6 +19,7 @@
   import type { SellerProfile } from "$lib/server/db/models/seller_profile.model";
   import type { IHTML } from "$lib/utils/html/html.util";
   import { Url } from "$lib/utils/urls.js";
+  import { captureException } from "@sentry/sveltekit";
   import { parsePhoneNumberFromString as parse_phone_number } from "libphonenumber-js/min";
   import UserReportDialog from "../dialogs/user_report/UserReportDialog.svelte";
 
@@ -165,10 +166,12 @@
     </section>
   {/if}
 
-  <svelte:boundary>
+  <svelte:boundary onerror={(error) => captureException(error)}>
     {@const seller_profile = await streamed.seller_profile}
 
     {#snippet pending()}{/snippet}
+
+    {#snippet failed(_error, _reset)}{/snippet}
 
     {#if seller_profile && seller_profile.name && seller_profile.description}
       <aside>

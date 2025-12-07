@@ -34,8 +34,9 @@
   }}
   {...restProps}
 >
-  <Loading {loading} />
-  <Icon {icon} />
+  <Loading {loading}>
+    <Icon {icon} />
+  </Loading>
 
   {@render children?.({ pressed })}
 </ToggleRoot>
