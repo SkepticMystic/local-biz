@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import { page } from "$app/state";
   import BusinessLikeToggle from "$lib/components/buttons/BusinessLikeToggle.svelte";
   import ShareButton from "$lib/components/buttons/ShareButton.svelte";
@@ -17,6 +18,7 @@
   import type { Business } from "$lib/server/db/models/business.model";
   import type { Image } from "$lib/server/db/models/image.model";
   import type { SellerProfile } from "$lib/server/db/models/seller_profile.model";
+  import { App } from "$lib/utils/app";
   import type { IHTML } from "$lib/utils/html/html.util";
   import { Url } from "$lib/utils/urls.js";
   import { captureException } from "@sentry/sveltekit";
@@ -30,9 +32,10 @@
   }: {
     business: Pick<
       Business,
+      | "id"
       | "logo"
       | "name"
-      | "id"
+      | "slug"
       | "urls"
       | "emails"
       | "phones"
@@ -79,6 +82,9 @@
         <ShareButton
           data={{
             title: business.name,
+            url: App.full_url(
+              resolve("/businesses/[slug]", business),
+            ).toString(),
             text:
               page.data.seo?.description ||
               `Check out this business on ${APP.NAME}`,
@@ -137,7 +143,9 @@
     <section>
       <h2 class="sr-only">Description</h2>
 
-      <PrerenderedMarkdown html={prerendered.description} />
+      <blockquote>
+        <PrerenderedMarkdown html={prerendered.description} />
+      </blockquote>
     </section>
   {/if}
 
