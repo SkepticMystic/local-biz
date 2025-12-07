@@ -18,7 +18,7 @@
 
 <Button
   type="submit"
-  icon="lucide/submit"
+  icon="lucide/send"
   loading={form.pending > 0}
   {...rest}
 >

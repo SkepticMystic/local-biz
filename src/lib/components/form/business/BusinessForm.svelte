@@ -82,7 +82,7 @@
         label="Name *"
         orientation="responsive"
         field={form.fields.name}
-        description="This is how your business will be listed"
+        description="This is how your business will be listed to the public."
       >
         {#snippet input({ props, field })}
           <Input
@@ -120,11 +120,13 @@
         label="Tags"
         orientation="responsive"
         field={form.fields.tags}
-        description="Keywords that describe your business"
+        description="Keywords that describe your business. You can enter any tag you like."
       >
         {#snippet input({ props, field })}
           <TagsInput
             {...props}
+            placeholder="Tags"
+            class="sm:min-w-[300px]"
             value={field?.value()}
           />
         {/snippet}
@@ -170,7 +172,7 @@
         label="Phone number"
         orientation="responsive"
         field={form.fields.phones[0]!.data}
-        description="Your business's phone number"
+        description="Your business's phone number, so customers can reach you."
       >
         {#snippet input({ props, field })}
           {#if field}
@@ -187,7 +189,7 @@
         label="Website"
         orientation="responsive"
         field={form.fields.urls[0]!.data}
-        description="Your business's website"
+        description="Your business's website, or a link to your social media account."
       >
         {#snippet input({ props, field })}
           {#if field}
@@ -204,7 +206,7 @@
       <Field
         label="Address"
         orientation="responsive"
-        description="Where is your business located?"
+        description="Where is your business located? If you have a Google Business, you can search for the address using your business' name."
       >
         {#snippet input({ props: snippet_props })}
           <input
