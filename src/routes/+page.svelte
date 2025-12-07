@@ -9,18 +9,13 @@
   const my_businesses = get_all_my_businesses_remote();
 </script>
 
-<article class="mx-auto mt-32 max-w-lg">
-  <header class="flex flex-col items-center gap-2">
-    <h1 class="text-center">
-      {APP.NAME}
-    </h1>
-
-    <p>
-      {APP.DESCRIPTION}
-    </p>
+<article class="mx-auto mt-32 flex max-w-lg flex-col gap-y-7">
+  <header class="space-y-2 text-center">
+    <h1>{APP.NAME}</h1>
+    <p>{APP.DESCRIPTION}</p>
   </header>
 
-  <section class="flex flex-col items-center pt-6 pb-12">
+  <section class="flex justify-center">
     <ButtonGroup>
       <ButtonGroup>
         {#if my_businesses.current?.length}

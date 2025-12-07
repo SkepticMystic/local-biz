@@ -1,10 +1,15 @@
 import { command, query } from "$app/server";
 import { get_session, safe_get_session } from "$lib/auth/server";
 import { BusinessLikeRepo } from "$lib/repos/business_like.repo";
+import { Repo } from "$lib/repos/index.repo";
 import { db } from "$lib/server/db/drizzle.db";
-import { BusinessLikeSchema } from "$lib/server/db/models/business_like.model";
+import {
+  BusinessLikeSchema,
+  BusinessLikeTable,
+} from "$lib/server/db/models/business_like.model";
 import { result } from "$lib/utils/result.util";
 import { error } from "@sveltejs/kit";
+import { count } from "drizzle-orm";
 import z from "zod";
 
 export const get_my_business_like_by_business_remote = query.batch(
@@ -28,6 +33,17 @@ export const get_my_business_like_by_business_remote = query.batch(
     return (business_id) => map.get(business_id);
   },
 );
+
+export const count_all_business_likes_remote = query(async () => {
+  const res = await Repo.query(() =>
+    db
+      .select({ count: count(BusinessLikeTable.id) })
+      .from(BusinessLikeTable)
+      .execute(),
+  );
+
+  return res.ok ? (res.data.at(0)?.count ?? 0) : 0;
+});
 
 export const count_business_likes_remote = query.batch(
   z.uuid(), //

@@ -146,8 +146,9 @@
         <ImageZoom>
           {#each business.images as image (image.url)}
             <ImageZoomTrigger
+              {...IMAGES.SIZES.PREVIEW}
               {image}
-              {...IMAGES.SIZES.THUMBNAIL}
+              class="max-w-full"
             ></ImageZoomTrigger>
           {/each}
         </ImageZoom>
