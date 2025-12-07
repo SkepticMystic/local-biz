@@ -53,6 +53,8 @@
       >;
     };
   } = $props();
+
+  $inspect("business", business);
 </script>
 
 <article>
@@ -177,7 +179,7 @@
 
     {#if seller_profile && seller_profile.name && seller_profile.description}
       <aside>
-        <Card description="The owner of {business.name}">
+        <Card description="Owner of {business.name}">
           {#snippet title()}
             <div class="flex items-center gap-2">
               <Avatar

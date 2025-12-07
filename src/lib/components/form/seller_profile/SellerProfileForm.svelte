@@ -1,4 +1,5 @@
 <script lang="ts">
+  import UrlInput from "$lib/components/inputs/UrlInput.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import FieldGroup from "$lib/components/ui/field/field-group.svelte";
@@ -90,11 +91,11 @@
         description="A link to a profile picture of you"
       >
         {#snippet input({ props, field })}
-          <Input
+          <UrlInput
             {...props}
-            {...field?.as("url")}
+            {...field?.as("text")}
             class="sm:min-w-[300px]"
-            placeholder="https://example.com/logo.png"
+            placeholder="example.com/logo.png"
           />
         {/snippet}
       </Field>

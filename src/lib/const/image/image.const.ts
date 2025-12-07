@@ -14,8 +14,8 @@ export const IMAGES = {
       height: 180,
     },
     PREVIEW: {
-      width: 280,
-      height: 280,
+      width: 270,
+      height: 270,
     },
     FULL: {
       width: 800,
