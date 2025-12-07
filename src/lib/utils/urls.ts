@@ -1,3 +1,5 @@
+import { captureException } from "@sentry/sveltekit";
+
 const add_search = (
   url: URL,
   search: URLSearchParams | Record<string, unknown>,
@@ -19,13 +21,21 @@ const build = (
   path: string,
   search?: URLSearchParams | Record<string, unknown>,
 ) => {
-  const url = new URL(base + path);
+  try {
+    const url = new URL(base + path);
 
-  if (search) {
-    add_search(url, search);
+    if (search) {
+      add_search(url, search);
+    }
+
+    return url;
+  } catch (error) {
+    console.error("Url.build.error", { base, path, search }, error);
+
+    captureException(error);
+
+    throw error;
   }
-
-  return url;
 };
 
 const safe = (url: string | URL) => {

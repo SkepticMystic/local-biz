@@ -4,7 +4,6 @@ import {
   UserReportTable,
   type UserReport,
 } from "$lib/server/db/models/user_report.model";
-import { result } from "$lib/utils/result.util";
 import { AdapterService } from "../adapter/adapter.service";
 import { EmailService } from "../email.service";
 import { ResourceService } from "../resource/resource.service";
@@ -16,12 +15,9 @@ export const UserReportService = {
       "ip_address" | "user_agent"
     >,
   ): Promise<App.Result<UserReport>> => {
-    const [resource] = await Promise.all([
-      ResourceService.get_by_kind_and_id(input),
-    ]);
-
-    if (!resource) {
-      return result.err({ message: "Resource not found" });
+    const resource = await ResourceService.get_by_kind_and_id(input);
+    if (!resource.ok) {
+      return resource;
     }
 
     const res = await UserReportRepo.create({

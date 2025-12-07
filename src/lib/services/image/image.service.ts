@@ -77,7 +77,7 @@ export const ImageService = {
       ResourceService.get_by_kind_and_id(input),
     ]);
 
-    if (!resource || resource.user_id !== input.user_id) {
+    if (!resource.ok || resource.data.user_id !== input.user_id) {
       return result.err({ message: "Resource not found" });
     } else if (!count_limit.ok) {
       return count_limit;

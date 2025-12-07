@@ -20,15 +20,21 @@ export const get_my_business_like_by_business_remote = query.batch(
       return () => undefined;
     }
 
-    const results = await db.query.business_like.findMany({
-      where: (row, { and, eq, inArray }) =>
-        and(
-          eq(row.user_id, session.user.id), //
-          inArray(row.business_id, business_ids),
-        ),
-    });
+    const res = await Repo.query(() =>
+      db.query.business_like.findMany({
+        where: (row, { and, eq, inArray }) =>
+          and(
+            eq(row.user_id, session.user.id), //
+            inArray(row.business_id, business_ids),
+          ),
+      }),
+    );
 
-    const map = new Map(results.map((row) => [row.business_id, row]));
+    if (!res.ok) {
+      return () => undefined;
+    }
+
+    const map = new Map(res.data.map((row) => [row.business_id, row]));
 
     return (business_id) => map.get(business_id);
   },

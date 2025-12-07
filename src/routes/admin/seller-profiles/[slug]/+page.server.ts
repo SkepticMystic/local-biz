@@ -1,6 +1,8 @@
 import { get_session } from "$lib/auth/server";
 import { E } from "$lib/const/error/error.const";
+import { Repo } from "$lib/repos/index.repo";
 import { db } from "$lib/server/db/drizzle.db";
+import { result } from "$lib/utils/result.util";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
@@ -8,15 +10,17 @@ export const load = (async ({ params }) => {
   const [_admin, seller_profile] = await Promise.all([
     get_session({ admin: true }),
 
-    db.query.seller_profile.findFirst({
-      where: (seller_profile, { eq }) => eq(seller_profile.slug, params.slug),
+    Repo.query(() =>
+      db.query.seller_profile.findFirst({
+        where: (seller_profile, { eq }) => eq(seller_profile.slug, params.slug),
 
-      with: {
-        images: {
-          columns: { id: true, url: true, thumbhash: true },
+        with: {
+          images: {
+            columns: { id: true, url: true, thumbhash: true },
+          },
         },
-      },
-    }),
+      }),
+    ).then((r) => result.unwrap_or(r, undefined)),
   ]);
 
   if (!seller_profile) {

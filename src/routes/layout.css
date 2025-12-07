@@ -224,11 +224,11 @@ body {
 }
 
 article {
-  @apply mx-auto space-y-5 sm:container;
+  @apply mx-auto space-y-7 sm:container;
 }
 
 section {
-  @apply space-y-3;
+  @apply space-y-5;
 }
 
 h1 {

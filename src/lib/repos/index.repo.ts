@@ -6,7 +6,9 @@ import { DrizzleQueryError } from "drizzle-orm";
 
 const query = async <D>(cb: () => Promise<D>): Promise<App.Result<D>> => {
   try {
-    return result.suc(await cb());
+    const data = await cb();
+
+    return result.suc(data);
   } catch (error) {
     if (error instanceof DrizzleQueryError) {
       Log.error(error, "Repo.query.error DrizzleQueryError");

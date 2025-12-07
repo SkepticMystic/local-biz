@@ -8,6 +8,7 @@ import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
 import { and, DrizzleQueryError, eq } from "drizzle-orm";
+import { Repo } from "./index.repo";
 
 const create = async (
   input: typeof SellerProfileTable.$inferInsert,
@@ -92,9 +93,9 @@ const update = async (
   }
 };
 
-const get_all_public = async () => {
-  try {
-    const seller_profiles = await db.query.seller_profile.findMany({
+const get_all_public = () =>
+  Repo.query(() =>
+    db.query.seller_profile.findMany({
       where: (seller_profile, { eq }) =>
         eq(seller_profile.admin_approved, true),
 
@@ -106,58 +107,18 @@ const get_all_public = async () => {
         description: true,
         createdAt: true,
       },
-    });
-
-    return result.suc(seller_profiles);
-  } catch (error) {
-    if (error instanceof DrizzleQueryError) {
-      Log.error(
-        { message: error.message },
-        "SellerProfileRepo.get_all_public.error DrizzleQueryError",
-      );
-
-      captureException(error);
-
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    } else {
-      Log.error(error, "SellerProfileRepo.get_all_public.error unknown");
-
-      captureException(error);
-
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    }
-  }
-};
+    }),
+  );
 
 const get_many_by_slugs = async (
   slugs: string[],
-): Promise<App.Result<SellerProfile[]>> => {
-  try {
-    const seller_profiles = await db.query.seller_profile.findMany({
+): Promise<App.Result<SellerProfile[]>> =>
+  Repo.query(() =>
+    db.query.seller_profile.findMany({
       where: (seller_profile, { inArray }) =>
         inArray(seller_profile.slug, slugs),
-    });
-
-    return result.suc(seller_profiles);
-  } catch (error) {
-    if (error instanceof DrizzleQueryError) {
-      Log.error(
-        { message: error.message },
-        "SellerProfileRepo.get_many_by_slugs.error DrizzleQueryError",
-      );
-
-      captureException(error);
-
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    } else {
-      Log.error(error, "SellerProfileRepo.get_many_by_slugs.error unknown");
-
-      captureException(error);
-
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    }
-  }
-};
+    }),
+  );
 
 const set_admin_approved = async (input: {
   id: string;
