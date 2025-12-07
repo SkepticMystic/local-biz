@@ -17,14 +17,13 @@
     },
     {
       icon: "lucide/thumbs-up",
-      title: "Publicly Visible",
-      content: "See ratings and reviews from other people in your area.",
+      title: "Publicly Rated",
+      content: "See ratings and reviews of a business.",
     },
     {
       icon: "lucide/users",
-      title: "Community Support",
-      content:
-        "Get help from other business owners in your area, and get feedback from them.",
+      title: "Community Supported",
+      content: "Get help from other business owners in your area.",
     },
   ];
 </script>

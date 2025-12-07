@@ -1,6 +1,7 @@
 <script lang="ts">
   import FeaturesBlock from "$lib/components/blocks/features/FeaturesBlock.svelte";
   import StatsBlock from "$lib/components/blocks/stats/StatsBlock.svelte";
+  import Logo from "$lib/components/image/Logo.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import { APP } from "$lib/const/app.const";
@@ -10,7 +11,8 @@
 </script>
 
 <article class="mx-auto mt-32 flex max-w-lg flex-col gap-y-7">
-  <header class="space-y-2 text-center">
+  <header class="flex flex-col items-center gap-4">
+    <Logo size="size-10" />
     <h1>{APP.NAME}</h1>
     <p>{APP.DESCRIPTION}</p>
   </header>

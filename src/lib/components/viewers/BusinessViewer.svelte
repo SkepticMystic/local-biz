@@ -57,15 +57,16 @@
 
 <article>
   <header class="flex flex-wrap items-center justify-between gap-3">
-    <div class="flex flex-wrap items-center gap-2">
+    <span class="flex flex-wrap items-center gap-2">
       <Avatar
+        class="size-10"
         src={business.logo}
         alt={business.name}
         fallback={business.name[0]}
       ></Avatar>
 
       <h1>{business.name}</h1>
-    </div>
+    </span>
 
     <ButtonGroup>
       <ButtonGroup>
@@ -176,7 +177,7 @@
 
     {#if seller_profile && seller_profile.name && seller_profile.description}
       <aside>
-        <Card>
+        <Card description="The owner of {business.name}">
           {#snippet title()}
             <div class="flex items-center gap-2">
               <Avatar
