@@ -1,11 +1,15 @@
 <script lang="ts">
+  import { dev } from "$app/environment";
   import FooterBlock from "$lib/components/blocks/footer/FooterBlock.svelte";
   import Navbar from "$lib/components/shell/Navbar.svelte";
   import SEO from "$lib/components/shell/SEO.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Sonner from "$lib/components/ui/sonner/sonner.svelte";
+  import { injectAnalytics } from "@vercel/analytics/sveltekit";
   import { ModeWatcher } from "mode-watcher";
   import "./layout.css";
+
+  injectAnalytics({ mode: dev ? "development" : "production" });
 
   let { children } = $props();
 </script>
