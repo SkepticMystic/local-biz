@@ -1,9 +1,8 @@
-import { get_session } from "$lib/auth/server";
+import { safe_get_session } from "$lib/auth/server";
 import type { PageServerLoad } from "./$types";
 
-// TODO: Better UX here. Just redirecting to signin without any other info isn't great
 export const load = (async () => {
-  await get_session();
+  const session = await safe_get_session();
 
-  return {};
+  return { session };
 }) satisfies PageServerLoad;

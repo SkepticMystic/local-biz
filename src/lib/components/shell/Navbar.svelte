@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import { resolve } from "$app/paths";
   import type { ResolvedPathname } from "$app/types";
   import { BetterAuthClient } from "$lib/auth-client";
@@ -85,7 +84,7 @@
       fetchOptions: {
         onSuccess: () => {
           toast.info("You have been signed out.");
-          return goto(resolve("/auth/signin"));
+          location.reload();
         },
         onError: (error) => {
           console.error("Error signing out:", error);
