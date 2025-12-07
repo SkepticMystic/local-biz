@@ -21,7 +21,7 @@ export const delete_image_remote = command(
   async (image_id: string) => {
     const { user } = await get_session();
 
-    return await ImageService.delete({ id: image_id, user_id: user.id });
+    return await ImageService.delete_many({ id: image_id, user_id: user.id });
   },
 );
 

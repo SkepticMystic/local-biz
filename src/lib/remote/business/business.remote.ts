@@ -73,7 +73,7 @@ export const delete_business_remote = command(
   async (business_id) => {
     const { session } = await get_session();
 
-    return await BusinessRepo.delete_by_id({
+    return await BusinessService.delete_by_id({
       id: business_id,
       user_id: session.userId,
     });

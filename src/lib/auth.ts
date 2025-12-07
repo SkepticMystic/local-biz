@@ -96,7 +96,7 @@ export const auth = betterAuth({
       // NOTE: Delete their images _before_ deleting user
       // Otherwise it'll cascade to ImageTable, meaning we can't find the external_ids to delete on cloudinary
       beforeDelete: async (user) => {
-        await Promise.all([ImageService.delete({ user_id: user.id })]);
+        await ImageService.delete_many({ user_id: user.id });
       },
     },
   },

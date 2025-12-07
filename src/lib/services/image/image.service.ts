@@ -1,60 +1,33 @@
 import { E } from "$lib/const/error/error.const";
 import { IMAGE_HOSTING } from "$lib/const/image/image_hosting.const";
 import { ImageRepo } from "$lib/repos/image.repo";
-import { db } from "$lib/server/db/drizzle.db";
-import { ImageTable, type Image } from "$lib/server/db/models/image.model";
+import { type Image } from "$lib/server/db/models/image.model";
 import { Format } from "$lib/utils/format.util";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
-import { and, count, eq } from "drizzle-orm";
+import { ResourceService } from "../resource/resource.service";
 import { ImageHostingService } from "./image_hosting.service";
 import { ThumbhashService } from "./thumbhash.image.service";
-import { ResourceService } from "../resource/resource.service";
-
-const build_image_where_clause = (
-  input: Partial<Pick<Image, "id" | "resource_id" | "resource_kind">> & {
-    user_id: string;
-  },
-) =>
-  and(
-    eq(ImageTable.user_id, input.user_id),
-
-    input.id //
-      ? eq(ImageTable.id, input.id)
-      : undefined,
-    input.resource_id
-      ? eq(ImageTable.resource_id, input.resource_id)
-      : undefined,
-    input.resource_kind
-      ? eq(ImageTable.resource_kind, input.resource_kind)
-      : undefined,
-  );
 
 const check_count_limit = async (
   input: Pick<Image, "resource_id" | "resource_kind" | "user_id">,
 ) => {
   try {
-    const [existing_images] = await db
-      .select({ count: count(ImageTable.id) })
-      .from(ImageTable)
-      .where(build_image_where_clause(input))
-      .groupBy(ImageTable.resource_id);
+    const count = await ImageRepo.count(input);
 
-    if (
-      // NOTE: If there are no images, existing_images will be undefined
-      existing_images &&
-      existing_images.count >= IMAGE_HOSTING.LIMITS.MAX_COUNT.PER_RESOURCE
-    ) {
+    if (!count.ok) {
+      return count;
+    } else if (count.data >= IMAGE_HOSTING.LIMITS.MAX_COUNT.PER_RESOURCE) {
       return result.err({
         status: 429,
         message: `Image limit reached for this ${input.resource_kind} (${IMAGE_HOSTING.LIMITS.MAX_COUNT.PER_RESOURCE}). Please delete existing images before uploading more`,
       });
     }
 
-    return result.suc(existing_images?.count ?? 0);
+    return count;
   } catch (error) {
-    Log.error(error, "ImageService.check_count_limit.error");
+    Log.error(error, "ImageService.check_count_limit.error unknown");
 
     captureException(error);
 
@@ -129,29 +102,34 @@ export const ImageService = {
     return res;
   },
 
-  delete: async (
+  delete_many: async (
     input: Partial<Pick<Image, "id" | "resource_id" | "resource_kind">> & {
       user_id: string;
     },
   ): Promise<App.Result<null>> => {
-    const where = build_image_where_clause(input);
+    try {
+      const images = await ImageRepo.delete_many(input);
 
-    const images = await db.query.image.findMany({
-      where,
-      columns: { external_id: true },
-    });
+      if (!images.ok) {
+        return images;
+      } else if (images.data.length === 0) {
+        return result.err(E.NOT_FOUND);
+      }
 
-    if (images.length === 0) {
-      return result.err(E.NOT_FOUND);
+      await Promise.all(
+        images.data.map((image) =>
+          ImageHostingService.delete(image.external_id),
+        ),
+      );
+
+      return result.suc(null);
+    } catch (error) {
+      Log.error(error, "ImageService.delete.error");
+
+      captureException(error);
+
+      return result.err(E.INTERNAL_SERVER_ERROR);
     }
-
-    await Promise.all([
-      db.delete(ImageTable).where(where),
-
-      ...images.map((image) => ImageHostingService.delete(image.external_id)),
-    ]);
-
-    return result.suc(null);
   },
 
   set_admin_approved,

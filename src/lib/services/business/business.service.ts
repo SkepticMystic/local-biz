@@ -9,6 +9,7 @@ import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { Strings } from "$lib/utils/strings.util";
 import { captureException } from "@sentry/sveltekit";
+import { ImageService } from "../image/image.service";
 
 const create = async (
   input: Omit<typeof BusinessTable.$inferInsert, "slug">,
@@ -55,6 +56,30 @@ const update = async (
   }
 };
 
+const delete_by_id = async (input: { id: string; user_id: string }) => {
+  try {
+    const res = await BusinessRepo.delete_by_id(input);
+    if (!res.ok) {
+      return res;
+    }
+
+    await ImageService.delete_many({
+      user_id: input.user_id,
+
+      resource_id: input.id,
+      resource_kind: "business",
+    });
+
+    return res;
+  } catch (error) {
+    Log.error(error, "BusinessService.delete_by_id.error unknown");
+
+    captureException(error);
+
+    return result.err(E.INTERNAL_SERVER_ERROR);
+  }
+};
+
 const set_admin_approved = async (input: {
   id: string;
   admin_approved: boolean;
@@ -89,5 +114,6 @@ const set_admin_approved = async (input: {
 export const BusinessService = {
   create,
   update,
+  delete_by_id,
   set_admin_approved,
 };
