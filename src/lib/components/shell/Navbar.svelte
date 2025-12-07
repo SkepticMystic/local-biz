@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { resolve } from "$app/paths";
   import type { ResolvedPathname } from "$app/types";
   import { BetterAuthClient } from "$lib/auth-client";
   import { AdminClient } from "$lib/clients/auth/admin.client";
@@ -121,7 +120,7 @@
             items: routes.map((r) => ({
               icon: r.icon,
               title: r.label,
-              href: resolve(r.href),
+              href: r.href,
               hide: !show_route(r),
             })),
           },

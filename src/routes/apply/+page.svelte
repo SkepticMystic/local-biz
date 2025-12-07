@@ -6,6 +6,7 @@
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Separator from "$lib/components/ui/separator/separator.svelte";
   import { APP } from "$lib/const/app.const";
+  import { App } from "$lib/utils/app.js";
 
   let { data } = $props();
 </script>
@@ -34,10 +35,12 @@
 
         <p>
           If you already have one, you can <Anchor
-            href={resolve("/auth/signin")}
+            href={App.url("/auth/signin", { redirect_uri: resolve("/apply") })}
           >
             sign in here
-          </Anchor>. Otherwise, <Anchor href={resolve("/auth/signup")}>
+          </Anchor>. Otherwise, <Anchor
+            href={App.url("/auth/signup", { redirect_uri: resolve("/apply") })}
+          >
             click here to sign up
           </Anchor>.
         </p>

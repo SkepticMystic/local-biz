@@ -96,6 +96,7 @@
     "@better-auth/passkey": "^1.4.5",
     "@kevwpl/svelte-o-phone": "^0.0.10",
     "@neondatabase/serverless": "^1.0.2",
+    "@number-flow/svelte": "^0.3.9",
     "@sentry/sveltekit": "^10.29.0",
     "@unpic/svelte": "^1.0.0",
     "@upstash/redis": "^1.35.7",
