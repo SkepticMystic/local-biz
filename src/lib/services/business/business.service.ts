@@ -1,3 +1,4 @@
+import { EMAIL } from "$lib/const/email.const";
 import { E } from "$lib/const/error/error.const";
 import { BusinessRepo } from "$lib/repos/business.repo";
 import { BusinessLikeRepo } from "$lib/repos/business_like.repo";
@@ -9,6 +10,7 @@ import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { Strings } from "$lib/utils/strings.util";
 import { captureException } from "@sentry/sveltekit";
+import { EmailService } from "../email.service";
 import { ImageService } from "../image/image.service";
 
 const create = async (
@@ -21,10 +23,16 @@ const create = async (
     });
 
     if (res.ok) {
-      await BusinessLikeRepo.create({
-        user_id: input.user_id,
-        business_id: res.data.id,
-      });
+      await Promise.all([
+        BusinessLikeRepo.create({
+          user_id: input.user_id,
+          business_id: res.data.id,
+        }),
+
+        EmailService.send(
+          EMAIL.TEMPLATES["admin-new-business-form"]({ business: res.data }),
+        ),
+      ]);
     }
 
     return res;

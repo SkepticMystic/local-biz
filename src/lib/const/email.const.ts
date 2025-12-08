@@ -1,6 +1,8 @@
 import type { User } from "$lib/server/db/models/auth.model";
+import type { Business } from "$lib/server/db/models/business.model";
 import type { UserReport } from "$lib/server/db/models/user_report.model";
 import type { SendEmailOptions } from "$lib/services/email.service";
+import { App } from "$lib/utils/app";
 import { APP } from "./app.const";
 
 const HTML_SIGNATURE = `
@@ -148,6 +150,27 @@ ${COMMON.SIGNATURE.HTML}`.trim();
         html,
         to: "rossk29@pm.me",
         subject: `New user report`,
+      };
+    },
+
+    "admin-new-business-form": (input: {
+      business: Pick<Business, "name" | "slug">;
+    }): SendEmailOptions => {
+      const html = `
+<p>New business on ${APP.NAME}.</p>
+
+<p>
+  <a href="${App.full_url(`/admin/businesses/${input.business.slug}`)}">
+    ${input.business.name}
+  </a>
+</p>
+
+${COMMON.SIGNATURE.HTML}`.trim();
+
+      return {
+        html,
+        to: "rossk29@pm.me",
+        subject: `New business`,
       };
     },
   },
