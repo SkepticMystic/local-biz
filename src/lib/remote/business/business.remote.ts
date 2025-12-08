@@ -91,3 +91,15 @@ export const admin_set_business_approved_remote = command(
     return await BusinessService.set_admin_approved(input);
   },
 );
+
+export const admin_transfer_business_ownership_remote = command(
+  z.object({
+    business_id: z.uuid(),
+    target_user_email: z.email(),
+  }),
+  async (input) => {
+    await get_session({ admin: true });
+
+    return await BusinessService.admin_transfer_ownership(input);
+  },
+);

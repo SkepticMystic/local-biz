@@ -2,14 +2,19 @@ import { EMAIL } from "$lib/const/email.const";
 import { E } from "$lib/const/error/error.const";
 import { BusinessRepo } from "$lib/repos/business.repo";
 import { BusinessLikeRepo } from "$lib/repos/business_like.repo";
+import { Repo } from "$lib/repos/index.repo";
+import { db } from "$lib/server/db/drizzle.db";
+import type { User } from "$lib/server/db/models/auth.model";
 import {
   BusinessTable,
   type Business,
 } from "$lib/server/db/models/business.model";
+import { ImageTable } from "$lib/server/db/models/image.model";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { Strings } from "$lib/utils/strings.util";
 import { captureException } from "@sentry/sveltekit";
+import { and, DrizzleQueryError, eq } from "drizzle-orm";
 import { EmailService } from "../email.service";
 import { ImageService } from "../image/image.service";
 
@@ -119,9 +124,85 @@ const set_admin_approved = async (input: {
   }
 };
 
+const admin_transfer_ownership = async (input: {
+  business_id: string;
+  target_user_email: string;
+}): Promise<App.Result<{ target_user: User }>> => {
+  try {
+    const [business, target_user] = await Promise.all([
+      Repo.query(() =>
+        db.query.business.findFirst({
+          where: (business, { eq }) => eq(business.id, input.business_id),
+        }),
+      ),
+
+      Repo.query(() =>
+        db.query.user.findFirst({
+          where: (user, { eq }) => eq(user.email, input.target_user_email),
+        }),
+      ),
+    ]);
+
+    if (!business.ok) {
+      return business;
+    } else if (!target_user.ok) {
+      return target_user;
+    } else if (!business.data || !target_user.data) {
+      Log.info(
+        { business, target_user },
+        "BusinessService.admin_transfer_ownership.error not_found",
+      );
+
+      return result.err(E.NOT_FOUND);
+    }
+
+    await Promise.all([
+      db
+        .update(BusinessTable)
+        .set({ user_id: target_user.data.id })
+        .where(eq(BusinessTable.id, input.business_id)),
+
+      db
+        .update(ImageTable)
+        .set({ user_id: target_user.data.id })
+        .where(
+          and(
+            eq(ImageTable.resource_kind, "business"),
+            eq(ImageTable.resource_id, input.business_id),
+          ),
+        ),
+    ]);
+
+    return result.suc({
+      target_user: target_user.data,
+    });
+  } catch (error) {
+    if (error instanceof DrizzleQueryError) {
+      Log.error(
+        error,
+        "BusinessService.admin_transfer_ownership.error DrizzleQueryError",
+      );
+
+      captureException(error);
+
+      return result.err(E.INTERNAL_SERVER_ERROR);
+    } else {
+      Log.error(
+        error,
+        "BusinessService.admin_transfer_ownership.error unknown",
+      );
+
+      captureException(error);
+
+      return result.err(E.INTERNAL_SERVER_ERROR);
+    }
+  }
+};
+
 export const BusinessService = {
   create,
   update,
   delete_by_id,
   set_admin_approved,
+  admin_transfer_ownership,
 };

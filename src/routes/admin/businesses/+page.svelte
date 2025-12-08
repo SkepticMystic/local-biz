@@ -18,17 +18,21 @@
   const column = createColumnHelper<(typeof businesses)[number]>();
 
   const columns = [
-    column.accessor("slug", {
+    column.accessor("name", {
       meta: { label: "Name" },
 
       cell: ({ row, getValue }) =>
         renderComponent(Anchor, {
-          content: row.original.name,
-          href: resolve("/admin/businesses/[slug]", { slug: getValue() }),
+          content: getValue(),
+          href: resolve("/admin/businesses/[slug]", row.original),
         }),
 
       footer: ({ table }) =>
         Format.number(table.getRowModel().flatRows.length) + " businesses",
+    }),
+
+    column.accessor("user.email", {
+      meta: { label: "Owner" },
     }),
 
     column.accessor("admin_approved", {
@@ -77,6 +81,28 @@
             id: row.id,
             admin_approved: !row.original.admin_approved,
           }),
+      },
+      {
+        icon: "lucide/chevron-right",
+        title: "Transfer ownership",
+
+        onselect: async () => {
+          const target_user_email = prompt(
+            "Enter the email address of the user you want to transfer ownership to",
+          );
+          if (!target_user_email) return;
+
+          const res = await BusinessClient.admin_transfer_ownership({
+            target_user_email,
+            business_id: row.id,
+          });
+
+          if (res.ok) {
+            businesses = Items.patch(businesses, row.id, {
+              user: { email: res.data.target_user.email },
+            });
+          }
+        },
       },
     ]}
   >

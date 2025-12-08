@@ -23,6 +23,14 @@ export const load = (async () => {
           admin_approved: true,
           formatted_address: true,
         },
+
+        with: {
+          user: {
+            columns: {
+              email: true,
+            },
+          },
+        },
       }),
     ).then((r) => result.unwrap_or(r, [])),
   ]);

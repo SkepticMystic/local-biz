@@ -9,7 +9,7 @@
   import { ModeWatcher } from "mode-watcher";
   import "./layout.css";
 
-  injectAnalytics({ mode: dev ? "development" : "production" });
+  injectAnalytics({ mode: dev ? "development" : "production", debug: false });
 
   let { children } = $props();
 </script>

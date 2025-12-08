@@ -1,5 +1,6 @@
 import {
   admin_set_business_approved_remote,
+  admin_transfer_business_ownership_remote,
   delete_business_remote,
   get_all_my_businesses_remote,
 } from "$lib/remote/business/business.remote";
@@ -75,6 +76,16 @@ export const BusinessClient = {
         `Are you sure you want to ${input.admin_approved ? "approve" : "deny"} this business?`,
       suc_msg: (input) =>
         `Business ${input.admin_approved ? "approved" : "denied"}`,
+    },
+  ),
+
+  admin_transfer_ownership: Client.wrap(
+    (input: Parameters<typeof admin_transfer_business_ownership_remote>[0]) =>
+      admin_transfer_business_ownership_remote(input),
+    {
+      confirm: (input) =>
+        `Are you sure you want to transfer ownership of this business to ${input.target_user_email}?`,
+      suc_msg: (input) => `Business transferred to ${input.target_user_email}`,
     },
   ),
 };
