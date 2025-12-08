@@ -32,16 +32,6 @@
 
 <form
   {...form.enhance(async (e) => {
-    if (
-      initial &&
-      !confirm(
-        "Are you sure you want to update your profile? This will require admin approval before being visible to the public again.",
-      )
-    ) {
-      return;
-    }
-
-    console.log("form.enhance.e", e);
     await e.submit();
 
     console.log("issues", form.fields.issues());

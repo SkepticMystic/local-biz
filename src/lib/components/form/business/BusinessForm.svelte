@@ -51,7 +51,7 @@
     if (res?.ok) {
       if (props.mode === "create") {
         toast.success(
-          "Application submitted, we'll get back to you soon. In the meantime, update your profile to get started.",
+          "Application submitted, we'll get back to you soon. In the meantime, update your seller profile.",
           {
             duration: Infinity,
             action: {
