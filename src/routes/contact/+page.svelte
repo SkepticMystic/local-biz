@@ -39,11 +39,7 @@
   });
 </script>
 
-<article class="mx-auto max-w-sm">
-  <header>
-    <h1>Contact Us</h1>
-  </header>
-
+<article class="mx-auto max-w-xs">
   <Alert>
     {#snippet title()}
       <span class="text-lg">
@@ -62,7 +58,13 @@
     {/snippet}
   </Alert>
 
-  <Card>
+  <Card description="Fill out the form below to get in touch.">
+    {#snippet title()}
+      <header>
+        <h1>Contact Us</h1>
+      </header>
+    {/snippet}
+
     {#snippet content()}
       <form
         class="space-y-3"

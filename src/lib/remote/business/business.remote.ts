@@ -1,10 +1,30 @@
 import { command, form, query } from "$app/server";
 import { get_session, safe_get_session } from "$lib/auth/server";
 import { BusinessRepo } from "$lib/repos/business.repo";
-import { BusinessSchema } from "$lib/server/db/models/business.model";
+import { Repo } from "$lib/repos/index.repo";
+import { db } from "$lib/server/db/drizzle.db";
+import {
+  BusinessSchema,
+  BusinessTable,
+} from "$lib/server/db/models/business.model";
 import { BusinessService } from "$lib/services/business/business.service";
+import { result } from "$lib/utils/result.util";
 import { error, invalid } from "@sveltejs/kit";
+import { eq, sql } from "drizzle-orm";
 import z from "zod";
+
+export const get_random_public_business_remote = query(async () => {
+  const res = await Repo.query(() =>
+    db
+      .select()
+      .from(BusinessTable)
+      .where(eq(BusinessTable.admin_approved, true))
+      .orderBy(sql.raw("RANDOM()"))
+      .execute(),
+  );
+
+  return res.ok ? result.suc(res.data.at(0)) : result.err(res.error);
+});
 
 export const get_all_public_businesses_remote = query(async () => {
   const res = await BusinessRepo.get_all_public();
