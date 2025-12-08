@@ -14,6 +14,7 @@
     loading,
     fetchpriority,
     prioritize = false,
+
     ...props
   }: Omit<ImageProps, "src"> & {
     href?: string;

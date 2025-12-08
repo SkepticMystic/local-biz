@@ -55,8 +55,6 @@
       >;
     };
   } = $props();
-
-  $inspect("business", business);
 </script>
 
 <article>
@@ -153,11 +151,12 @@
 
       <div class="flex flex-wrap gap-3">
         <ImageZoom>
-          {#each business.images as image (image.url)}
+          {#each business.images as image, i (image.url)}
             <ImageZoomTrigger
               {...IMAGES.SIZES.PREVIEW}
               {image}
               class="max-w-full"
+              prioritize={i === 0}
             ></ImageZoomTrigger>
           {/each}
         </ImageZoom>

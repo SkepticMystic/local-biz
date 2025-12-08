@@ -7,7 +7,11 @@ const SONDA = process.env.SONDA;
 
 /** @type {import('vite').UserConfig} */
 const config = {
-  build: { sourcemap: Boolean(SONDA) },
+  build: {
+    sourcemap: Boolean(SONDA),
+    // NOTE: Already the default
+    target: "baseline-widely-available",
+  },
 
   plugins: [sentrySvelteKit({ telemetry: false }), tailwindcss(), sveltekit()],
 };
