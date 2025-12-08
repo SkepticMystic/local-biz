@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from "$lib/components/ui/button/button.svelte";
+  import FormButton from "$lib/components/buttons/FormButton.svelte";
   import Card from "$lib/components/ui/card/Card.svelte";
   import Field from "$lib/components/ui/field/Field.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
@@ -44,14 +44,13 @@
           {/snippet}
         </Field>
 
-        <Button
-          type="submit"
+        <FormButton
+          {form}
           class="w-full"
           icon="lucide/mail"
-          loading={form.pending > 0}
         >
           Request password reset
-        </Button>
+        </FormButton>
       </form>
     {/snippet}
   </Card>

@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { mergeProps } from "bits-ui";
   import type { ComponentProps, Snippet } from "svelte";
   import {
     buttonVariants,
+    type ButtonProps,
     type ButtonSize,
     type ButtonVariant,
   } from "../button/button-root.svelte";
@@ -34,10 +36,10 @@
     size?: ButtonSize;
     variant?: ButtonVariant;
 
-    trigger?: Snippet;
-    trigger_child?: Snippet<[{ props: Record<string, unknown> }]>;
-    content: Snippet<[{ close: typeof close }]>;
     actions?: Snippet;
+    trigger?: Snippet;
+    content: Snippet<[{ close: typeof close }]>;
+    trigger_child?: Snippet<[{ props: Partial<ButtonProps> }]>;
   } = $props();
 
   const close = () => {
@@ -52,13 +54,16 @@
   {#if trigger_child}
     <DialogTrigger>
       {#snippet child({ props })}
-        {@render trigger_child({ props: { ...props, disabled } })}
+        {@render trigger_child({
+          props: mergeProps(props, { disabled, type: "button" as const }),
+        })}
       {/snippet}
     </DialogTrigger>
   {:else}
     <DialogTrigger
       {title}
       {disabled}
+      type="button"
       class={buttonVariants({ variant, size })}
     >
       {@render trigger?.()}
