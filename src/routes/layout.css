@@ -1,8 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
 
 @plugin "@iconify/tailwind4" {
   prefixes: mdi, lucide;

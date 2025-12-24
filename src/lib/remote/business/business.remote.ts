@@ -20,6 +20,7 @@ export const get_random_public_business_remote = query(async () => {
       .from(BusinessTable)
       .where(eq(BusinessTable.admin_approved, true))
       .orderBy(sql.raw("RANDOM()"))
+      .limit(1)
       .execute(),
   );
 
@@ -61,7 +62,9 @@ export const get_all_my_businesses_remote = query(async () => {
 });
 
 export const upsert_business_remote = form(
-  BusinessSchema.insert.extend({ id: z.uuid().optional() }),
+  BusinessSchema.insert.extend({
+    id: z.uuid().optional(),
+  }),
   async (input) => {
     console.log("upsert_business_remote.input", input);
 

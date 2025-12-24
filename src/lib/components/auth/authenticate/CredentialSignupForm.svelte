@@ -7,6 +7,7 @@
   import { AUTH, type IAuth } from "$lib/const/auth/auth.const";
   import { signup_credentials_remote } from "$lib/remote/auth/auth.remote";
   import { toast } from "svelte-sonner";
+  import Captcha from "../Captcha.svelte";
 
   let {
     redirect_uri,
@@ -83,6 +84,18 @@
         {...props}
         {...field?.as("checkbox")}
         type="button"
+      />
+    {/snippet}
+  </Field>
+
+  <Field
+    label=""
+    field={form.fields.captcha_token}
+  >
+    {#snippet input({ props, field })}
+      <Captcha
+        {...props}
+        {...field?.as("text")}
       />
     {/snippet}
   </Field>

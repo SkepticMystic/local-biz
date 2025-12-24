@@ -1,5 +1,6 @@
 import { form, getRequestEvent } from "$app/server";
 import { auth, is_ba_error_code } from "$lib/auth";
+import { CaptchaService } from "$lib/services/captcha/captcha.service";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
@@ -56,9 +57,15 @@ export const signup_credentials_remote = form(
     password: z.string(), // NOTE: Better-auth will do validation, so no need to do it here
     remember: z.boolean().default(false),
     redirect_uri: z.string().default("/"),
+    captcha_token: z.string().min(1, "Please complete the captcha"),
   }),
   async (input, issue) => {
     try {
+      const captcha = await CaptchaService.verify(input.captcha_token);
+      if (!captcha.ok) {
+        return captcha;
+      }
+
       await auth.api.signUpEmail({
         headers: getRequestEvent().request.headers,
         body: {

@@ -3,6 +3,7 @@ import { auth, is_ba_error_code } from "$lib/auth";
 import { Repo } from "$lib/repos/index.repo";
 import { db } from "$lib/server/db/drizzle.db";
 import { UserTable } from "$lib/server/db/models/auth.model";
+import { CaptchaService } from "$lib/services/captcha/captcha.service";
 import { App } from "$lib/utils/app";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
@@ -24,9 +25,17 @@ export const count_users_remote = query(async () => {
 });
 
 export const request_password_reset_remote = form(
-  z.object({ email: z.email("Please enter a valid email address") }),
+  z.object({
+    email: z.email("Please enter a valid email address"),
+    captcha_token: z.string().min(1, "Please complete the captcha"),
+  }),
   async (input) => {
     try {
+      const captcha = await CaptchaService.verify(input.captcha_token);
+      if (!captcha.ok) {
+        return captcha;
+      }
+
       const res = await auth.api.requestPasswordReset({
         body: {
           email: input.email,

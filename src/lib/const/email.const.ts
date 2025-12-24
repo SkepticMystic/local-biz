@@ -3,6 +3,7 @@ import type { Business } from "$lib/server/db/models/business.model";
 import type { UserReport } from "$lib/server/db/models/user_report.model";
 import type { SendEmailOptions } from "$lib/services/email.service";
 import { App } from "$lib/utils/app";
+import { HTMLUtil } from "$lib/utils/html/html.util";
 import { APP } from "./app.const";
 
 const HTML_SIGNATURE = `
@@ -24,7 +25,7 @@ export const EMAIL = {
       user: Pick<User, "email" | "name">;
     }): SendEmailOptions => {
       const html = `
-<p>Hi ${input.user.name ?? ""}</p>
+<p>Hi ${HTMLUtil.sanitize(input.user.name)}</p>
 <p>
   Click <a href="${input.url}">here</a> to reset your ${APP.NAME} password.
 </p>
@@ -46,7 +47,7 @@ ${COMMON.SIGNATURE.HTML}`.trim();
       user: Pick<User, "email" | "name">;
     }): SendEmailOptions => {
       const html = `
-<p>Hi ${input.user.name ?? ""},</p>
+<p>Hi ${HTMLUtil.sanitize(input.user.name)},</p>
 <p>
   Click <a href="${input.url}">here</a> to verify your ${APP.NAME} account.
 </p>
@@ -67,7 +68,7 @@ ${COMMON.SIGNATURE.HTML}`.trim();
       user: Pick<User, "email" | "name">;
     }): SendEmailOptions => {
       const html = `
-<p>Hi ${input.user.name ?? ""},</p>
+<p>Hi ${HTMLUtil.sanitize(input.user.name)},</p>
 <p>
   This is to confirm that your account associated with this email address has been successfully deleted from ${APP.NAME}.
 </p>
@@ -89,7 +90,7 @@ ${COMMON.SIGNATURE.HTML}`.trim();
       url: string;
     }): SendEmailOptions => {
       const html = `
-<p>Hi ${input.user.name ?? ""},</p>
+<p>Hi ${HTMLUtil.sanitize(input.user.name)},</p>
 <p>
   We've received a request to delete your account associated with this email address from ${APP.NAME}.
 </p>
@@ -117,17 +118,17 @@ ${COMMON.SIGNATURE.HTML}`.trim();
       const html = `
 <p>You have received a new message from the contact form on ${APP.NAME}.</p>
 
-<p><strong>Name:</strong> ${input.name}</p>
-<p><strong>Email:</strong> ${input.email}</p>
+<p><strong>Name:</strong> ${HTMLUtil.sanitize(input.name)}</p>
+<p><strong>Email:</strong> ${HTMLUtil.sanitize(input.email)}</p>
 
 <p><strong>Message:</strong></p>
-<p>${input.message.replaceAll(/\n/g, "<br />")}</p>
+<p>${HTMLUtil.sanitize(input.message.replaceAll(/\n/g, "<br />"))}</p>
 
 ${COMMON.SIGNATURE.HTML}`.trim();
 
       return {
         html,
-        to: "rossk29@pm.me",
+        to: "rossk29@gmail.com",
         subject: `New contact form submission from ${input.name}`,
       };
     },
@@ -138,11 +139,11 @@ ${COMMON.SIGNATURE.HTML}`.trim();
       const html = `
 <p>New user report on ${APP.NAME}.</p>
 
-<p><strong>Reason:</strong> ${input.user_report.reason}</p>
-<p><strong>Resource:</strong> ${input.user_report.resource_kind}: ${input.user_report.resource_id}</p>
+<p><strong>Reason:</strong> ${HTMLUtil.sanitize(input.user_report.reason)}</p>
+<p><strong>Resource:</strong> ${HTMLUtil.sanitize(input.user_report.resource_kind)}: ${HTMLUtil.sanitize(input.user_report.resource_id)}</p>
 
 <p><strong>Message:</strong></p>
-<p>${input.user_report.details.replaceAll(/\n/g, "<br />")}</p>
+<p>${HTMLUtil.sanitize(input.user_report.details.replaceAll(/\n/g, "<br />"))}</p>
 
 ${COMMON.SIGNATURE.HTML}`.trim();
 
@@ -161,7 +162,7 @@ ${COMMON.SIGNATURE.HTML}`.trim();
 
 <p>
   <a href="${App.full_url(`/admin/businesses/${input.business.slug}`)}">
-    ${input.business.name}
+    ${HTMLUtil.sanitize(input.business.name)}
   </a>
 </p>
 

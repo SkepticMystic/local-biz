@@ -8,7 +8,12 @@ import { passkey } from "@better-auth/passkey";
 import type { APIError } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth/minimal";
-import { admin, haveIBeenPwned, lastLoginMethod } from "better-auth/plugins";
+import {
+  admin,
+  captcha,
+  haveIBeenPwned,
+  lastLoginMethod,
+} from "better-auth/plugins";
 import { sveltekitCookies } from "better-auth/svelte-kit";
 import { AccessControl } from "./auth/permissions";
 import { APP } from "./const/app.const";
@@ -70,8 +75,6 @@ export const auth = betterAuth({
     cookieCache: {
       enabled: true,
       maxAge: 5 * 60, // Cache duration in seconds
-
-      refreshCache: true,
     },
   },
 
@@ -150,6 +153,11 @@ export const auth = betterAuth({
     admin({
       ac: AccessControl.ac,
       roles: AccessControl.roles,
+    }),
+
+    captcha({
+      provider: "cloudflare-turnstile",
+      secretKey: process.env.CAPTCHA_SECRET_KEY!,
     }),
 
     passkey({

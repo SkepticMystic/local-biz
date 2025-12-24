@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Captcha from "$lib/components/auth/Captcha.svelte";
   import FormButton from "$lib/components/buttons/FormButton.svelte";
   import Card from "$lib/components/ui/card/Card.svelte";
   import Field from "$lib/components/ui/field/Field.svelte";
@@ -40,6 +41,18 @@
               required
               autofocus
               autocomplete="email"
+            />
+          {/snippet}
+        </Field>
+
+        <Field
+          label=""
+          field={form.fields.captcha_token}
+        >
+          {#snippet input({ props, field })}
+            <Captcha
+              {...props}
+              {...field?.as("text")}
             />
           {/snippet}
         </Field>
