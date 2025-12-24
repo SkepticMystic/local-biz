@@ -110,7 +110,7 @@
           href={url.data}
         >
           <Favicon href={url.data} />
-          {url.label || Url.strip_protocol(url.data)}
+          {url.label || Url.format(url.data)}
         </Anchor>
       {/each}
 

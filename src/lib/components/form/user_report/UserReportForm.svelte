@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Captcha from "$lib/components/auth/Captcha.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import Field from "$lib/components/ui/field/Field.svelte";
   import NativeSelect from "$lib/components/ui/native-select/native-select.svelte";
@@ -65,6 +66,18 @@
         {...field?.as("text")}
         required
       ></Textarea>
+    {/snippet}
+  </Field>
+
+  <Field
+    label=""
+    field={form.fields.captcha_token}
+  >
+    {#snippet input({ props, field })}
+      <Captcha
+        {...props}
+        {...field?.as("text")}
+      />
     {/snippet}
   </Field>
 

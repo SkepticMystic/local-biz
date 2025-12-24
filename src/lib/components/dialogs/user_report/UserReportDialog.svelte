@@ -14,7 +14,7 @@
 </script>
 
 <Dialog
-  variant="secondary"
+  variant="outline"
   title="Submit a report"
 >
   {#snippet trigger()}

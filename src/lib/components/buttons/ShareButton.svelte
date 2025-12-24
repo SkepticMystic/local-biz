@@ -9,7 +9,7 @@
 
   let {
     data,
-    label,
+    label = "Share",
   }: {
     label?: string;
     data: ShareData;

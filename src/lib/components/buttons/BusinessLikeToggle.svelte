@@ -15,7 +15,7 @@
 
 <Toggle
   variant="outline"
-  icon="lucide/thumbs-up"
+  icon="lucide/heart"
   pressed={Boolean(my_business_like.current)}
   title={my_business_like.current ? "Unlike" : "Like"}
   loading={business_like_count.loading || my_business_like.loading}

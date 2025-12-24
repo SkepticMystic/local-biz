@@ -1,27 +1,36 @@
 <script lang="ts">
   import { ImageClient } from "$lib/clients/image/image.client";
-  import type { Image } from "$lib/server/db/models/image.model";
-  import { cn } from "$lib/utils/shadcn.util";
-  import { Image as Picture, type ImageProps } from "@unpic/svelte";
-  import type { ClassValue } from "svelte/elements";
-  import Anchor from "../ui/anchor/Anchor.svelte";
+  import { Image as ImageBase } from "@unpic/svelte/base";
+  import type { ClassValue, HTMLAttributeAnchorTarget } from "svelte/elements";
+  import { transform } from "unpic/providers/cloudinary";
+  import type { Image } from "../../server/db/models/image.model";
+  import { cn } from "../../utils/shadcn.util";
 
   let {
+    src,
+    alt,
     href,
     image,
+    width,
+    height,
+    target,
+    loading,
     fallback,
     class: klass,
-    loading,
     fetchpriority,
     prioritize = false,
-
-    ...props
-  }: Omit<ImageProps, "src"> & {
+  }: {
+    src?: string;
+    alt?: string;
+    class?: ClassValue;
+    loading?: "lazy" | "eager";
+    fetchpriority?: "high" | "low";
+    width?: number;
+    height?: number;
     href?: string;
     fallback?: string;
-    class?: ClassValue;
-    src?: string | null;
     prioritize?: boolean;
+    target?: HTMLAttributeAnchorTarget;
     image?: Pick<Image, "url" | "thumbhash">;
   } = $props();
 
@@ -32,67 +41,63 @@
     fetchpriority ??= "high";
   }
 
-  const thumbhash_url = ImageClient.decode_thumbhash(image);
+  const style = $derived(
+    [
+      width ? `width: ${width}px` : "", //
+      height ? `height: ${height}px` : "",
+    ]
+      .filter(Boolean)
+      .join("; ")
+      .trim(),
+  );
 
-  const style = [
-    props.width ? `min-width: ${props.width}px` : "",
-    props.height ? `min-height: ${props.height}px` : "",
-  ]
-    .filter(Boolean)
-    .join("; ")
-    .trim();
+  const thumbhash_url = $derived(ImageClient.decode_thumbhash(image));
+
+  // const p: BaseImageProps<CloudinaryOperations, CloudinaryOptions> = {
+  //   operations: {},
+  // };
 </script>
 
-{#snippet inner()}
-  {#if image || props.src}
-    <Picture
-      {style}
+{#snippet img()}
+  {#if image || src}
+    <!-- {style} -->
+    <ImageBase
+      {alt}
+      {width}
+      {height}
       {loading}
       {fetchpriority}
-      src={image?.url ?? props.src}
-      class={cn("h-full w-full rounded-md", klass)}
+      src={image?.url ?? src}
+      transformer={transform}
       background={thumbhash_url}
+      class={cn("h-full w-full rounded-md", klass)}
       operations={{
-        cloudinary: {
-          f: "auto",
-          q: "auto",
-          g: "auto",
+        f: "auto",
+        q: "auto",
+        g: "auto",
 
-          // "auto" seems fancy, but expensive
-          // "fill" seems like a cheaper alternative
-          c: "auto",
-        },
-      }}
-      {...props}
-      {@attach (node: HTMLImageElement) => {
-        // NOTE: unpic just spreads everything onto the img,
-        // so we need to remove the background attribute cause the style attr is what actually does the work
-        node.attributes.getNamedItem("background") &&
-          node.attributes.removeNamedItem("background");
+        // "auto" seems fancy, but expensive
+        // "fill" seems like a cheaper alternative
+        c: "auto",
       }}
     />
-
-    <!-- <div
-      style="object-fit: cover; 
-  background-image: url({thumbhash_url}); 
-  background-size: cover; 
-  background-repeat: no-repeat; 
-  max-width: 300px; 
-  max-height: 300px; 
-  aspect-ratio: 1 / 1; 
-  width: 300px; 
-  height: 300px;"
-    ></div> -->
-
-    <!-- {:else if fallback}
-    <PictureFallback {fallback} {style} class={klass} {...props} /> -->
+  {:else}
+    <div
+      {style}
+      class={cn("flex items-center justify-center rounded-md bg-muted", klass)}
+    >
+      {fallback ?? alt?.at(0) ?? ""}
+    </div>
   {/if}
 {/snippet}
 
 {#if href}
-  <Anchor {href}>
-    {@render inner()}
-  </Anchor>
+  <a
+    {href}
+    {target}
+  >
+    {@render img()}
+  </a>
 {:else}
-  {@render inner()}
+  {@render img()}
 {/if}
