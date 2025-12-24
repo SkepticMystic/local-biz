@@ -38,6 +38,12 @@ const create = async (
           EMAIL.TEMPLATES["admin-new-business-form"]({ business: res.data }),
         ),
       ]);
+    } else if (res.error.code === "DUPLICATE") {
+      return result.err({
+        ...E.INVALID_INPUT,
+        path: ["name"],
+        message: "Business already exists",
+      });
     }
 
     return res;
@@ -130,13 +136,13 @@ const admin_transfer_ownership = async (input: {
 }): Promise<App.Result<{ target_user: User }>> => {
   try {
     const [business, target_user] = await Promise.all([
-      Repo.query(() =>
+      Repo.query(
         db.query.business.findFirst({
           where: (business, { eq }) => eq(business.id, input.business_id),
         }),
       ),
 
-      Repo.query(() =>
+      Repo.query(
         db.query.user.findFirst({
           where: (user, { eq }) => eq(user.email, input.target_user_email),
         }),
@@ -156,22 +162,34 @@ const admin_transfer_ownership = async (input: {
       return result.err(E.NOT_FOUND);
     }
 
-    await Promise.all([
-      db
-        .update(BusinessTable)
-        .set({ user_id: target_user.data.id })
-        .where(eq(BusinessTable.id, input.business_id)),
+    const [business_update, image_update] = await Promise.all([
+      Repo.update(
+        db
+          .update(BusinessTable)
+          .set({ user_id: target_user.data.id })
+          .where(eq(BusinessTable.id, input.business_id))
+          .returning(),
+      ),
 
-      db
-        .update(ImageTable)
-        .set({ user_id: target_user.data.id })
-        .where(
-          and(
-            eq(ImageTable.resource_kind, "business"),
-            eq(ImageTable.resource_id, input.business_id),
-          ),
-        ),
+      Repo.update(
+        db
+          .update(ImageTable)
+          .set({ user_id: target_user.data.id })
+          .where(
+            and(
+              eq(ImageTable.resource_kind, "business"),
+              eq(ImageTable.resource_id, input.business_id),
+            ),
+          )
+          .returning(),
+      ),
     ]);
+
+    if (!business_update.ok) {
+      return business_update;
+    } else if (!image_update.ok) {
+      return image_update;
+    }
 
     return result.suc({
       target_user: target_user.data,

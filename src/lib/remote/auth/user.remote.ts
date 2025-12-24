@@ -14,11 +14,8 @@ import { count } from "drizzle-orm";
 import z from "zod";
 
 export const count_users_remote = query(async () => {
-  const users = await Repo.query(() =>
-    db
-      .select({ count: count(UserTable.id) })
-      .from(UserTable)
-      .execute(),
+  const users = await Repo.query(
+    db.select({ count: count(UserTable.id) }).from(UserTable),
   );
 
   return users.ok ? (users.data.at(0)?.count ?? 0) : 0;

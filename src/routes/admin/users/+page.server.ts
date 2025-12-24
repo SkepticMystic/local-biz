@@ -8,7 +8,7 @@ export const load = (async () => {
   const [_admin, users] = await Promise.all([
     get_session({ admin: true }),
 
-    Repo.query(() =>
+    Repo.query(
       db.query.user.findMany({
         orderBy: (users, { desc }) => [desc(users.createdAt)],
       }),

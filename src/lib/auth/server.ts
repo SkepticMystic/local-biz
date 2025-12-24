@@ -48,6 +48,8 @@ export const get_session = async (options?: Options) => {
     }
   }
 
+  event.locals.session = session;
+
   return session;
 };
 

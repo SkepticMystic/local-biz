@@ -35,7 +35,7 @@ export const load = (async ({ params }) => {
   };
 
   const streamed = {
-    seller_profile: Repo.query(() =>
+    seller_profile: Repo.query(
       db.query.seller_profile.findFirst({
         where: (seller_profile, { and, eq }) =>
           and(

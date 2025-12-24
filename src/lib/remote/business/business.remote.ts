@@ -14,14 +14,13 @@ import { eq, sql } from "drizzle-orm";
 import z from "zod";
 
 export const get_random_public_business_remote = query(async () => {
-  const res = await Repo.query(() =>
+  const res = await Repo.query(
     db
       .select()
       .from(BusinessTable)
       .where(eq(BusinessTable.admin_approved, true))
       .orderBy(sql.raw("RANDOM()"))
-      .limit(1)
-      .execute(),
+      .limit(1),
   );
 
   return res.ok ? result.suc(res.data.at(0)) : result.err(res.error);

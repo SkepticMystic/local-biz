@@ -10,7 +10,7 @@ export const load = (async ({ params }) => {
   const [{ session }, business] = await Promise.all([
     get_session(),
 
-    Repo.query(() =>
+    Repo.query(
       db.query.business.findFirst({
         where: (business, { eq }) => eq(business.slug, params.slug),
 

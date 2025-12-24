@@ -8,7 +8,7 @@ export const load = (async () => {
   const [_admin, businesses] = await Promise.all([
     get_session({ admin: true }),
 
-    Repo.query(() =>
+    Repo.query(
       db.query.business.findMany({
         orderBy: (business, { desc }) => [desc(business.createdAt)],
 

@@ -7,7 +7,7 @@ import type { PageServerLoad } from "./$types";
 export const load = (async () => {
   const { user } = await get_session();
 
-  const seller_profile = await Repo.query(() =>
+  const seller_profile = await Repo.query(
     db.query.seller_profile.findFirst({
       where: (seller_profile, { eq }) => eq(seller_profile.user_id, user.id),
 

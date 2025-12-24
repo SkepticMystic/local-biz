@@ -20,7 +20,7 @@ export const get_my_business_like_by_business_remote = query.batch(
       return () => undefined;
     }
 
-    const res = await Repo.query(() =>
+    const res = await Repo.query(
       db.query.business_like.findMany({
         where: (row, { and, eq, inArray }) =>
           and(
@@ -41,11 +41,8 @@ export const get_my_business_like_by_business_remote = query.batch(
 );
 
 export const count_all_business_likes_remote = query(async () => {
-  const res = await Repo.query(() =>
-    db
-      .select({ count: count(BusinessLikeTable.id) })
-      .from(BusinessLikeTable)
-      .execute(),
+  const res = await Repo.query(
+    db.select({ count: count(BusinessLikeTable.id) }).from(BusinessLikeTable),
   );
 
   return res.ok ? (res.data.at(0)?.count ?? 0) : 0;

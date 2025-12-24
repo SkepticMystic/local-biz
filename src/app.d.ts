@@ -5,11 +5,17 @@ declare global {
       base_seo?: import("svelte-meta-tags").MetaTagsProps;
     }
 
+    interface Locals {
+      session?: Awaited<
+        ReturnType<typeof import("$lib/services/auth.service").get_session>
+      >;
+    }
+
     interface Error {
-      code?: string;
       message: string;
       status?: number;
       level?: "error" | "warning";
+      code?: import("$lib/const/error/error.const").AppErrorCode;
       // Comes from StandardSchema.Issue.path
       path?: readonly (PropertyKey | { key: PropertyKey })[];
     }

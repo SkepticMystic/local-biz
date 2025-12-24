@@ -11,7 +11,7 @@ export const load = (async ({ params }) => {
   const [{ user }, business] = await Promise.all([
     get_session(),
 
-    Repo.query(() =>
+    Repo.query(
       db.query.business.findFirst({
         where: (business, { eq }) => eq(business.slug, params.slug),
 
@@ -29,7 +29,7 @@ export const load = (async ({ params }) => {
   }
 
   const streamed = {
-    seller_profile: Repo.query(() =>
+    seller_profile: Repo.query(
       db.query.seller_profile.findFirst({
         where: (seller_profile, { eq }) => eq(seller_profile.user_id, user.id),
       }),

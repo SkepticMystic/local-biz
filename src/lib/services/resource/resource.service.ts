@@ -12,7 +12,7 @@ const get_by_kind_and_id = async (input: {
 }) => {
   switch (input.resource_kind) {
     case "business": {
-      const res = await Repo.query(() =>
+      const res = await Repo.query(
         db.query.business.findFirst({
           columns: { id: true, user_id: true, slug: true },
           where: (res, { eq }) => eq(res.id, input.resource_id),
@@ -27,7 +27,7 @@ const get_by_kind_and_id = async (input: {
     }
 
     case "seller_profile": {
-      const res = await Repo.query(() =>
+      const res = await Repo.query(
         db.query.seller_profile.findFirst({
           columns: { id: true, user_id: true, slug: true },
           where: (res, { eq }) => eq(res.id, input.resource_id),

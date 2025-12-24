@@ -10,7 +10,7 @@ export const load = (async ({ params }) => {
   const [_admin, seller_profile] = await Promise.all([
     get_session({ admin: true }),
 
-    Repo.query(() =>
+    Repo.query(
       db.query.seller_profile.findFirst({
         where: (seller_profile, { eq }) => eq(seller_profile.slug, params.slug),
 
