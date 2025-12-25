@@ -1,6 +1,7 @@
 import { form, getRequestEvent, query } from "$app/server";
 import { auth, is_ba_error_code } from "$lib/auth";
 import { Repo } from "$lib/repos/index.repo";
+import { password_schema } from "$lib/schema/password/password.schema";
 import { db } from "$lib/server/db/drizzle.db";
 import { UserTable } from "$lib/server/db/models/auth.model";
 import { CaptchaService } from "$lib/services/captcha/captcha.service";
@@ -63,7 +64,7 @@ export const request_password_reset_remote = form(
 export const reset_password_remote = form(
   z.object({
     token: z.string(),
-    new_password: z.string(),
+    new_password: password_schema,
   }),
   async (input, issue) => {
     try {
@@ -140,7 +141,7 @@ export const send_verification_email_remote = form(
 export const change_password_remote = form(
   z.object({
     current_password: z.string(),
-    new_password: z.string(),
+    new_password: password_schema,
   }),
   async (input, issue) => {
     try {

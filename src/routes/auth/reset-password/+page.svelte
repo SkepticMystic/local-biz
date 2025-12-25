@@ -5,7 +5,7 @@
   import Alert from "$lib/components/ui/alert/Alert.svelte";
   import Card from "$lib/components/ui/card/Card.svelte";
   import Field from "$lib/components/ui/field/Field.svelte";
-  import Input from "$lib/components/ui/input/input.svelte";
+  import Password from "$lib/components/ui/password/Password.svelte";
   import { reset_password_remote } from "$lib/remote/auth/user.remote";
   import { toast } from "svelte-sonner";
 
@@ -37,16 +37,16 @@
           })}
         >
           <input {...form.fields.token.as("hidden", data.search.token)} />
+
           <Field
             label="New password"
             field={form.fields.new_password}
           >
             {#snippet input({ props, field })}
-              <Input
+              <Password
                 {...props}
                 {...field?.as("password")}
                 required
-                autocomplete="new-password"
               />
             {/snippet}
           </Field>
