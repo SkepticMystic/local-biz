@@ -1,7 +1,7 @@
 <script lang="ts">
   import DeleteImageButton from "$lib/components/buttons/DeleteImageButton.svelte";
   import BusinessForm from "$lib/components/form/business/BusinessForm.svelte";
-  import UploadImageForm from "$lib/components/form/Image/UploadImageForm.svelte";
+  import UploadImagesForm from "$lib/components/form/image/UploadImagesForm.svelte";
   import Picture from "$lib/components/image/Picture.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Separator from "$lib/components/ui/separator/separator.svelte";
@@ -30,12 +30,11 @@
   <section>
     <h2>Images</h2>
 
-    <UploadImageForm
+    <UploadImagesForm
       resource_kind="business"
       resource_id={business.id}
-      on_upload={(image) => {
-        images = [...images, image];
-      }}
+      after_upload={(results) =>
+        results.forEach((r) => (r.ok ? images.push(r.data) : null))}
     />
 
     <div class="flex flex-wrap gap-3">
