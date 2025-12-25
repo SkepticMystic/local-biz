@@ -73,11 +73,11 @@
   <Fieldset legend="Business details">
     <FieldSeparator />
 
-    <FieldGroup>
-      {#if props.mode === "update"}
-        <input {...form.fields.id.as("hidden", props.initial.id)} />
-      {/if}
+    {#if props.mode === "update"}
+      <input {...form.fields.id.as("hidden", props.initial.id)} />
+    {/if}
 
+    <FieldGroup>
       <Field
         label="Name *"
         orientation="responsive"
@@ -150,6 +150,10 @@
         {/snippet}
       </Field>
 
+      <FieldSeparator />
+    </FieldGroup>
+
+    <FieldGroup>
       <Field
         label="Email address"
         orientation="responsive"
@@ -204,6 +208,46 @@
       </Field>
 
       <Field
+        label="Facebook"
+        orientation="responsive"
+        field={form.fields.urls[1]!.data}
+      >
+        {#snippet input({ props, field })}
+          {#if field}
+            <UrlInput
+              {...props}
+              {...field.as("text")}
+              icon="mdi/facebook"
+              class="sm:min-w-[300px]"
+            />
+          {/if}
+        {/snippet}
+      </Field>
+      <input {...form.fields.urls[1]!.label.as("hidden", "Facebook")} />
+
+      <Field
+        label="Instagram"
+        orientation="responsive"
+        field={form.fields.urls[2]!.data}
+      >
+        {#snippet input({ props, field })}
+          {#if field}
+            <UrlInput
+              {...props}
+              {...field.as("text")}
+              icon="mdi/instagram"
+              class="sm:min-w-[300px]"
+            />
+          {/if}
+        {/snippet}
+      </Field>
+      <input {...form.fields.urls[2]!.label.as("hidden", "Instagram")} />
+
+      <FieldSeparator />
+    </FieldGroup>
+
+    <FieldGroup>
+      <Field
         label="Address"
         orientation="responsive"
         description="Where is your business located? If you have a Google Business, you can search for the address using your business' name."
@@ -225,7 +269,6 @@
             class="hidden"
             {...form.fields.coord_lng.as("text")}
           />
-
           <GooglePlacesInput
             {...snippet_props}
             google_place_id={form.fields.google_place_id.value()}
@@ -240,6 +283,10 @@
         {/snippet}
       </Field>
 
+      <FieldSeparator />
+    </FieldGroup>
+
+    <FieldGroup>
       <Field
         label="Bio"
         orientation="responsive"
@@ -255,7 +302,6 @@
             markdown
           </Anchor> to format your text.
         {/snippet}
-
         {#snippet input({ props, field })}
           <Textarea
             {...props}
@@ -266,10 +312,12 @@
         {/snippet}
       </Field>
 
-      <FormButton
-        {form}
-        class="w-full"
-      />
+      <FieldSeparator />
     </FieldGroup>
+
+    <FormButton
+      {form}
+      class="w-full"
+    />
   </Fieldset>
 </form>

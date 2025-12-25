@@ -6,6 +6,7 @@
   import { get_all_my_businesses_remote } from "$lib/remote/business/business.remote";
   import { session } from "$lib/stores/session.store";
   import { toast } from "svelte-sonner";
+  import Logo from "../image/Logo.svelte";
   import ButtonGroup from "../ui/button-group/button-group.svelte";
   import Button from "../ui/button/button.svelte";
   import DropdownMenu from "../ui/dropdown-menu/DropdownMenu.svelte";
@@ -98,8 +99,9 @@
     <Button
       href="/"
       size="lg"
-      variant="link"
+      variant="ghost"
     >
+      <Logo />
       {APP.NAME}
     </Button>
   </ButtonGroup>
