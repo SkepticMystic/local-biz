@@ -1,5 +1,3 @@
-import { MEGABYTE } from "$lib/components/ui/file-drop-zone";
-
 const PROVIDER_IDS = ["cloudinary"] as const;
 
 export const IMAGE_HOSTING = {
@@ -12,7 +10,7 @@ export const IMAGE_HOSTING = {
   },
 
   LIMITS: {
-    MAX_FILE_SIZE_BYTES: 5 * MEGABYTE, // Megabytes
+    MAX_FILE_SIZE_BYTES: 5 * 1024 * 1024, // Megabytes
 
     MAX_COUNT: {
       PER_RESOURCE: 10,
