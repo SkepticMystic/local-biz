@@ -123,7 +123,8 @@ const refinements = {
         .max(
           BUSINESS.TAGS.LIMITS.MAX_LENGTH,
           `Tags must be at most ${BUSINESS.TAGS.LIMITS.MAX_LENGTH} characters`,
-        ),
+        )
+        .transform((t) => t.replace(/^#/, "")),
     )
     .max(
       BUSINESS.TAGS.LIMITS.MAX_PER_RESOURCE,

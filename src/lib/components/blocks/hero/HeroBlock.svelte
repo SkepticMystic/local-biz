@@ -25,21 +25,13 @@
     </p>
 
     <div class="mt-4 flex flex-wrap justify-center gap-4">
-      {#if my_businesses.current?.length}
-        <Button
-          href="/s/businesses"
-          size="lg"
-        >
-          My Businesses
-        </Button>
-      {:else}
-        <Button
-          href="/businesses"
-          size="lg"
-        >
-          Explore Businesses
-        </Button>
-      {/if}
+      <Button
+        href="/businesses"
+        size="lg"
+      >
+        Explore Businesses
+      </Button>
+
       <Button
         variant="outline"
         href="/apply"
@@ -47,6 +39,16 @@
       >
         List Your Business
       </Button>
+
+      {#if my_businesses.current?.length}
+        <Button
+          href="/s/businesses"
+          size="lg"
+          variant="secondary"
+        >
+          My Businesses
+        </Button>
+      {/if}
     </div>
   </div>
 </header>
