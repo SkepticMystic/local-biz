@@ -2,7 +2,6 @@ import { getRequestEvent } from "$app/server";
 import { auth } from "$lib/auth";
 import { BetterAuthClient } from "$lib/auth-client";
 import type { IAccessControl } from "$lib/const/auth/access_control.const";
-import { Log } from "$lib/utils/logger.util";
 import { error, redirect } from "@sveltejs/kit";
 
 type Options = {
@@ -54,11 +53,5 @@ export const get_session = async (options?: Options) => {
 };
 
 export const safe_get_session = async (options?: Options) => {
-  try {
-    return await get_session(options);
-  } catch (e) {
-    Log.info(e, "safe_get_session error");
-
-    return null;
-  }
+  return await get_session(options).catch(() => null);
 };

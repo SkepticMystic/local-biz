@@ -1,6 +1,7 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
   import { BusinessClient } from "$lib/clients/business/business.client.js";
+  import BackAnchor from "$lib/components/links/BackAnchor.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import DataTable from "$lib/components/ui/data-table/data-table.svelte";
   import { renderComponent } from "$lib/components/ui/data-table/render-helpers.js";
@@ -65,6 +66,8 @@
 <article>
   <header>
     <h1>Businesses</h1>
+
+    <BackAnchor backto="Admin" />
   </header>
 
   <DataTable

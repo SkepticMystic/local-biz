@@ -45,6 +45,8 @@ const get_all_public = () =>
         google_place_id: true,
         formatted_address: true,
       },
+
+      orderBy: (business, { desc }) => [desc(business.createdAt)],
     }),
   );
 

@@ -11,6 +11,14 @@ export const load = (async () => {
     Repo.query(
       db.query.user.findMany({
         orderBy: (users, { desc }) => [desc(users.createdAt)],
+
+        with: {
+          accounts: {
+            columns: {
+              providerId: true,
+            },
+          },
+        },
       }),
     ).then((r) => result.unwrap_or(r, [])),
   ]);

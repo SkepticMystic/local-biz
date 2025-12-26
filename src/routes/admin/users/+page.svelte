@@ -1,5 +1,6 @@
 <script lang="ts">
   import { AdminClient } from "$lib/clients/auth/admin.client.js";
+  import BackAnchor from "$lib/components/links/BackAnchor.svelte";
   import UserAvatar from "$lib/components/ui/avatar/UserAvatar.svelte";
   import DataTable from "$lib/components/ui/data-table/data-table.svelte";
   import { renderComponent } from "$lib/components/ui/data-table/render-helpers.js";
@@ -10,6 +11,7 @@
     ACCESS_CONTROL,
     type IAccessControl,
   } from "$lib/const/auth/access_control.const";
+  import { AUTH } from "$lib/const/auth/auth.const.js";
   import { Items } from "$lib/utils/items.util.js";
   import { CellHelpers } from "$lib/utils/tanstack/table.util.js";
   import { createColumnHelper } from "@tanstack/table-core";
@@ -77,6 +79,16 @@
         }),
     }),
 
+    column.display({
+      id: "accounts",
+      meta: { label: "Accounts" },
+
+      cell: ({ row }) =>
+        row.original.accounts
+          .map((a) => AUTH.PROVIDERS.MAP[a.providerId].name)
+          .join(", "),
+    }),
+
     column.accessor("banned", {
       meta: { label: "Banned" },
 
@@ -94,6 +106,8 @@
 <article>
   <header>
     <h1>Users</h1>
+
+    <BackAnchor backto="Admin" />
   </header>
 
   <DataTable

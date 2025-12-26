@@ -3,6 +3,7 @@
   import BusinessForm from "$lib/components/form/business/BusinessForm.svelte";
   import UploadImagesForm from "$lib/components/form/image/UploadImagesForm.svelte";
   import Picture from "$lib/components/image/Picture.svelte";
+  import BackAnchor from "$lib/components/links/BackAnchor.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Separator from "$lib/components/ui/separator/separator.svelte";
   import Toggle from "$lib/components/ui/toggle/toggle.svelte";
@@ -18,6 +19,8 @@
 <article>
   <header>
     <h1>Update {business.name}</h1>
+
+    <BackAnchor backto="Business" />
   </header>
 
   <BusinessForm

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ImageClient } from "$lib/clients/image/image.client.js";
   import Picture from "$lib/components/image/Picture.svelte";
+  import BackAnchor from "$lib/components/links/BackAnchor.svelte";
   import DataTable from "$lib/components/ui/data-table/data-table.svelte";
   import { renderComponent } from "$lib/components/ui/data-table/render-helpers.js";
   import Field from "$lib/components/ui/field/Field.svelte";
@@ -61,6 +62,8 @@
 <article>
   <header>
     <h1>Images</h1>
+
+    <BackAnchor backto="Admin" />
   </header>
 
   <DataTable

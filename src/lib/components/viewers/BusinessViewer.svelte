@@ -200,36 +200,39 @@
       />
     </section>
   {/if}
+
+  <svelte:boundary onerror={(error) => captureException(error)}>
+    {@const seller_profile = await streamed.seller_profile}
+
+    {#snippet pending()}{/snippet}
+
+    {#snippet failed(_error, _reset)}{/snippet}
+
+    {#if seller_profile && seller_profile.name && seller_profile.description}
+      <section
+        class="mt-10"
+        id="seller-profile"
+      >
+        <Card description="Owner of {business.name}">
+          {#snippet title()}
+            <div class="flex items-center gap-2">
+              <Avatar
+                src={seller_profile.logo}
+                alt={seller_profile.name}
+                fallback={seller_profile.name[0]}
+              />
+
+              <h3>
+                {seller_profile.name}
+              </h3>
+            </div>
+          {/snippet}
+
+          {#snippet content()}
+            <RenderMarkdown value={seller_profile.description} />
+          {/snippet}
+        </Card>
+      </section>
+    {/if}
+  </svelte:boundary>
 </article>
-
-<svelte:boundary onerror={(error) => captureException(error)}>
-  {@const seller_profile = await streamed.seller_profile}
-
-  {#snippet pending()}{/snippet}
-
-  {#snippet failed(_error, _reset)}{/snippet}
-
-  {#if seller_profile && seller_profile.name && seller_profile.description}
-    <aside class="mx-auto mt-10 sm:container">
-      <Card description="Owner of {business.name}">
-        {#snippet title()}
-          <div class="flex items-center gap-2">
-            <Avatar
-              src={seller_profile.logo}
-              alt={seller_profile.name}
-              fallback={seller_profile.name[0]}
-            />
-
-            <h3>
-              {seller_profile.name}
-            </h3>
-          </div>
-        {/snippet}
-
-        {#snippet content()}
-          <RenderMarkdown value={seller_profile.description} />
-        {/snippet}
-      </Card>
-    </aside>
-  {/if}
-</svelte:boundary>
