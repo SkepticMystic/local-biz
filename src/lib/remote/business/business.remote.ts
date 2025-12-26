@@ -9,7 +9,7 @@ import {
 } from "$lib/server/db/models/business.model";
 import { BusinessService } from "$lib/services/business/business.service";
 import { result } from "$lib/utils/result.util";
-import { error, invalid } from "@sveltejs/kit";
+import { invalid } from "@sveltejs/kit";
 import { eq, sql } from "drizzle-orm";
 import z from "zod";
 
@@ -29,19 +29,11 @@ export const get_random_public_business_remote = query(async () => {
 export const get_all_public_businesses_remote = query(async () => {
   const res = await BusinessRepo.get_all_public();
 
-  if (!res.ok) {
-    error(res.error.status ?? 500, res.error.message);
-  }
-
-  return res.data;
+  return result.unwrap_or(res, []);
 });
 
 export const count_all_public_businesses_remote = query(async () => {
   const res = await BusinessRepo.count_all_public();
-
-  if (!res.ok) {
-    error(res.error.status ?? 500, res.error.message);
-  }
 
   return res.ok ? (res.data.at(0)?.count ?? 0) : 0;
 });
@@ -53,11 +45,8 @@ export const get_all_my_businesses_remote = query(async () => {
   }
 
   const res = await BusinessRepo.get_all_by_user(session.user.id);
-  if (!res.ok) {
-    error(res.error.status ?? 500, res.error.message);
-  }
 
-  return res.data;
+  return result.unwrap_or(res, []);
 });
 
 export const upsert_business_remote = form(

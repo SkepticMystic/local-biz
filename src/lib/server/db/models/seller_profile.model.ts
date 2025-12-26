@@ -1,4 +1,4 @@
-import { friendly_url_schema } from "$lib/schema/url/url.schema";
+import { friendly_url_schema } from "../../../schema/url/url.schema";
 import { relations } from "drizzle-orm";
 import { boolean, pgTable, text, uuid, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";

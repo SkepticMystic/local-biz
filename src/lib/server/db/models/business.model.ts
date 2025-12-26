@@ -1,4 +1,4 @@
-import { friendly_url_schema } from "$lib/schema/url/url.schema";
+import { friendly_url_schema } from "../../../schema/url/url.schema";
 import { relations } from "drizzle-orm";
 import {
   boolean,

@@ -1,4 +1,4 @@
-import { Strings } from "$lib/utils/strings.util";
+import { Strings } from "../../utils/strings.util";
 import z from "zod";
 
 export const friendly_url_schema = z
