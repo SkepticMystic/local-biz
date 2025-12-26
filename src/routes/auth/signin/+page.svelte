@@ -19,11 +19,23 @@
 </script>
 
 <Card
-  class="mx-auto w-full max-w-xs"
+  class="mx-auto w-full max-w-sm"
   title="Signin to {APP.NAME}"
 >
   {#snippet content()}
     <div class="space-y-5">
+      {#if last_method}
+        {@const provider = AUTH.PROVIDERS.MAP[last_method as IAuth.ProviderId]}
+
+        {#if provider}
+          <div class="flex w-full justify-center">
+            <Badge variant="outline">
+              You last signed in with <strong>{provider.name}</strong>
+            </Badge>
+          </div>
+        {/if}
+      {/if}
+
       <ButtonGroup
         class="w-full"
         orientation="vertical"
@@ -46,18 +58,6 @@
         </ButtonGroup>
       </ButtonGroup>
 
-      {#if last_method}
-        {@const provider = AUTH.PROVIDERS.MAP[last_method as IAuth.ProviderId]}
-
-        {#if provider}
-          <div class="flex w-full justify-center">
-            <Badge variant="outline">
-              Last signed in with {provider.name}
-            </Badge>
-          </div>
-        {/if}
-      {/if}
-
       <Separator />
 
       <CredentialSigninForm redirect_uri={data.search.redirect_uri} />
@@ -68,7 +68,7 @@
             variant="link"
             href={resolve("/auth/forgot-password")}
           >
-            Forgot password?
+            Forgot your password?
           </Button>
         </ButtonGroup>
 

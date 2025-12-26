@@ -16,7 +16,7 @@ export const signin_credentials_remote = form(
     remember: z.boolean().default(false),
     redirect_uri: z.string().default("/"),
   }),
-  async (input) => {
+  async (input, issue) => {
     try {
       await auth.api.signInEmail({
         headers: getRequestEvent().request.headers,
@@ -32,6 +32,12 @@ export const signin_credentials_remote = form(
 
         if (is_ba_error_code(error, "EMAIL_NOT_VERIFIED")) {
           redirect(302, "/auth/verify-email");
+        } else if (is_ba_error_code(error, "INVALID_EMAIL_OR_PASSWORD")) {
+          invalid(
+            issue.email(
+              "Invalid email or password. To create a new account, sign up instead.",
+            ),
+          );
         }
 
         return result.err({ message: error.message });

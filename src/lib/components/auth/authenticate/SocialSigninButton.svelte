@@ -29,6 +29,7 @@
 <Button
   class="w-full"
   onclick={signin}
+  variant="outline"
   icon={provider.icon}
 >
   Continue with {provider.name}

@@ -12,7 +12,7 @@
 </script>
 
 <Card
-  class="mx-auto w-full max-w-xs"
+  class="mx-auto w-full max-w-sm"
   title="Signup for {APP.NAME}"
 >
   {#snippet content()}

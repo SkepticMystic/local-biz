@@ -14,17 +14,19 @@
   <Card
     title="Forgot your password?"
     description="Enter your email to reset it"
-    class="mx-auto w-full max-w-xs"
+    class="mx-auto w-full max-w-sm"
   >
     {#snippet content()}
       <form
         class="space-y-3"
-        {...form.enhance(async ({ submit }) => {
-          await submit();
+        {...form.enhance(async (e) => {
+          await e.submit();
 
           const res = request_password_reset_remote.result;
           if (res?.ok) {
             toast.success(res.data.message);
+
+            e.form.reset();
           } else if (res?.error.message) {
             toast.error(res.error.message);
           }
