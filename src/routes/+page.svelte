@@ -1,5 +1,6 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
+  import FAQBlock from "$lib/components/blocks/faq/FAQBlock.svelte";
   import FeaturesBlock from "$lib/components/blocks/features/FeaturesBlock.svelte";
   import HeroBlock from "$lib/components/blocks/hero/HeroBlock.svelte";
   import StatsBlock from "$lib/components/blocks/stats/StatsBlock.svelte";
@@ -52,6 +53,8 @@
 
       <StatsBlock />
     </section>
+
+    <FAQBlock />
 
     <section id="contact">
       <div class="mb-6 text-center">
