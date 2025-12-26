@@ -13,7 +13,9 @@
   import ImageZoomTrigger from "$lib/components/ui/image-zoom/image-zoom-trigger.svelte";
   import ImageZoom from "$lib/components/ui/image-zoom/image-zoom.svelte";
   import { APP } from "$lib/const/app.const";
+  import { BUSINESS } from "$lib/const/business/business.const";
   import { IMAGES } from "$lib/const/image/image.const.js";
+  import { search_public_businesses_remote } from "$lib/remote/business/business.remote";
   import type { Business } from "$lib/server/db/models/business.model";
   import type { Image } from "$lib/server/db/models/image.model";
   import type { SellerProfile } from "$lib/server/db/models/seller_profile.model";
@@ -23,9 +25,13 @@
   import { captureException } from "@sentry/sveltekit";
   import { parsePhoneNumberFromString as parse_phone_number } from "libphonenumber-js/min";
   import UserReportDialog from "../dialogs/user_report/UserReportDialog.svelte";
+  import BusinessItem from "../items/business/BusinessItem.svelte";
   import GooglePlaceLink from "../links/GooglePlaceLink.svelte";
   import ChipGroup from "../ui/chip/chip-group.svelte";
   import Chip from "../ui/chip/chip.svelte";
+  import ItemList from "../ui/item/ItemList.svelte";
+  import Separator from "../ui/separator/separator.svelte";
+  import Skeleton from "../ui/skeleton/skeleton.svelte";
 
   let {
     business,
@@ -42,6 +48,7 @@
       | "urls"
       | "emails"
       | "phones"
+      | "category"
       | "google_place_id"
       | "formatted_address"
     > & {
@@ -235,4 +242,46 @@
       </section>
     {/if}
   </svelte:boundary>
+
+  <Separator />
+
+  <section id="related-businesses">
+    <div>
+      <h2>Related businesses</h2>
+      <p class="text-muted-foreground">
+        Other businesses in the {BUSINESS.CATEGORY.MAP[
+          business.category
+        ].label.toLocaleLowerCase()}
+        category
+      </p>
+    </div>
+
+    <svelte:boundary onerror={(error) => captureException(error)}>
+      {@const related_businesses = await search_public_businesses_remote({
+        where: {
+          id: { nin: [business.id] },
+          category: { in: [business.category] },
+        },
+      })}
+
+      {#snippet pending()}
+        <Skeleton class="h-40 w-full" />
+      {/snippet}
+
+      {#snippet failed(_error, _reset)}{/snippet}
+
+      <ItemList
+        items={related_businesses}
+        empty={{
+          icon: "lucide/slash",
+          title: "No related businesses found",
+          description: "Check back later",
+        }}
+      >
+        {#snippet item(business)}
+          <BusinessItem {business} />
+        {/snippet}
+      </ItemList>
+    </svelte:boundary>
+  </section>
 </article>

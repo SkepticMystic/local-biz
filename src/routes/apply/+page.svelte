@@ -12,8 +12,13 @@
 </script>
 
 <article>
-  <header>
+  <header class="space-y-2">
     <h1>Apply to list your business</h1>
+
+    <p class="text-muted-foreground">
+      Complete this form to list your business on {APP.NAME}. Most fields are
+      optional, but we recommend filling in as much as possible.
+    </p>
   </header>
 
   {#if !data.session}

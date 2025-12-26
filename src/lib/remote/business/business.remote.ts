@@ -12,6 +12,8 @@ import { result } from "$lib/utils/result.util";
 import { invalid } from "@sveltejs/kit";
 import { eq, sql } from "drizzle-orm";
 import z from "zod";
+import { query_schema, where_schema } from "../../schema/query/query.schema";
+import { BUSINESS } from "../../const/business/business.const";
 
 export const get_random_public_business_remote = query(async () => {
   const res = await Repo.query(
@@ -112,5 +114,52 @@ export const admin_transfer_business_ownership_remote = command(
     await get_session({ admin: true });
 
     return await BusinessService.admin_transfer_ownership(input);
+  },
+);
+
+const business_query_schema = query_schema(
+  z.object({
+    name: z.object(where_schema.ilike()).optional(),
+    id: z.object(where_schema.nin(z.uuid())).optional(),
+    category: z
+      .object(where_schema.in(z.enum(BUSINESS.CATEGORY.IDS)))
+      .optional(),
+  }),
+);
+
+export const search_public_businesses_remote = query(
+  business_query_schema,
+  async (input) => {
+    const businesss = await Repo.query(
+      db.query.business.findMany({
+        limit: input.limit,
+        offset: input.offset,
+
+        where: (business, { eq, and, ilike, inArray, notInArray }) =>
+          and(
+            eq(business.admin_approved, true),
+
+            input.where.id?.nin //
+              ? notInArray(business.id, input.where.id.nin)
+              : undefined,
+            input.where.name?.ilike //
+              ? ilike(business.name, "%" + input.where.name.ilike + "%")
+              : undefined,
+
+            input.where.category?.in //
+              ? inArray(business.category, input.where.category.in)
+              : undefined,
+          ),
+
+        with: {
+          images: {
+            columns: { url: true, thumbhash: true },
+            where: (image, { eq }) => eq(image.admin_approved, true),
+          },
+        },
+      }),
+    );
+
+    return result.unwrap_or(businesss, []);
   },
 );
