@@ -5,6 +5,7 @@
   import PhoneInput from "$lib/components/inputs/PhoneInput.svelte";
   import UrlInput from "$lib/components/inputs/UrlInput.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
+  import FieldError from "$lib/components/ui/field/field-error.svelte";
   import FieldGroup from "$lib/components/ui/field/field-group.svelte";
   import FieldSeparator from "$lib/components/ui/field/field-separator.svelte";
   import Field from "$lib/components/ui/field/Field.svelte";
@@ -16,6 +17,7 @@
   import { BUSINESS } from "$lib/const/business/business.const";
   import { upsert_business_remote } from "$lib/remote/business/business.remote";
   import type { BusinessSchema } from "$lib/server/db/models/business.model";
+  import * as Sentry from "@sentry/sveltekit";
   import { toast } from "svelte-sonner";
   import GooglePlacesInput from "../place/GooglePlacesInput.svelte";
 
@@ -43,8 +45,17 @@
     console.log("form.enhance.e", e);
     await e.submit();
 
+    const all_issues = form.fields.allIssues();
+
+    console.log("allIssues", all_issues);
     console.log("issues", form.fields.issues());
-    console.log("allIssues", form.fields.allIssues());
+
+    if (all_issues?.length) {
+      Sentry.metrics.count("upsert_business_remote.issues", all_issues.length, {
+        unit: "issue",
+        attributes: { issues: all_issues },
+      });
+    }
 
     const res = form.result;
     console.log("form.result", res);
@@ -120,6 +131,7 @@
         label="Tags"
         orientation="responsive"
         field={form.fields.tags}
+        issues={form.fields.allIssues()?.filter((i) => i.path.includes("tags"))}
         description="Keywords that describe your business. You can enter any tag you like."
       >
         {#snippet input({ props, field })}
@@ -253,6 +265,15 @@
         label="Address"
         orientation="responsive"
         description="Where is your business located? If you have a Google Business, you can search for the address using your business' name."
+        issues={form.fields
+          .allIssues()
+          ?.filter(
+            (i) =>
+              i.path.includes("google_place_id") ||
+              i.path.includes("formatted_address") ||
+              i.path.includes("coord_lat") ||
+              i.path.includes("coord_lng"),
+          )}
       >
         {#snippet input({ props: snippet_props })}
           <input
@@ -321,5 +342,11 @@
       {form}
       class="w-full"
     />
+
+    {#if form.fields.allIssues()?.length}
+      <FieldError>
+        Some of the fields above are invalid. Please fix them and try again.
+      </FieldError>
+    {/if}
   </Fieldset>
 </form>

@@ -4,7 +4,11 @@
 >
   import ExtractSnippet from "$lib/components/util/ExtractSnippet.svelte";
   import type { MaybeSnippet } from "$lib/interfaces/svelte/svelte.types";
-  import type { RemoteFormField, RemoteFormFieldValue } from "@sveltejs/kit";
+  import type {
+    RemoteFormField,
+    RemoteFormFieldValue,
+    ValidationError,
+  } from "@sveltejs/kit";
   import type { Snippet } from "svelte";
   import type { ClassValue } from "svelte/elements";
   import FieldContent from "./field-content.svelte";
@@ -19,6 +23,7 @@
     description,
     orientation,
     class: klass,
+    issues: outer_issues,
     input,
   }: {
     label: string;
@@ -26,6 +31,7 @@
     field?: RemoteFormField<V>;
     description?: MaybeSnippet;
     orientation?: FieldOrientation;
+    issues?: ValidationError["issues"];
     input: Snippet<
       [
         {
@@ -38,13 +44,16 @@
 
   const id = $props.id();
 
-  const issue = $derived(field?.issues()?.at(0));
+  const issues = $derived([
+    ...(field?.issues() ?? []),
+    ...(outer_issues ?? []),
+  ]);
 </script>
 
 <FieldRoot
   {orientation}
   class={klass}
-  data-invalid={Boolean(issue)}
+  data-invalid={Boolean(issues?.length)}
 >
   <FieldContent>
     <FieldLabel for={id}>
@@ -57,15 +66,11 @@
       </FieldDescription>
     {/if}
 
-    {#if issue}
-      <FieldError>
-        {issue.message}
-      </FieldError>
-    {/if}
+    <FieldError errors={issues} />
   </FieldContent>
 
   {@render input({
     field,
-    props: { id, "aria-invalid": Boolean(issue) },
+    props: { id, "aria-invalid": Boolean(issues?.length) },
   })}
 </FieldRoot>

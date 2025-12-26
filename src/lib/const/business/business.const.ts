@@ -74,7 +74,7 @@ export const BUSINESS = {
     LIMITS: {
       MAX_PER_RESOURCE: 10,
       MIN_LENGTH: 2,
-      MAX_LENGTH: 30,
+      MAX_LENGTH: 50,
     },
   },
 } as const;

@@ -120,10 +120,6 @@ const refinements = {
         .string()
         .trim()
         .toLowerCase()
-        .min(
-          BUSINESS.TAGS.LIMITS.MIN_LENGTH,
-          `Tags must be at least ${BUSINESS.TAGS.LIMITS.MIN_LENGTH} characters`,
-        )
         .max(
           BUSINESS.TAGS.LIMITS.MAX_LENGTH,
           `Tags must be at most ${BUSINESS.TAGS.LIMITS.MAX_LENGTH} characters`,
