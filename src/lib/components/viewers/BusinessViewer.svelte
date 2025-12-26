@@ -21,6 +21,7 @@
   import type { SellerProfile } from "$lib/server/db/models/seller_profile.model";
   import { App } from "$lib/utils/app";
   import type { IHTML } from "$lib/utils/html/html.util";
+  import { SEOUtil } from "$lib/utils/seo/seo.util";
   import { Url } from "$lib/utils/urls.js";
   import { captureException } from "@sentry/sveltekit";
   import { parsePhoneNumberFromString as parse_phone_number } from "libphonenumber-js/min";
@@ -113,12 +114,17 @@
 
     <address class="flex flex-wrap gap-3">
       {#each business.urls as url (url.data)}
+        {@const label = url.label || Url.format(url.data)}
+
         <Anchor
           target="_blank"
-          href={url.data}
+          href={SEOUtil.utmify(url.data, {
+            content: label,
+            term: business.name,
+          })}
         >
           <Favicon href={url.data} />
-          {url.label || Url.format(url.data)}
+          {label}
         </Anchor>
       {/each}
 

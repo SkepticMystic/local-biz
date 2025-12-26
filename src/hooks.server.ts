@@ -4,12 +4,15 @@ import * as Sentry from "@sentry/sveltekit";
 import type { HandleValidationError } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 import { svelteKitHandler } from "better-auth/svelte-kit";
+import { Log } from "$lib/utils/logger.util";
 
 // Used by remote function zod schemas
 export const handleValidationError: HandleValidationError = ({
-  // event,
+  event,
   issues,
 }) => {
+  Log.warn({ issues, event }, "handleValidationError");
+
   return {
     level: "warning",
     path: issues.at(0)?.path,
