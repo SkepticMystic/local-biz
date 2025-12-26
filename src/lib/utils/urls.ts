@@ -64,7 +64,7 @@ const format = (href: string) => {
   const url = safe(href);
   if (!url) return href;
 
-  return url.host.split("www.").at(-1) || url.host;
+  return url.host.replace("www.", "");
 };
 
 export const Url = {

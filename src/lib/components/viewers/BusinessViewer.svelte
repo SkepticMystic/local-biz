@@ -23,6 +23,7 @@
   import { captureException } from "@sentry/sveltekit";
   import { parsePhoneNumberFromString as parse_phone_number } from "libphonenumber-js/min";
   import UserReportDialog from "../dialogs/user_report/UserReportDialog.svelte";
+  import GooglePlaceLink from "../links/GooglePlaceLink.svelte";
   import ChipGroup from "../ui/chip/chip-group.svelte";
   import Chip from "../ui/chip/chip.svelte";
 
@@ -135,6 +136,14 @@
             phone.data}
         </Anchor>
       {/each}
+
+      {#if business.google_place_id && business.formatted_address}
+        <GooglePlaceLink
+          icon="lucide/map-pin"
+          google_place_id={business.google_place_id}
+          formatted_address={business.formatted_address}
+        />
+      {/if}
     </address>
   </section>
 

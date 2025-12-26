@@ -12,7 +12,7 @@
 </script>
 
 <Card
-  class="mx-auto w-full max-w-sm"
+  class="mx-auto w-full max-w-[353px]"
   title="Signup for {APP.NAME}"
 >
   {#snippet content()}
@@ -32,6 +32,8 @@
 
       <Separator />
 
+      <p class="text-muted-foreground">Or, sign up with your email address</p>
+
       <CredentialSignupForm redirect_uri={data.search.redirect_uri} />
 
       <ul>
@@ -41,7 +43,7 @@
             variant="link"
             href={resolve("/auth/signin")}
           >
-            Sign in instead
+            Already have an account? Sign in instead
           </Button>
         </li>
       </ul>

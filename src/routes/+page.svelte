@@ -46,7 +46,10 @@
   </section>
 
   <section id="featured">
-    <h2>Featured Business</h2>
+    <div>
+      <h2>Spotlight</h2>
+      <p class="text-muted-foreground">Check out this awesome local business</p>
+    </div>
 
     {#if !featured_business.current}
       <Skeleton class="h-32 w-full" />
@@ -59,24 +62,39 @@
   </section>
 
   <section id="features">
-    <h2>About</h2>
+    <div>
+      <h2>Why Shop Local?</h2>
+      <p class="text-muted-foreground">Because your community matters</p>
+    </div>
+
     <FeaturesBlock />
   </section>
 
   <section id="stats">
+    <div>
+      <h2>Growing Every Day</h2>
+      <p class="text-muted-foreground">
+        Join our community of local supporters
+      </p>
+    </div>
+
     <StatsBlock />
   </section>
 
   <section id="contact">
-    <h2>Interested?</h2>
-    <p>We'd love to hear from you!</p>
+    <div>
+      <h2>Let's Connect!</h2>
+      <p class="text-muted-foreground">
+        Have questions? Want to get involved? We'd love to hear from you!
+      </p>
+    </div>
 
     <Button
       size="lg"
       icon="lucide/mail"
       href={resolve("/contact")}
     >
-      Contact Us
+      Get in Touch
     </Button>
   </section>
 </article>

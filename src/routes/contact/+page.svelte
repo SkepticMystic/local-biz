@@ -37,10 +37,10 @@
   });
 </script>
 
-<article class="mx-auto max-w-xs">
-  <Alert>
+<article>
+  <Alert class="mx-auto w-full max-w-[353px]">
     {#snippet title()}
-      <span class="text-lg">
+      <span>
         <Icon
           icon="lucide/circle-question-mark"
           class="size-5"
@@ -51,12 +51,16 @@
 
     {#snippet description()}
       <p>
-        Visit our <Anchor href="/apply">Apply</Anchor> page to and fill in the form.
+        Visit our <Anchor href="/apply">application page</Anchor> and complete the
+        form. We'll get back to you shortly.
       </p>
     {/snippet}
   </Alert>
 
-  <Card description="Fill out the form below to get in touch.">
+  <Card
+    class="mx-auto w-full max-w-[353px]"
+    description="Fill out the form below to get in touch."
+  >
     {#snippet title()}
       <header>
         <h1>Contact Us</h1>

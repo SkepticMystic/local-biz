@@ -14,7 +14,7 @@
   <Card
     title="Forgot your password?"
     description="Enter your email to reset it"
-    class="mx-auto w-full max-w-sm"
+    class="mx-auto w-full max-w-[353px]"
   >
     {#snippet content()}
       <form

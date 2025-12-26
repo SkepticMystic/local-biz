@@ -13,17 +13,19 @@
       icon: "lucide/map-pin",
       title: "Locally Owned",
       content:
-        "All business owners live in the same area they operate, so you can be sure that your support feeds back into your community.",
+        "Every business owner lives right here in the community they serve. When you shop local, your money stays local and helps your neighbors thrive.",
     },
     {
       icon: "lucide/thumbs-up",
-      title: "Publicly Rated",
-      content: "See ratings and reviews of a business.",
+      title: "Community Vetted",
+      content:
+        "Real reviews from real neighbors. See what others in your community are saying about local businesses.",
     },
     {
       icon: "lucide/users",
-      title: "Community Supported",
-      content: "Get help from other business owners in your area.",
+      title: "Stronger Together",
+      content:
+        "Join a growing network of people who believe in supporting local. Together, we're building a more vibrant community.",
     },
   ];
 </script>

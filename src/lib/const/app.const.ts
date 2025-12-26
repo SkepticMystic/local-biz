@@ -9,5 +9,6 @@ export const APP = {
   URL: PUBLIC_BASE_URL,
   LOGO: asset("/favicon.svg"),
   DOMAIN: new URL(PUBLIC_BASE_URL).hostname,
-  DESCRIPTION: "Support your local business",
+  DESCRIPTION:
+    "Discover and support amazing local businesses in your community",
 };

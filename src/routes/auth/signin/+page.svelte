@@ -19,7 +19,7 @@
 </script>
 
 <Card
-  class="mx-auto w-full max-w-sm"
+  class="mx-auto w-full max-w-[353px]"
   title="Signin to {APP.NAME}"
 >
   {#snippet content()}
