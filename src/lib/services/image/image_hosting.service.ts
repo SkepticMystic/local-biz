@@ -27,7 +27,6 @@ export const ImageHostingService = {
 
   upload: async (file: File) => {
     try {
-      // TODO: Do I have to do this? Can I just send the file straight?
       const array_buffer = await file.arrayBuffer();
       const buffer = Buffer.from(array_buffer);
 

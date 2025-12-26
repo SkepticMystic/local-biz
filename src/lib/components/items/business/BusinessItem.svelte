@@ -60,14 +60,12 @@
     <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
       <!-- NOTE: We don't _need_ the place_id, google will still fallback to address -->
       {#if business.formatted_address}
-        <span>
-          <Icon icon="lucide/map-pin" />
-          <GooglePlaceLink
-            class="no-underline hover:underline"
-            google_place_id={business.google_place_id}
-            formatted_address={business.formatted_address}
-          />
-        </span>
+        <GooglePlaceLink
+          icon="lucide/map-pin"
+          class="no-underline hover:underline"
+          google_place_id={business.google_place_id}
+          formatted_address={business.formatted_address}
+        />
       {/if}
 
       <span>

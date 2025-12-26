@@ -211,6 +211,7 @@
         label="Facebook"
         orientation="responsive"
         field={form.fields.urls[1]!.data}
+        description="A link to your business's Facebook page."
       >
         {#snippet input({ props, field })}
           {#if field}
@@ -229,6 +230,7 @@
         label="Instagram"
         orientation="responsive"
         field={form.fields.urls[2]!.data}
+        description="A link to your business's Instagram page."
       >
         {#snippet input({ props, field })}
           {#if field}
