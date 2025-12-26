@@ -10,6 +10,7 @@ const CATEGORY_IDS = [
   "home_garden",
   "beauty_wellness",
   "sports_recreation",
+  "arts",
   "other",
 ] as const;
 
@@ -57,6 +58,10 @@ const CATEGORY_MAP = {
   sports_recreation: {
     label: "Sports & Recreation",
     icon: "lucide/dumbbell",
+  },
+  arts: {
+    label: "Arts & Entertainment",
+    icon: "lucide/paint-brush",
   },
   other: {
     label: "Other",

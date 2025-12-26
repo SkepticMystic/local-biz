@@ -15,6 +15,13 @@
       "when": 1765005306043,
       "tag": "0001_graceful_abomination",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766770185733,
+      "tag": "0002_funny_tempest",
+      "breakpoints": true
     }
   ]
 }
