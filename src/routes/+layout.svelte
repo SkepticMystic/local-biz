@@ -18,7 +18,7 @@
   <SEO />
 </svelte:head>
 
-<ModeWatcher />
+<ModeWatcher defaultMode="light" />
 
 <div class="flex min-h-screen flex-col">
   <header>
