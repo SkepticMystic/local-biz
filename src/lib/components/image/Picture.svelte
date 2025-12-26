@@ -19,6 +19,7 @@
     class: klass,
     fetchpriority,
     prioritize = false,
+    onclick,
   }: {
     src?: string;
     alt?: string;
@@ -32,6 +33,7 @@
     prioritize?: boolean;
     target?: HTMLAttributeAnchorTarget;
     image?: Pick<Image, "url" | "thumbhash">;
+    onclick?: () => void;
   } = $props();
 
   // NOTE: ...rest props are readonly,
@@ -66,6 +68,7 @@
       {width}
       {height}
       {loading}
+      {onclick}
       {fetchpriority}
       src={image?.url ?? src}
       transformer={transform}
