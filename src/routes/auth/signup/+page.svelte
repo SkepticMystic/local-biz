@@ -36,17 +36,13 @@
 
       <CredentialSignupForm redirect_uri={data.search.redirect_uri} />
 
-      <ul>
-        <li>
-          <Button
-            size="sm"
-            variant="link"
-            href={resolve("/auth/signin")}
-          >
-            Already have an account? Sign in instead
-          </Button>
-        </li>
-      </ul>
+      <Button
+        size="sm"
+        variant="link"
+        href={resolve("/auth/signin")}
+      >
+        Already have an account? Sign in instead
+      </Button>
     </div>
   {/snippet}
 </Card>

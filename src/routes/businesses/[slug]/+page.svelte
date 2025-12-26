@@ -4,8 +4,4 @@
   let { data } = $props();
 </script>
 
-<BusinessViewer
-  business={data.business}
-  streamed={data.streamed}
-  prerendered={data.prerendered}
-/>
+<BusinessViewer {...data} />

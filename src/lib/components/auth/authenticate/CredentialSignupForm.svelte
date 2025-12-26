@@ -20,12 +20,18 @@
   const provider = AUTH.PROVIDERS.MAP[provider_id];
 
   const form = signup_credentials_remote;
+
+  let reset_captcha = $state<() => void>();
 </script>
 
 <form
   class="space-y-3"
   {...form.enhance(async ({ submit }) => {
     await submit();
+
+    if (form.fields.allIssues()?.length) {
+      reset_captcha?.();
+    }
 
     const res = form.result;
     if (res?.ok === false) {
@@ -96,6 +102,7 @@
       <Captcha
         {...props}
         {...field?.as("text")}
+        bind:reset={reset_captcha}
       />
     {/snippet}
   </Field>

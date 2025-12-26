@@ -4,9 +4,11 @@
   import { Turnstile } from "svelte-turnstile";
 
   let {
+    reset = $bindable(),
     name = "captcha_token",
   }: {
     name?: string;
+    reset?: () => void;
   } = $props();
 </script>
 
@@ -15,4 +17,5 @@
   siteKey={PUBLIC_CAPTCHA_SITE_KEY}
   responseField
   responseFieldName={name}
+  bind:reset
 />
