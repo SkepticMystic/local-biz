@@ -39,8 +39,8 @@
   {#snippet media()}
     <Picture
       {href}
-      width={40}
-      height={40}
+      width={64}
+      height={64}
       src={business.logo}
       alt={business.name}
       fallback={business.name[0]}
@@ -92,7 +92,10 @@
       </ButtonGroup>
 
       <ButtonGroup>
-        <Button {href}>View</Button>
+        <Button {href}>
+          View
+          <Icon icon="lucide/arrow-right" />
+        </Button>
       </ButtonGroup>
     </ButtonGroup>
   {/snippet}

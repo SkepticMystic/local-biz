@@ -11,7 +11,7 @@
   const business_likes = count_all_business_likes_remote();
 </script>
 
-<div class="grid gap-6 sm:grid-cols-3">
+<div class="grid gap-4 sm:grid-cols-3">
   <div
     class="group flex flex-col items-center gap-y-3 rounded-lg border bg-card p-6 transition-all hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/20"
   >
