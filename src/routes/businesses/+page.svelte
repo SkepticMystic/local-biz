@@ -1,8 +1,14 @@
 <script lang="ts">
   import BusinessItem from "$lib/components/items/business/BusinessItem.svelte";
+  import Button from "$lib/components/ui/button/button.svelte";
+  import Field from "$lib/components/ui/field/Field.svelte";
+  import Input from "$lib/components/ui/input/input.svelte";
   import ItemList from "$lib/components/ui/item/ItemList.svelte";
+  import NativeSelectOption from "$lib/components/ui/native-select/native-select-option.svelte";
+  import NativeSelect from "$lib/components/ui/native-select/native-select.svelte";
   import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
   import TanstackTable from "$lib/components/ui/tanstack/TanstackTable.svelte";
+  import { BUSINESS } from "$lib/const/business/business.const";
   import { get_all_public_businesses_remote } from "$lib/remote/business/business.remote";
   import { createColumnHelper } from "@tanstack/table-core";
 
@@ -39,7 +45,7 @@
       data={await get_all_public_businesses_remote()}
     >
       {#snippet children(table)}
-        <!-- <search class="flex flex-wrap items-end gap-2">
+        <search class="flex flex-wrap items-end gap-2">
           <Field
             label="Name"
             class="w-fit"
@@ -82,7 +88,7 @@
             variant="outline"
             onclick={() => table.resetColumnFilters()}
           ></Button>
-        </search> -->
+        </search>
 
         <ItemList
           items={table.getRowModel().flatRows.map((r) => r.original)}
