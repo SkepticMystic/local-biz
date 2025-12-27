@@ -3,26 +3,28 @@ import { BusinessTable } from "$lib/server/db/models/business.model";
 import { and, count, eq } from "drizzle-orm";
 import { Repo } from "./index.repo";
 
-const create = async (input: typeof BusinessTable.$inferInsert) => {
-  return Repo.insert_one(db.insert(BusinessTable).values(input).returning());
-};
+const create = async (input: typeof BusinessTable.$inferInsert) =>
+  Repo.insert_one(
+    db //
+      .insert(BusinessTable)
+      .values(input)
+      .returning(),
+  );
 
 const update = async (
-  input: Partial<typeof BusinessTable.$inferInsert> & {
-    id: string;
-    user_id: string;
-  },
+  where: { id: string; user_id: string },
+  update: Partial<typeof BusinessTable.$inferInsert>,
 ) => {
-  console.log("BusinessRepo.update.input", input);
+  console.log("BusinessRepo.update", where, update);
 
-  return Repo.update_one(
+  return await Repo.update_one(
     db
       .update(BusinessTable)
-      .set(input)
+      .set(update)
       .where(
         and(
-          eq(BusinessTable.id, input.id),
-          eq(BusinessTable.user_id, input.user_id), //
+          eq(BusinessTable.id, where.id),
+          eq(BusinessTable.user_id, where.user_id), //
         ),
       )
       .returning(),
@@ -33,6 +35,7 @@ const get_all_public = () =>
   Repo.query(
     db.query.business.findMany({
       where: (business, { eq }) => eq(business.admin_approved, true),
+      orderBy: (business, { desc }) => [desc(business.createdAt)],
 
       columns: {
         id: true,
@@ -45,8 +48,6 @@ const get_all_public = () =>
         google_place_id: true,
         formatted_address: true,
       },
-
-      orderBy: (business, { desc }) => [desc(business.createdAt)],
     }),
   );
 
@@ -77,32 +78,25 @@ const get_all_by_user = (user_id: string) =>
     }),
   );
 
-const delete_by_id = async (input: { id: string; user_id: string }) => {
-  return Repo.delete_one(
+const delete_by_id = (id: string) =>
+  Repo.delete_one(
     db
-      .delete(BusinessTable)
-      .where(
-        and(
-          eq(BusinessTable.id, input.id), //
-          eq(BusinessTable.user_id, input.user_id),
-        ),
-      )
+      .delete(BusinessTable) //
+      .where(eq(BusinessTable.id, id))
       .execute(),
   );
-};
 
 const set_admin_approved = async (input: {
   id: string;
   admin_approved: boolean;
-}): Promise<App.Result<void>> => {
-  return Repo.update_void(
+}): Promise<App.Result<void>> =>
+  Repo.update_void(
     db
       .update(BusinessTable)
       .set({ admin_approved: input.admin_approved })
       .where(eq(BusinessTable.id, input.id))
       .execute(),
   );
-};
 
 export const BusinessRepo = {
   create,

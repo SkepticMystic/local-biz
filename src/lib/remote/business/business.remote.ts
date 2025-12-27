@@ -17,11 +17,13 @@ export const get_all_public_businesses_remote = query(async () => {
   return result.unwrap_or(res, []);
 });
 
-export const count_all_public_businesses_remote = query(async () => {
-  const res = await BusinessRepo.count_all_public();
+export const count_all_public_businesses_remote = query(
+  async (): Promise<number> => {
+    const res = await BusinessRepo.count_all_public();
 
-  return res.ok ? (res.data.at(0)?.count ?? 0) : 0;
-});
+    return res.ok ? (res.data.at(0)?.count ?? 0) : 0;
+  },
+);
 
 export const get_all_my_businesses_remote = query(async () => {
   const session = await safe_get_session();
@@ -44,11 +46,10 @@ export const upsert_business_remote = form(
     const { session } = await get_session();
 
     const res = input.id
-      ? await BusinessService.update({
-          ...input,
-          id: input.id,
-          user_id: session.userId,
-        })
+      ? await BusinessService.update(
+          { id: input.id, user_id: session.userId },
+          input,
+        )
       : await BusinessService.create({
           ...input,
           user_id: session.userId,
@@ -97,6 +98,15 @@ export const admin_transfer_business_ownership_remote = command(
     await get_session({ admin: true });
 
     return await BusinessService.admin_transfer_ownership(input);
+  },
+);
+
+export const admin_delete_business_remote = command(
+  z.uuid(),
+  async (business_id) => {
+    await get_session({ admin: true });
+
+    return await BusinessService.admin_delete(business_id);
   },
 );
 

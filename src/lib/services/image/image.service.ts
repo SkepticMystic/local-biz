@@ -13,26 +13,18 @@ import { ThumbhashService } from "./thumbhash.image.service";
 const check_count_limit = async (
   input: Pick<Image, "resource_id" | "resource_kind" | "user_id">,
 ) => {
-  try {
-    const count = await ImageRepo.count(input);
+  const count = await ImageRepo.count(input);
 
-    if (!count.ok) {
-      return count;
-    } else if (count.data >= IMAGE_HOSTING.LIMITS.MAX_COUNT.PER_RESOURCE) {
-      return result.err({
-        status: 429,
-        message: `Image limit reached for this ${input.resource_kind} (${IMAGE_HOSTING.LIMITS.MAX_COUNT.PER_RESOURCE}). Please delete existing images before uploading more`,
-      });
-    }
-
+  if (!count.ok) {
     return count;
-  } catch (error) {
-    Log.error(error, "ImageService.check_count_limit.error unknown");
-
-    captureException(error);
-
-    return result.err(E.INTERNAL_SERVER_ERROR);
+  } else if (count.data >= IMAGE_HOSTING.LIMITS.MAX_COUNT.PER_RESOURCE) {
+    return result.err({
+      status: 429,
+      message: `Image limit reached for this ${input.resource_kind} (${IMAGE_HOSTING.LIMITS.MAX_COUNT.PER_RESOURCE}). Please delete existing images before uploading more`,
+    });
   }
+
+  return count;
 };
 
 const set_admin_approved = async (input: {
@@ -103,9 +95,9 @@ export const ImageService = {
   },
 
   delete_many: async (
-    input: Partial<Pick<Image, "id" | "resource_id" | "resource_kind">> & {
-      user_id: string;
-    },
+    input: Partial<
+      Pick<Image, "id" | "resource_id" | "resource_kind" | "user_id">
+    >,
   ): Promise<App.Result<null>> => {
     try {
       const images = await ImageRepo.delete_many(input);
@@ -113,7 +105,7 @@ export const ImageService = {
       if (!images.ok) {
         return images;
       } else if (images.data.length === 0) {
-        return result.err(E.NOT_FOUND);
+        return result.suc(null);
       }
 
       await Promise.all(

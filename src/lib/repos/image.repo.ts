@@ -1,19 +1,19 @@
 import { E } from "$lib/const/error/error.const";
 import { db } from "$lib/server/db/drizzle.db";
 import { ImageTable, type Image } from "$lib/server/db/models/image.model";
-import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
-import { captureException } from "@sentry/sveltekit";
 import { and, count, eq } from "drizzle-orm";
 import { Repo } from "./index.repo";
 
 const build_image_where_clause = (
-  input: Partial<Pick<Image, "id" | "resource_id" | "resource_kind">> & {
-    user_id: string;
-  },
+  input: Partial<
+    Pick<Image, "id" | "resource_id" | "resource_kind" | "user_id">
+  >,
 ) =>
   and(
-    eq(ImageTable.user_id, input.user_id),
+    input.user_id //
+      ? eq(ImageTable.user_id, input.user_id)
+      : undefined,
 
     input.id //
       ? eq(ImageTable.id, input.id)
@@ -33,32 +33,30 @@ const create = async (input: typeof ImageTable.$inferInsert) => {
 const count_images = async (
   input: Pick<Image, "resource_id" | "resource_kind" | "user_id">,
 ) => {
-  try {
-    const [existing_images] = await db
+  const res = await Repo.query(
+    db
       .select({ count: count(ImageTable.id) })
       .from(ImageTable)
       .where(build_image_where_clause(input))
-      .groupBy(ImageTable.resource_id);
+      .groupBy(ImageTable.resource_id),
+  );
 
-    return result.suc(existing_images?.count ?? 0);
-  } catch (error) {
-    Log.error(error, "ImageRepo.count_images.error unknown");
-
-    captureException(error);
-
-    return result.err(E.INTERNAL_SERVER_ERROR);
-  }
+  return res.ok
+    ? result.suc(res.data[0]?.count ?? 0)
+    : result.err(E.INTERNAL_SERVER_ERROR);
 };
 
 const delete_many = async (
-  input: Partial<Pick<Image, "id" | "resource_id" | "resource_kind">> & {
-    user_id: string;
-  },
-) => {
-  const where = build_image_where_clause(input);
-
-  return Repo.query(db.delete(ImageTable).where(where).returning());
-};
+  input: Partial<
+    Pick<Image, "id" | "resource_id" | "resource_kind" | "user_id">
+  >,
+) =>
+  Repo.query(
+    db
+      .delete(ImageTable) //
+      .where(build_image_where_clause(input))
+      .returning(),
+  );
 
 const set_admin_approved = async (input: {
   id: string;

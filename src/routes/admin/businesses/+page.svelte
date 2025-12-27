@@ -60,6 +60,11 @@
           });
         }
       }),
+
+    admin_delete: (business_id: string) =>
+      BusinessClient.admin_delete(business_id, {
+        on_success: () => (businesses = Items.remove(businesses, business_id)),
+      }),
   };
 </script>
 
@@ -106,6 +111,12 @@
             });
           }
         },
+      },
+      {
+        icon: "lucide/trash",
+        title: "Delete business",
+        variant: "destructive",
+        onselect: () => actions.admin_delete(row.id),
       },
     ]}
   >

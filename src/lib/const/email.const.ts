@@ -171,7 +171,7 @@ ${COMMON.SIGNATURE.HTML}`.trim();
       return {
         html,
         to: "rossk29@pm.me",
-        subject: `New business`,
+        subject: `New business: ${input.business.name}`,
       };
     },
   },

@@ -1,4 +1,5 @@
 import {
+  admin_delete_business_remote,
   admin_set_business_approved_remote,
   admin_transfer_business_ownership_remote,
   delete_business_remote,
@@ -81,5 +82,11 @@ export const BusinessClient = {
         `Are you sure you want to transfer ownership of this business to ${input.target_user_email}?`,
       suc_msg: (input) => `Business transferred to ${input.target_user_email}`,
     },
+  ),
+
+  admin_delete: Client.wrap(
+    (input: Parameters<typeof admin_delete_business_remote>[0]) =>
+      admin_delete_business_remote(input),
+    { confirm: "Are you sure you want to delete this business?" },
   ),
 };

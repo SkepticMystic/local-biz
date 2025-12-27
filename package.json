@@ -44,6 +44,7 @@
     "@tanstack/table-core": "^8.21.3",
     "@types/node": "^24.10.4",
     "@types/turndown": "^5.0.6",
+    "@vercel/functions": "^3.3.4",
     "@zxcvbn-ts/core": "^3.0.4",
     "@zxcvbn-ts/language-common": "^3.0.4",
     "@zxcvbn-ts/language-en": "^3.0.2",

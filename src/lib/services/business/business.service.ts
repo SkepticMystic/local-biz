@@ -13,8 +13,9 @@ import { ImageTable } from "$lib/server/db/models/image.model";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { Strings } from "$lib/utils/strings.util";
-import { captureException } from "@sentry/sveltekit";
-import { and, DrizzleQueryError, eq } from "drizzle-orm";
+import { captureException, metrics } from "@sentry/sveltekit";
+import { waitUntil } from "@vercel/functions";
+import { and, eq } from "drizzle-orm";
 import { EmailService } from "../email.service";
 import { ImageService } from "../image/image.service";
 
@@ -57,13 +58,11 @@ const create = async (
 };
 
 const update = async (
-  input: Partial<typeof BusinessTable.$inferInsert> & {
-    id: string;
-    user_id: string;
-  },
+  where: { id: string; user_id: string },
+  update: Partial<typeof BusinessTable.$inferInsert>,
 ): Promise<App.Result<Business>> => {
   try {
-    const res = await BusinessRepo.update(input);
+    const res = await BusinessRepo.update(where, update);
 
     return res;
   } catch (error) {
@@ -77,17 +76,40 @@ const update = async (
 
 const delete_by_id = async (input: { id: string; user_id: string }) => {
   try {
-    const res = await BusinessRepo.delete_by_id(input);
+    const business = await Repo.query(
+      db.query.business.findFirst({
+        columns: { user_id: true },
+        where: (business, { eq }) => eq(business.id, input.id),
+      }),
+    );
+
+    if (!business.ok) {
+      return business;
+    } else if (!business.data) {
+      metrics.count("db.not_found", 1, {
+        attributes: { input, table: "business" },
+      });
+      return result.err(E.NOT_FOUND);
+    } else if (business.data.user_id !== input.user_id) {
+      metrics.count("db.forbidden", 1, {
+        attributes: { input, table: "business" },
+      });
+      return result.err(E.FORBIDDEN);
+    }
+
+    const res = await BusinessRepo.delete_by_id(input.id);
     if (!res.ok) {
       return res;
     }
 
-    await ImageService.delete_many({
-      user_id: input.user_id,
+    waitUntil(
+      ImageService.delete_many({
+        user_id: input.user_id,
 
-      resource_id: input.id,
-      resource_kind: "business",
-    });
+        resource_id: input.id,
+        resource_kind: "business",
+      }),
+    );
 
     return res;
   } catch (error) {
@@ -195,26 +217,28 @@ const admin_transfer_ownership = async (input: {
       target_user: target_user.data,
     });
   } catch (error) {
-    if (error instanceof DrizzleQueryError) {
-      Log.error(
-        error,
-        "BusinessService.admin_transfer_ownership.error DrizzleQueryError",
-      );
+    Log.error(error, "BusinessService.admin_transfer_ownership.error unknown");
 
-      captureException(error);
+    captureException(error);
 
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    } else {
-      Log.error(
-        error,
-        "BusinessService.admin_transfer_ownership.error unknown",
-      );
-
-      captureException(error);
-
-      return result.err(E.INTERNAL_SERVER_ERROR);
-    }
+    return result.err(E.INTERNAL_SERVER_ERROR);
   }
+};
+
+const admin_delete = async (business_id: string) => {
+  const res = await BusinessRepo.delete_by_id(business_id);
+  if (!res.ok) {
+    return res;
+  }
+
+  waitUntil(
+    ImageService.delete_many({
+      resource_id: business_id,
+      resource_kind: "business",
+    }),
+  );
+
+  return res;
 };
 
 export const BusinessService = {
@@ -223,4 +247,5 @@ export const BusinessService = {
   delete_by_id,
   set_admin_approved,
   admin_transfer_ownership,
+  admin_delete,
 };
