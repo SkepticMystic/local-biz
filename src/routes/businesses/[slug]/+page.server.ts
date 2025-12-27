@@ -62,6 +62,7 @@ export const load = (async ({ params }) => {
 
     seo: SEOUtil.transform({
       title: business.name,
+      keywords: business.tags,
       description: business.description,
 
       openGraph: {
@@ -71,6 +72,7 @@ export const load = (async ({ params }) => {
         ].flatMap((i) => (i ? [i] : [])),
 
         article: {
+          tags: business.tags,
           modifiedTime: business.updatedAt.toISOString(),
           publishedTime: business.createdAt.toISOString(),
         },
