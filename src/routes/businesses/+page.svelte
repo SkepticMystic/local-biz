@@ -31,7 +31,7 @@
     <div class="flex flex-col gap-2">
       <h1>Businesses</h1>
 
-      <p>See what the local community has to offer</p>
+      <p>See what Hermanus and the Overstrand has to offer</p>
     </div>
   </header>
 

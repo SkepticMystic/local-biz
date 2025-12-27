@@ -72,8 +72,8 @@
 
           <ul class="list-inside list-disc">
             <li>
-              To list a business, the owner must reside in the area the business
-              serves. This will be determined at the discretion of the {APP.NAME}
+              To list a business, the owner must reside in Hermanus or the
+              Overstrand. This will be determined at the discretion of the {APP.NAME}
               administrators.
             </li>
             <li>

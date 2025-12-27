@@ -18,7 +18,7 @@
     <section id="featured">
       <div class="mb-6 text-center">
         <h2 class="text-3xl font-bold">Spotlight</h2>
-        <p class="text-muted-foreground">Check out these local businesses</p>
+        <p class="text-muted-foreground">Check out these Hermanus businesses</p>
       </div>
 
       <svelte:boundary>
@@ -43,7 +43,7 @@
     <section id="features">
       <div class="mb-8 text-center">
         <h2 class="text-3xl font-bold">Why Shop Local?</h2>
-        <p class="text-muted-foreground">Because your community matters</p>
+        <p class="text-muted-foreground">Because Hermanus matters</p>
       </div>
 
       <FeaturesBlock />
@@ -53,7 +53,7 @@
       <div class="mb-8 text-center">
         <h2 class="text-3xl font-bold">Growing Every Day</h2>
         <p class="text-muted-foreground">
-          Join our community of local supporters
+          Join Hermanus' growing network of local supporters
         </p>
       </div>
 

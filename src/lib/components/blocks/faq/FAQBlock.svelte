@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { resolve } from "$app/paths";
   import AccordionContent from "$lib/components/ui/accordion/accordion-content.svelte";
   import AccordionItem from "$lib/components/ui/accordion/accordion-item.svelte";
   import AccordionRoot from "$lib/components/ui/accordion/accordion-root.svelte";
   import AccordionTrigger from "$lib/components/ui/accordion/accordion-trigger.svelte";
-  import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
 
   let faqItems = [
     {
@@ -35,19 +33,19 @@
       id: "item-5",
       question: "How do customers find my business?",
       answer:
-        "Customers can discover your business through search, browsing by category, or through social shares. We optimize listings to help local customers find the services they need.",
+        "Customers can discover your business through search, browsing by category, or through social shares. We optimize listings to help Hermanus customers find the services they need.",
     },
   ];
 </script>
 
 <section id="faq">
-  <div class="mx-auto max-w-5xl px-4 md:px-6">
+  <div class="mx-auto max-w-5xl md:px-4">
     <div class="mx-auto max-w-xl text-center">
       <h2>Frequently Asked Questions</h2>
 
       <p class="mt-4 text-balance text-muted-foreground">
         Find answers to common questions about listing your business, managing
-        your profile, and connecting with local customers.
+        your profile, and connecting with Hermanus customers.
       </p>
     </div>
 
@@ -73,12 +71,6 @@
           </AccordionItem>
         {/each}
       </AccordionRoot>
-
-      <p class="mt-6 px-4 text-muted-foreground">
-        Can't find what you're looking for? <Anchor href={resolve("/contact")}>
-          Contact us
-        </Anchor>
-      </p>
     </div>
   </div>
 </section>

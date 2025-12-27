@@ -13,19 +13,19 @@
       icon: "lucide/map-pin",
       title: "Locally Owned",
       content:
-        "Every business owner lives right here in the community they serve. When you shop local, your money stays local and helps your neighbors thrive.",
+        "Every business owner lives right here in Hermanus and the Overstrand. When you shop local, your money stays in our community and helps your neighbors thrive.",
     },
     {
       icon: "lucide/thumbs-up",
       title: "Community Vetted",
       content:
-        "Real reviews from real neighbors. See what others in your community are saying about local businesses.",
+        "Real reviews from real neighbors in Hermanus. See what others in the Overstrand are saying about local businesses.",
     },
     {
       icon: "lucide/users",
       title: "Stronger Together",
       content:
-        "Join a growing network of people who believe in supporting local. Together, we're building a more vibrant community.",
+        "Join a growing network of people who believe in supporting Hermanus businesses. Together, we're building a more vibrant Overstrand.",
     },
   ];
 </script>

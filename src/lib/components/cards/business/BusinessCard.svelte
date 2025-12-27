@@ -41,7 +41,7 @@
   const href = $derived(resolve("/businesses/[slug]", business));
 </script>
 
-<div class="relative max-w-xs rounded-md pt-0 shadow-lg">
+<div class="relative max-w-xs rounded-md border pt-0 shadow-lg">
   <div class="flex h-60 items-center justify-center">
     <Picture
       {href}
@@ -53,7 +53,7 @@
     ></Picture>
   </div>
 
-  <CardRoot class="border-none">
+  <CardRoot class="gap-4 border-none">
     <CardHeader>
       <CardTitle>
         <div class="flex items-center gap-3">
