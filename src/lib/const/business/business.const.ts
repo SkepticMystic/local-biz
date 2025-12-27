@@ -60,7 +60,7 @@ const CATEGORY_MAP = {
     icon: "lucide/dumbbell",
   },
   arts: {
-    label: "Arts & Entertainment",
+    label: "Arts & Culture",
     icon: "lucide/paint-brush",
   },
   other: {

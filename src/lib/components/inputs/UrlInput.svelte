@@ -7,10 +7,12 @@
 
 <Input
   inputmode="url"
-  addon="https://"
+  addon="www."
   align="inline-start"
-  value={typeof value === "string" && value.startsWith("https://")
-    ? value.slice(8)
-    : value}
+  value={value
+    .toString()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .replace(/\/$/, "")}
   {...rest}
 />

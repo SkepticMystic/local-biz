@@ -7,6 +7,7 @@
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import type { MaybePromise } from "$lib/interfaces";
   import { cn } from "$lib/utils/shadcn.util";
+  import { metrics } from "@sentry/sveltekit";
   import { PlaceAutocomplete } from "places-autocomplete-svelte";
   import type {
     ComponentOptions,
@@ -122,7 +123,14 @@
     {fetchFields}
     {requestParams}
     {PUBLIC_GOOGLE_MAPS_API_KEY}
-    onError={(error) => toast.error(error)}
+    onError={(error) => {
+      toast.error(error);
+
+      metrics.count("GooglePlacesInput.onError", 1, {
+        unit: "error",
+        attributes: { error },
+      });
+    }}
     onResponse={(response) => {
       google_place_id = response.id as string;
       formatted_address = response.formattedAddress;
