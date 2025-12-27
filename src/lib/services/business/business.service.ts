@@ -13,7 +13,8 @@ import { ImageTable } from "$lib/server/db/models/image.model";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { Strings } from "$lib/utils/strings.util";
-import { captureException, metrics } from "@sentry/sveltekit";
+import * as Sentry from "@sentry/sveltekit";
+import { captureException } from "@sentry/sveltekit";
 import { waitUntil } from "@vercel/functions";
 import { and, eq } from "drizzle-orm";
 import { EmailService } from "../email.service";
@@ -86,12 +87,12 @@ const delete_by_id = async (input: { id: string; user_id: string }) => {
     if (!business.ok) {
       return business;
     } else if (!business.data) {
-      metrics.count("db.not_found", 1, {
+      Sentry.metrics.count("db.not_found", 1, {
         attributes: { input, table: "business" },
       });
       return result.err(E.NOT_FOUND);
     } else if (business.data.user_id !== input.user_id) {
-      metrics.count("db.forbidden", 1, {
+      Sentry.metrics.count("db.forbidden", 1, {
         attributes: { input, table: "business" },
       });
       return result.err(E.FORBIDDEN);

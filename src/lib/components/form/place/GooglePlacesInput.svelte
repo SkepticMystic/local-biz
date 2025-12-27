@@ -7,7 +7,7 @@
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import type { MaybePromise } from "$lib/interfaces";
   import { cn } from "$lib/utils/shadcn.util";
-  import { metrics } from "@sentry/sveltekit";
+  import * as Sentry from "@sentry/sveltekit";
   import { PlaceAutocomplete } from "places-autocomplete-svelte";
   import type {
     ComponentOptions,
@@ -126,7 +126,7 @@
     onError={(error) => {
       toast.error(error);
 
-      metrics.count("GooglePlacesInput.onError", 1, {
+      Sentry.metrics.count("GooglePlacesInput.onError", 1, {
         unit: "error",
         attributes: { error },
       });
