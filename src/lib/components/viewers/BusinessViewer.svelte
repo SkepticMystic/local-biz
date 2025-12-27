@@ -28,8 +28,7 @@
   import UserReportDialog from "../dialogs/user_report/UserReportDialog.svelte";
   import BusinessItem from "../items/business/BusinessItem.svelte";
   import GooglePlaceLink from "../links/GooglePlaceLink.svelte";
-  import ChipGroup from "../ui/chip/chip-group.svelte";
-  import Chip from "../ui/chip/chip.svelte";
+  import ChipList from "../ui/chip/ChipList.svelte";
   import ItemList from "../ui/item/ItemList.svelte";
   import Separator from "../ui/separator/separator.svelte";
   import Skeleton from "../ui/skeleton/skeleton.svelte";
@@ -164,13 +163,10 @@
     <section>
       <h2 class="sr-only">Tags</h2>
 
-      <ChipGroup>
-        {#each business.tags as tag (tag)}
-          <Chip variant="outline">
-            #{tag}
-          </Chip>
-        {/each}
-      </ChipGroup>
+      <ChipList
+        chips={business.tags}
+        variant="outline"
+      />
     </section>
   {/if}
 
@@ -178,9 +174,7 @@
     <section>
       <h2 class="sr-only">Description</h2>
 
-      <blockquote>
-        <PrerenderedMarkdown html={prerendered.description} />
-      </blockquote>
+      <PrerenderedMarkdown html={prerendered.description} />
     </section>
   {/if}
 

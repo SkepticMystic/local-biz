@@ -4,8 +4,7 @@
   import Picture from "$lib/components/image/Picture.svelte";
   import GooglePlaceLink from "$lib/components/links/GooglePlaceLink.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
-  import ChipGroup from "$lib/components/ui/chip/chip-group.svelte";
-  import Chip from "$lib/components/ui/chip/chip.svelte";
+  import ChipList from "$lib/components/ui/chip/ChipList.svelte";
   import DropdownMenu from "$lib/components/ui/dropdown-menu/DropdownMenu.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Item from "$lib/components/ui/item/Item.svelte";
@@ -79,13 +78,10 @@
               />
             </span>
 
-            <ChipGroup>
-              {#each business.tags as tag (tag)}
-                <Chip variant="outline">
-                  #{tag}
-                </Chip>
-              {/each}
-            </ChipGroup>
+            <ChipList
+              chips={business.tags}
+              variant="outline"
+            />
           </div>
         {/snippet}
 

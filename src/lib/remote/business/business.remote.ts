@@ -3,30 +3,13 @@ import { get_session, safe_get_session } from "$lib/auth/server";
 import { BusinessRepo } from "$lib/repos/business.repo";
 import { Repo } from "$lib/repos/index.repo";
 import { db } from "$lib/server/db/drizzle.db";
-import {
-  BusinessSchema,
-  BusinessTable,
-} from "$lib/server/db/models/business.model";
+import { BusinessSchema } from "$lib/server/db/models/business.model";
 import { BusinessService } from "$lib/services/business/business.service";
 import { result } from "$lib/utils/result.util";
 import { invalid } from "@sveltejs/kit";
-import { eq, sql } from "drizzle-orm";
 import z from "zod";
-import { query_schema, where_schema } from "../../schema/query/query.schema";
 import { BUSINESS } from "../../const/business/business.const";
-
-export const get_random_public_business_remote = query(async () => {
-  const res = await Repo.query(
-    db
-      .select()
-      .from(BusinessTable)
-      .where(eq(BusinessTable.admin_approved, true))
-      .orderBy(sql.raw("RANDOM()"))
-      .limit(1),
-  );
-
-  return res.ok ? result.suc(res.data.at(0)) : result.err(res.error);
-});
+import { query_schema, where_schema } from "../../schema/query/query.schema";
 
 export const get_all_public_businesses_remote = query(async () => {
   const res = await BusinessRepo.get_all_public();
@@ -130,10 +113,14 @@ const business_query_schema = query_schema(
 export const search_public_businesses_remote = query(
   business_query_schema,
   async (input) => {
-    const businesss = await Repo.query(
+    const businesses = await Repo.query(
       db.query.business.findMany({
         limit: input.limit,
         offset: input.offset,
+
+        orderBy: input.orderBy
+          ? (_, { sql }) => [sql.raw("RANDOM()")]
+          : undefined,
 
         where: (business, { eq, and, ilike, inArray, notInArray }) =>
           and(
@@ -153,13 +140,14 @@ export const search_public_businesses_remote = query(
 
         with: {
           images: {
+            limit: 1,
             columns: { url: true, thumbhash: true },
             where: (image, { eq }) => eq(image.admin_approved, true),
           },
         },
       }),
-    );
+    ).then((r) => result.unwrap_or(r, []));
 
-    return result.unwrap_or(businesss, []);
+    return businesses;
   },
 );

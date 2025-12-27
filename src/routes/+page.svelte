@@ -4,12 +4,11 @@
   import FeaturesBlock from "$lib/components/blocks/features/FeaturesBlock.svelte";
   import HeroBlock from "$lib/components/blocks/hero/HeroBlock.svelte";
   import StatsBlock from "$lib/components/blocks/stats/StatsBlock.svelte";
-  import BusinessItem from "$lib/components/items/business/BusinessItem.svelte";
+  import BusinessCard from "$lib/components/cards/business/BusinessCard.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
+  import ItemCarousel from "$lib/components/ui/carousel/ItemCarousel.svelte";
   import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
-  import { get_random_public_business_remote } from "$lib/remote/business/business.remote";
-
-  const featured_business = get_random_public_business_remote();
+  import { search_public_businesses_remote } from "$lib/remote/business/business.remote";
 </script>
 
 <article class="mx-auto flex max-w-4xl flex-col gap-y-16 pb-16">
@@ -19,19 +18,26 @@
     <section id="featured">
       <div class="mb-6 text-center">
         <h2 class="text-3xl font-bold">Spotlight</h2>
-        <p class="text-muted-foreground">
-          Check out this awesome local business
-        </p>
+        <p class="text-muted-foreground">Check out these local businesses</p>
       </div>
 
-      {#if !featured_business.current}
-        <Skeleton class="h-32 w-full" />
-      {:else if featured_business.current.ok}
-        <BusinessItem
-          variant="outline"
-          business={featured_business.current.data}
-        />
-      {:else}{/if}
+      <svelte:boundary>
+        {#snippet pending()}
+          <Skeleton class="h-32 w-full" />
+        {/snippet}
+
+        <ItemCarousel
+          items={await search_public_businesses_remote({
+            limit: 3,
+            where: {},
+            orderBy: "RANDOM()",
+          })}
+        >
+          {#snippet item(business)}
+            <BusinessCard {business} />
+          {/snippet}
+        </ItemCarousel>
+      </svelte:boundary>
     </section>
 
     <section id="features">

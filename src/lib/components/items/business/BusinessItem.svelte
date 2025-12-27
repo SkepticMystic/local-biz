@@ -6,8 +6,7 @@
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
-  import ChipGroup from "$lib/components/ui/chip/chip-group.svelte";
-  import Chip from "$lib/components/ui/chip/chip.svelte";
+  import ChipList from "$lib/components/ui/chip/ChipList.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import ItemRoot from "$lib/components/ui/item/item-root.svelte";
   import Item from "$lib/components/ui/item/Item.svelte";
@@ -75,13 +74,10 @@
         />
       </span>
 
-      <ChipGroup>
-        {#each business.tags as tag (tag)}
-          <Chip variant="outline">
-            #{tag}
-          </Chip>
-        {/each}
-      </ChipGroup>
+      <ChipList
+        chips={business.tags}
+        variant="outline"
+      />
     </div>
   {/snippet}
 
