@@ -334,8 +334,6 @@
           />
         {/snippet}
       </Field>
-
-      <FieldSeparator />
     </FieldGroup>
 
     <FormButton

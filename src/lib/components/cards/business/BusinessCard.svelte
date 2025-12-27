@@ -100,7 +100,10 @@
     </CardHeader>
 
     <CardContent>
-      <RenderMarkdown value={business.description.slice(0, 200)} />
+      <RenderMarkdown
+        class="max-h-24 overflow-y-hidden text-sm"
+        value={business.description.slice(0, 200)}
+      />
     </CardContent>
 
     <CardFooter class="justify-between gap-3">
