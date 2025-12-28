@@ -80,6 +80,12 @@
     data={businesses}
     actions={(row) => [
       {
+        icon: "lucide/pencil",
+        title: "Edit",
+
+        href: resolve("/admin/businesses/[slug]/edit", row.original),
+      },
+      {
         icon: row.original.admin_approved ? "lucide/x" : "lucide/check",
         title: row.original.admin_approved
           ? "Deny business"

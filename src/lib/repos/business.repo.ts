@@ -12,7 +12,7 @@ const create = async (input: typeof BusinessTable.$inferInsert) =>
   );
 
 const update = async (
-  where: { id: string; user_id: string },
+  where: { id: string; user_id?: string },
   update: Partial<typeof BusinessTable.$inferInsert>,
 ) => {
   console.log("BusinessRepo.update", where, update);
@@ -24,7 +24,7 @@ const update = async (
       .where(
         and(
           eq(BusinessTable.id, where.id),
-          eq(BusinessTable.user_id, where.user_id), //
+          where.user_id ? eq(BusinessTable.user_id, where.user_id) : undefined,
         ),
       )
       .returning(),

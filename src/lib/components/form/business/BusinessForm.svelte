@@ -15,20 +15,26 @@
   import TagsInput from "$lib/components/ui/tags-input/tags-input.svelte";
   import Textarea from "$lib/components/ui/textarea/textarea.svelte";
   import { BUSINESS } from "$lib/const/business/business.const";
-  import { upsert_business_remote } from "$lib/remote/business/business.remote";
+  import {
+    admin_update_business_remote,
+    upsert_business_remote,
+  } from "$lib/remote/business/business.remote";
   import type { BusinessSchema } from "$lib/server/db/models/business.model";
   import * as Sentry from "@sentry/sveltekit";
   import { toast } from "svelte-sonner";
   import GooglePlacesInput from "../place/GooglePlacesInput.svelte";
 
-  let props:
+  let props: { admin?: boolean } & (
     | { mode: "create" }
     | {
         mode: "update";
         initial: BusinessSchema["update"];
-      } = $props();
+      }
+  ) = $props();
 
-  const form = upsert_business_remote;
+  const form = props.admin
+    ? admin_update_business_remote
+    : upsert_business_remote;
 
   if (props.mode === "update") {
     form.fields.set(props.initial);

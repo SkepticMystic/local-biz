@@ -59,7 +59,7 @@ const create = async (
 };
 
 const update = async (
-  where: { id: string; user_id: string },
+  where: { id: string; user_id?: string },
   update: Partial<typeof BusinessTable.$inferInsert>,
 ): Promise<App.Result<Business>> => {
   try {

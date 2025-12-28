@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import Badge from "$lib/components/ui/badge/badge.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
+  import Button from "$lib/components/ui/button/button.svelte";
   import Separator from "$lib/components/ui/separator/separator.svelte";
   import BusinessViewer from "$lib/components/viewers/BusinessViewer.svelte";
 
@@ -16,12 +18,12 @@
 
   <ButtonGroup>
     <ButtonGroup>
-      <!-- <Button
+      <Button
         icon="lucide/edit"
-        href={resolve("/s/businesses/[slug]/edit", data.business)}
+        href={resolve("/admin/businesses/[slug]/edit", data.business)}
       >
         Edit
-      </Button> -->
+      </Button>
     </ButtonGroup>
   </ButtonGroup>
 </nav>

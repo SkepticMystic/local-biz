@@ -65,6 +65,17 @@ export const upsert_business_remote = form(
   },
 );
 
+export const admin_update_business_remote = form(
+  BusinessSchema.update.extend({
+    id: z.uuid(),
+  }),
+  async (input) => {
+    await get_session({ admin: true });
+
+    return await BusinessService.update({ id: input.id }, input);
+  },
+);
+
 export const delete_business_remote = command(
   z.uuid(), //
   async (business_id) => {
