@@ -112,6 +112,14 @@
         onselect: () => actions.admin_delete(row.id),
       },
     ]}
+    bulk_actions={(rows) => [
+      {
+        title: "Toggle approval",
+        icon: "lucide/check",
+        onselect: () =>
+          Promise.all(rows.map((row) => actions.toggle_approval(row.id))),
+      },
+    ]}
   >
     {#snippet header(table)}
       <search class="flex flex-wrap gap-3">
