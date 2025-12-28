@@ -249,7 +249,7 @@
 
   <Separator />
 
-  <section id="related-businesses">
+  <aside id="related-businesses">
     <div>
       <h2>Related businesses</h2>
       <p class="text-muted-foreground">
@@ -287,5 +287,5 @@
         {/snippet}
       </ItemList>
     </svelte:boundary>
-  </section>
+  </aside>
 </article>
