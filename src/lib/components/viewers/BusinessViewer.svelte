@@ -112,43 +112,47 @@
   <section>
     <h2 class="sr-only">Business URLs & Contact Info</h2>
 
-    <address class="flex flex-wrap gap-3">
-      {#each business.urls as url (url.data)}
-        {@const label = url.label || Url.format(url.data)}
+    <address class="flex flex-col flex-wrap gap-3 md:flex-row">
+      <div class="flex flex-wrap gap-3">
+        {#each business.urls as url (url.data)}
+          {@const label = url.label || Url.format(url.data)}
 
-        <Anchor
-          target="_blank"
-          href={SEOUtil.utmify(url.data, {
-            content: label,
-            term: business.name,
-          })}
-        >
-          <Favicon href={url.data} />
-          {label}
-        </Anchor>
-      {/each}
+          <Anchor
+            target="_blank"
+            href={SEOUtil.utmify(url.data, {
+              content: label,
+              term: business.name,
+            })}
+          >
+            <Favicon href={url.data} />
+            {label}
+          </Anchor>
+        {/each}
+      </div>
 
-      {#each business.emails as email (email.data)}
-        <Anchor
-          target="_blank"
-          icon="lucide/mail"
-          href="mailto:{email.data}"
-        >
-          {email.label || email.data}
-        </Anchor>
-      {/each}
+      <div class="flex flex-wrap gap-3">
+        {#each business.emails as email (email.data)}
+          <Anchor
+            target="_blank"
+            icon="lucide/mail"
+            href="mailto:{email.data}"
+          >
+            {email.label || email.data}
+          </Anchor>
+        {/each}
 
-      {#each business.phones as phone (phone.data)}
-        <Anchor
-          target="_blank"
-          icon="lucide/phone"
-          href="tel:{phone.data}"
-        >
-          {phone.label ||
-            parse_phone_number(phone.data)?.formatNational() ||
-            phone.data}
-        </Anchor>
-      {/each}
+        {#each business.phones as phone (phone.data)}
+          <Anchor
+            target="_blank"
+            icon="lucide/phone"
+            href="tel:{phone.data}"
+          >
+            {phone.label ||
+              parse_phone_number(phone.data)?.formatNational() ||
+              phone.data}
+          </Anchor>
+        {/each}
+      </div>
 
       {#if business.google_place_id && business.formatted_address}
         <GooglePlaceLink
