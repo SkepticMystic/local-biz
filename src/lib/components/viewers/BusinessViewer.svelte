@@ -28,6 +28,7 @@
   import UserReportDialog from "../dialogs/user_report/UserReportDialog.svelte";
   import BusinessItem from "../items/business/BusinessItem.svelte";
   import GooglePlaceLink from "../links/GooglePlaceLink.svelte";
+  import ItemCarousel from "../ui/carousel/ItemCarousel.svelte";
   import ChipList from "../ui/chip/ChipList.svelte";
   import ItemList from "../ui/item/ItemList.svelte";
   import Separator from "../ui/separator/separator.svelte";
@@ -182,18 +183,17 @@
     <section>
       <h2 class="sr-only">Images</h2>
 
-      <div class="flex flex-wrap gap-3">
-        <ImageZoom>
-          {#each business.images as image, i (image.url)}
+      <ImageZoom>
+        <ItemCarousel items={business.images.map((p) => ({ ...p, id: p.url }))}>
+          {#snippet item(image, i)}
             <ImageZoomTrigger
               {...IMAGES.SIZES.PREVIEW}
               {image}
-              class="max-w-full"
               prioritize={i === 0}
             ></ImageZoomTrigger>
-          {/each}
-        </ImageZoom>
-      </div>
+          {/snippet}
+        </ItemCarousel>
+      </ImageZoom>
     </section>
   {/if}
 

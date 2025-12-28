@@ -116,7 +116,7 @@
     >
       <Picture
         alt={currentImageData.alt}
-        class="pointer-events-auto block  max-h-full max-w-full object-contain"
+        class="pointer-events-auto block max-h-screen max-w-full object-contain"
         image={{
           url: currentImageData.src,
           thumbhash: currentImageData.thumbhash,
