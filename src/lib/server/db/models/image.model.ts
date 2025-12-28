@@ -1,10 +1,10 @@
 import { relations } from "drizzle-orm";
 import {
-  boolean,
   index,
   jsonb,
   pgEnum,
   pgTable,
+  timestamp,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -48,7 +48,7 @@ export const ImageTable = pgTable(
 
     thumbhash: varchar({ length: 100 }),
 
-    admin_approved: boolean().default(false).notNull(),
+    approved_at: timestamp({ mode: "date" }),
 
     ...Schema.timestamps,
   },

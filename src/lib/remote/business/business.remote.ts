@@ -88,15 +88,12 @@ export const delete_business_remote = command(
   },
 );
 
-export const admin_set_business_approved_remote = command(
-  z.object({
-    id: z.uuid(),
-    admin_approved: z.boolean(),
-  }),
-  async (input) => {
+export const admin_toggle_business_approved_at_remote = command(
+  z.uuid(),
+  async (business_id) => {
     await get_session({ admin: true });
 
-    return await BusinessService.set_admin_approved(input);
+    return await BusinessService.toggle_approved_at(business_id);
   },
 );
 
@@ -143,9 +140,9 @@ export const search_public_businesses_remote = query(
           ? (_, { sql }) => [sql.raw("RANDOM()")]
           : undefined,
 
-        where: (business, { eq, and, ilike, inArray, notInArray }) =>
+        where: (business, { and, ilike, inArray, notInArray, isNotNull }) =>
           and(
-            eq(business.admin_approved, true),
+            isNotNull(business.approved_at),
 
             input.where.id?.nin //
               ? notInArray(business.id, input.where.id.nin)
@@ -163,7 +160,7 @@ export const search_public_businesses_remote = query(
           images: {
             limit: 1,
             columns: { url: true, thumbhash: true },
-            where: (image, { eq }) => eq(image.admin_approved, true),
+            where: (image, { isNotNull }) => isNotNull(image.approved_at),
           },
         },
       }),

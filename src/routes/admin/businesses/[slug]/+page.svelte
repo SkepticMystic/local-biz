@@ -1,5 +1,6 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
+  import BackAnchor from "$lib/components/links/BackAnchor.svelte";
   import Badge from "$lib/components/ui/badge/badge.svelte";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
@@ -10,10 +11,12 @@
 </script>
 
 <nav class="flex flex-wrap items-center justify-between gap-3">
-  <div>
-    <Badge variant={data.business.admin_approved ? "success" : "warning"}>
-      {data.business.admin_approved ? "Approved" : "Not approved"}
+  <div class="flex flex-col gap-1">
+    <Badge variant={data.business.approved_at ? "success" : "warning"}>
+      {data.business.approved_at ? "Approved" : "Not approved"}
     </Badge>
+
+    <BackAnchor backto="Admin" />
   </div>
 
   <ButtonGroup>

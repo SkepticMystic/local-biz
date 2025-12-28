@@ -50,11 +50,11 @@
           <ButtonGroup>
             <Toggle
               disabled
-              pressed={image.admin_approved}
-              title={image.admin_approved ? "Approved" : "Not approved"}
-              icon={image.admin_approved ? "lucide/check" : "lucide/x"}
+              pressed={!!image.approved_at}
+              title={image.approved_at ? "Approved" : "Not approved"}
+              icon={image.approved_at ? "lucide/check" : "lucide/x"}
             >
-              {image.admin_approved ? "Approved" : "Not approved"}
+              {image.approved_at ? "Approved" : "Not approved"}
             </Toggle>
 
             <ButtonGroup>

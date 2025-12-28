@@ -1,13 +1,12 @@
-import { friendly_url_schema } from "../../../schema/url/url.schema";
 import { relations } from "drizzle-orm";
 import {
-  boolean,
   doublePrecision,
   index,
   jsonb,
   pgEnum,
   pgTable,
   text,
+  timestamp,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -16,6 +15,7 @@ import z from "zod";
 import { BUSINESS } from "../../../const/business/business.const";
 import type { Branded } from "../../../interfaces/zod/zod.types";
 import { tel_schema } from "../../../schema/tel/tel.schema";
+import { friendly_url_schema } from "../../../schema/url/url.schema";
 import { UserTable } from "./auth.model";
 import { BusinessLikeTable } from "./business_like.model";
 import { ImageTable } from "./image.model";
@@ -62,7 +62,7 @@ export const BusinessTable = pgTable(
     tags: jsonb().default([]).notNull().$type<string[]>(),
     category: business_category_enum().default("other").notNull(),
 
-    admin_approved: boolean().default(false).notNull(),
+    approved_at: timestamp({ mode: "date" }),
 
     ...Schema.timestamps,
   },

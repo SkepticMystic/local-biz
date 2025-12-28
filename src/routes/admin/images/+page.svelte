@@ -4,8 +4,6 @@
   import BackAnchor from "$lib/components/links/BackAnchor.svelte";
   import DataTable from "$lib/components/ui/data-table/data-table.svelte";
   import { renderComponent } from "$lib/components/ui/data-table/render-helpers.js";
-  import Field from "$lib/components/ui/field/Field.svelte";
-  import NativeSelect from "$lib/components/ui/native-select/native-select.svelte";
   import { IMAGES } from "$lib/const/image/image.const.js";
   import { Items } from "$lib/utils/items.util.js";
   import { CellHelpers } from "$lib/utils/tanstack/table.util.js";
@@ -32,10 +30,10 @@
       meta: { label: "Resource kind" },
     }),
 
-    column.accessor("admin_approved", {
+    column.accessor("approved_at", {
       meta: { label: "Approved" },
 
-      cell: ({ getValue }) => (getValue() ? "Yes" : "No"),
+      cell: CellHelpers.time,
     }),
 
     column.accessor("createdAt", {
@@ -46,15 +44,9 @@
   ];
 
   const actions = {
-    set_approval: (
-      ...args: Parameters<typeof ImageClient.set_admin_approved>
-    ) =>
-      ImageClient.set_admin_approved(...args).then((res) => {
-        if (res.ok) {
-          images = Items.patch(images, args[0].id, {
-            admin_approved: args[0].admin_approved,
-          });
-        }
+    toggle_approved_at: (id: string) =>
+      ImageClient.toggle_approved_at(id, {
+        on_success: (data) => (images = Items.patch(images, id, data)),
       }),
   };
 </script>
@@ -73,50 +65,26 @@
       selection: {},
       pagination: { pageIndex: 0, pageSize: 10 },
       // NOTE: To save on hosting data, only show images that need to be approved
-      column_filters: [{ id: "admin_approved", value: false }],
+      column_filters: [{ id: "approved_at", value: null }],
     }}
     actions={(row) => [
       {
-        title: row.original.admin_approved ? "Deny" : "Approve",
-        icon: row.original.admin_approved ? "lucide/x" : "lucide/check",
+        title: row.original.approved_at ? "Deny" : "Approve",
+        icon: row.original.approved_at ? "lucide/x" : "lucide/check",
 
-        onselect: () =>
-          actions.set_approval({
-            id: row.id,
-            admin_approved: !row.original.admin_approved,
-          }),
+        onselect: () => actions.toggle_approved_at(row.id),
       },
     ]}
     bulk_actions={(rows) => [
       {
-        title: "Approve",
+        title: "Toggle approval",
         icon: "lucide/check",
         onselect: () =>
-          Promise.all(
-            rows.map((row) =>
-              actions.set_approval(
-                { id: row.id, admin_approved: true },
-                { confirm: null },
-              ),
-            ),
-          ),
-      },
-      {
-        title: "Deny",
-        icon: "lucide/x",
-        onselect: () =>
-          Promise.all(
-            rows.map((row) =>
-              actions.set_approval(
-                { id: row.id, admin_approved: false },
-                { confirm: null },
-              ),
-            ),
-          ),
+          Promise.all(rows.map((row) => actions.toggle_approved_at(row.id))),
       },
     ]}
   >
-    {#snippet header(table)}
+    <!-- {#snippet header(table)}
       <search class="flex flex-wrap gap-3">
         <Field label="Approved">
           {#snippet input({ props })}
@@ -128,13 +96,13 @@
                 { label: "No", value: false },
               ]}
               bind:value={
-                () => table.getColumn("admin_approved")?.getFilterValue(),
-                (v) => table.getColumn("admin_approved")?.setFilterValue(v)
+                () => table.getColumn("approved_at")?.getFilterValue(),
+                (v) => table.getColumn("approved_at")?.setFilterValue(v)
               }
             />
           {/snippet}
         </Field>
       </search>
-    {/snippet}
+    {/snippet} -->
   </DataTable>
 </article>

@@ -20,7 +20,7 @@ export const load = (async ({ params }) => {
               id: true,
               url: true,
               thumbhash: true,
-              admin_approved: true,
+              approved_at: true,
             },
           },
         },

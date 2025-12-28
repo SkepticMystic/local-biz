@@ -1,6 +1,6 @@
 import { db } from "$lib/server/db/drizzle.db";
 import { BusinessTable } from "$lib/server/db/models/business.model";
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, isNotNull } from "drizzle-orm";
 import { Repo } from "./index.repo";
 
 const create = async (input: typeof BusinessTable.$inferInsert) =>
@@ -11,13 +11,11 @@ const create = async (input: typeof BusinessTable.$inferInsert) =>
       .returning(),
   );
 
-const update = async (
+const update_one = async (
   where: { id: string; user_id?: string },
   update: Partial<typeof BusinessTable.$inferInsert>,
-) => {
-  console.log("BusinessRepo.update", where, update);
-
-  return await Repo.update_one(
+) =>
+  Repo.update_one(
     db
       .update(BusinessTable)
       .set(update)
@@ -29,12 +27,11 @@ const update = async (
       )
       .returning(),
   );
-};
 
 const get_all_public = () =>
   Repo.query(
     db.query.business.findMany({
-      where: (business, { eq }) => eq(business.admin_approved, true),
+      where: (business, { isNotNull }) => isNotNull(business.approved_at),
       orderBy: (business, { desc }) => [desc(business.createdAt)],
 
       columns: {
@@ -56,7 +53,7 @@ const count_all_public = () =>
     db
       .select({ count: count(BusinessTable.id) })
       .from(BusinessTable)
-      .where(eq(BusinessTable.admin_approved, true)),
+      .where(isNotNull(BusinessTable.approved_at)),
   );
 
 const get_all_by_user = (user_id: string) =>
@@ -86,24 +83,11 @@ const delete_by_id = (id: string) =>
       .execute(),
   );
 
-const set_admin_approved = async (input: {
-  id: string;
-  admin_approved: boolean;
-}): Promise<App.Result<void>> =>
-  Repo.update_void(
-    db
-      .update(BusinessTable)
-      .set({ admin_approved: input.admin_approved })
-      .where(eq(BusinessTable.id, input.id))
-      .execute(),
-  );
-
 export const BusinessRepo = {
   create,
-  update,
+  update_one,
   get_all_public,
   count_all_public,
   get_all_by_user,
   delete_by_id,
-  set_admin_approved,
 };

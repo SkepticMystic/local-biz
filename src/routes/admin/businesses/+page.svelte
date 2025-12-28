@@ -7,7 +7,6 @@
   import { renderComponent } from "$lib/components/ui/data-table/render-helpers.js";
   import Field from "$lib/components/ui/field/Field.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
-  import NativeSelect from "$lib/components/ui/native-select/native-select.svelte";
   import { Format } from "$lib/utils/format.util.js";
   import { Items } from "$lib/utils/items.util.js";
   import { CellHelpers } from "$lib/utils/tanstack/table.util.js";
@@ -36,7 +35,7 @@
       meta: { label: "Owner" },
     }),
 
-    column.accessor("admin_approved", {
+    column.accessor("approved_at", {
       meta: { label: "Approved" },
 
       cell: ({ getValue }) => (getValue() ? "Yes" : "No"),
@@ -50,15 +49,9 @@
   ];
 
   const actions = {
-    set_approval: (
-      input: Parameters<typeof BusinessClient.set_admin_approved>[0],
-    ) =>
-      BusinessClient.set_admin_approved(input).then((res) => {
-        if (res.ok) {
-          businesses = Items.patch(businesses, input.id, {
-            admin_approved: input.admin_approved,
-          });
-        }
+    toggle_approval: (id: string) =>
+      BusinessClient.toggle_approved_at(id, {
+        on_success: (data) => (businesses = Items.patch(businesses, id, data)),
       }),
 
     admin_delete: (business_id: string) =>
@@ -86,15 +79,9 @@
         href: resolve("/admin/businesses/[slug]/edit", row.original),
       },
       {
-        icon: row.original.admin_approved ? "lucide/x" : "lucide/check",
-        title: row.original.admin_approved
-          ? "Deny business"
-          : "Approve business",
-        onselect: () =>
-          actions.set_approval({
-            id: row.id,
-            admin_approved: !row.original.admin_approved,
-          }),
+        icon: row.original.approved_at ? "lucide/x" : "lucide/check",
+        title: row.original.approved_at ? "Deny business" : "Approve business",
+        onselect: () => actions.toggle_approval(row.id),
       },
       {
         icon: "lucide/chevron-right",
@@ -139,26 +126,6 @@
               bind:value={
                 () => table.getColumn("name")?.getFilterValue(),
                 (v) => table.getColumn("name")?.setFilterValue(v)
-              }
-            />
-          {/snippet}
-        </Field>
-
-        <Field
-          label="Approved"
-          class="w-fit"
-        >
-          {#snippet input({ props })}
-            <NativeSelect
-              {...props}
-              options={[
-                { value: undefined, label: "All" },
-                { value: true, label: "Yes" },
-                { value: false, label: "No" },
-              ]}
-              bind:value={
-                () => table.getColumn("admin_approved")?.getFilterValue(),
-                (v) => table.getColumn("admin_approved")?.setFilterValue(v)
               }
             />
           {/snippet}

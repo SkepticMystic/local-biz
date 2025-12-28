@@ -8,8 +8,8 @@
 
 <nav class="flex flex-wrap items-center justify-between gap-3">
   <div>
-    <Badge variant={data.seller_profile.admin_approved ? "success" : "warning"}>
-      {data.seller_profile.admin_approved ? "Approved" : "Not approved"}
+    <Badge variant={data.seller_profile.approved_at ? "success" : "warning"}>
+      {data.seller_profile.approved_at ? "Approved" : "Not approved"}
     </Badge>
   </div>
 

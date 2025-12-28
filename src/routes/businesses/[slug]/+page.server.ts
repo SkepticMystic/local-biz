@@ -9,17 +9,17 @@ import type { PageServerLoad } from "./$types";
 
 export const load = (async ({ params }) => {
   const business = await db.query.business.findFirst({
-    where: (business, { eq, and }) =>
+    where: (business, { and, eq, isNotNull }) =>
       and(
         eq(business.slug, params.slug), //
-        eq(business.admin_approved, true),
+        isNotNull(business.approved_at),
       ),
 
     with: {
       images: {
         columns: { url: true, thumbhash: true },
 
-        where: (image, { eq }) => eq(image.admin_approved, true),
+        where: (image, { isNotNull }) => isNotNull(image.approved_at),
       },
     },
   });
@@ -37,9 +37,9 @@ export const load = (async ({ params }) => {
   const streamed = {
     seller_profile: Repo.query(
       db.query.seller_profile.findFirst({
-        where: (seller_profile, { and, eq }) =>
+        where: (seller_profile, { and, eq, isNotNull }) =>
           and(
-            eq(seller_profile.admin_approved, true),
+            isNotNull(seller_profile.approved_at),
             eq(seller_profile.user_id, business.user_id), //
           ),
 

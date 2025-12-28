@@ -58,23 +58,21 @@ const delete_many = async (
       .returning(),
   );
 
-const set_admin_approved = async (input: {
-  id: string;
-  admin_approved: boolean;
-}): Promise<App.Result<void>> => {
-  return Repo.update_void(
+const update_one = async (
+  where: { id: string },
+  update: Partial<typeof ImageTable.$inferInsert>,
+): Promise<App.Result<Image>> =>
+  Repo.update_one(
     db
       .update(ImageTable)
-      .set({ admin_approved: input.admin_approved })
-      .where(eq(ImageTable.id, input.id))
-      .execute(),
+      .set(update)
+      .where(eq(ImageTable.id, where.id))
+      .returning(),
   );
-};
 
 export const ImageRepo = {
   create,
+  update_one,
   count: count_images,
   delete_many,
-
-  set_admin_approved,
 };

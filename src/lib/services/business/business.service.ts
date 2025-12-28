@@ -63,7 +63,7 @@ const update = async (
   update: Partial<typeof BusinessTable.$inferInsert>,
 ): Promise<App.Result<Business>> => {
   try {
-    const res = await BusinessRepo.update(where, update);
+    const res = await BusinessRepo.update_one(where, update);
 
     return res;
   } catch (error) {
@@ -122,30 +122,40 @@ const delete_by_id = async (input: { id: string; user_id: string }) => {
   }
 };
 
-const set_admin_approved = async (input: {
-  id: string;
-  admin_approved: boolean;
-}): Promise<App.Result<void>> => {
+const toggle_approved_at = async (
+  id: string,
+): Promise<App.Result<Business>> => {
   try {
-    const res = await BusinessRepo.set_admin_approved(input);
+    const business = await Repo.query(
+      db.query.business.findFirst({
+        where: (business, { eq }) => eq(business.id, id),
+        columns: { approved_at: true },
+      }),
+    );
 
-    if (!res.ok) {
-      return res;
+    if (!business.ok) {
+      return business;
+    } else if (!business.data) {
+      return result.err(E.NOT_FOUND);
     }
 
+    const res = await BusinessRepo.update_one(
+      { id },
+      { approved_at: business.data.approved_at ? null : new Date() },
+    );
+
     // TODO: Send email notification to user about approval status
-    // const business = await BusinessRepo.get_by_id(input.id);
-    // if (business.ok && business.data) {
+    // if (res.ok) {
     //   await EmailService.sendBusinessApprovalNotification({
     //     user_id: business.data.user_id,
     //     business_name: business.data.name,
-    //     approved: input.admin_approved,
+    //     approved: res.data.approved_at !== null,
     //   });
     // }
 
     return res;
   } catch (error) {
-    Log.error(error, "BusinessService.set_admin_approved.error unknown");
+    Log.error(error, "BusinessService.toggle_approved_at.error unknown");
 
     captureException(error);
 
@@ -246,7 +256,7 @@ export const BusinessService = {
   create,
   update,
   delete_by_id,
-  set_admin_approved,
+  toggle_approved_at,
   admin_transfer_ownership,
   admin_delete,
 };

@@ -14,22 +14,22 @@ const create = async (
   );
 };
 
-const update = async (
-  input: Partial<typeof SellerProfileTable.$inferInsert> & {
-    id: string;
-    user_id: string;
-  },
+const update_one = async (
+  where: { id: string; user_id?: string },
+  update: Partial<typeof SellerProfileTable.$inferInsert>,
 ): Promise<App.Result<SellerProfile>> => {
-  console.log("SellerProfileRepo.update.input", input);
+  console.log("SellerProfileRepo.update.input", where, update);
 
   return Repo.update_one(
     db
       .update(SellerProfileTable)
-      .set(input)
+      .set(update)
       .where(
         and(
-          eq(SellerProfileTable.id, input.id),
-          eq(SellerProfileTable.user_id, input.user_id),
+          eq(SellerProfileTable.id, where.id),
+          where.user_id
+            ? eq(SellerProfileTable.user_id, where.user_id)
+            : undefined,
         ),
       )
       .returning(),
@@ -39,8 +39,8 @@ const update = async (
 const get_all_public = () =>
   Repo.query(
     db.query.seller_profile.findMany({
-      where: (seller_profile, { eq }) =>
-        eq(seller_profile.admin_approved, true),
+      where: (seller_profile, { isNotNull }) =>
+        isNotNull(seller_profile.approved_at),
 
       columns: {
         id: true,
@@ -63,23 +63,9 @@ const get_many_by_slugs = async (
     }),
   );
 
-const set_admin_approved = async (input: {
-  id: string;
-  admin_approved: boolean;
-}): Promise<App.Result<void>> => {
-  return Repo.update_void(
-    db
-      .update(SellerProfileTable)
-      .set({ admin_approved: input.admin_approved })
-      .where(eq(SellerProfileTable.id, input.id))
-      .execute(),
-  );
-};
-
 export const SellerProfileRepo = {
   create,
-  update,
+  update_one,
   get_all_public,
   get_many_by_slugs,
-  set_admin_approved,
 };

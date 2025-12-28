@@ -8,7 +8,6 @@
   import { renderComponent } from "$lib/components/ui/data-table/render-helpers.js";
   import Field from "$lib/components/ui/field/Field.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
-  import NativeSelect from "$lib/components/ui/native-select/native-select.svelte";
   import { Items } from "$lib/utils/items.util.js";
   import { CellHelpers } from "$lib/utils/tanstack/table.util.js";
   import { createColumnHelper } from "@tanstack/table-core";
@@ -41,10 +40,10 @@
         }),
     }),
 
-    column.accessor("admin_approved", {
+    column.accessor("approved_at", {
       meta: { label: "Approved" },
 
-      cell: ({ getValue }) => (getValue() ? "Yes" : "No"),
+      cell: CellHelpers.time,
     }),
 
     column.accessor("createdAt", {
@@ -67,18 +66,12 @@
     data={seller_profiles}
     actions={(row) => [
       {
-        title: row.original.admin_approved ? "Deny" : "Approve",
-        icon: row.original.admin_approved ? "lucide/x" : "lucide/check",
+        title: row.original.approved_at ? "Deny" : "Approve",
+        icon: row.original.approved_at ? "lucide/x" : "lucide/check",
         onselect: () =>
-          SellerProfileClient.set_admin_approved({
-            id: row.id,
-            admin_approved: !row.original.admin_approved,
-          }).then((r) => {
-            if (r.ok) {
-              seller_profiles = Items.patch(seller_profiles, row.id, {
-                admin_approved: !row.original.admin_approved,
-              });
-            }
+          SellerProfileClient.toggle_approved_at(row.id, {
+            on_success: (data) =>
+              (seller_profiles = Items.patch(seller_profiles, row.id, data)),
           }),
       },
     ]}
@@ -96,26 +89,6 @@
               bind:value={
                 () => table.getColumn("name")?.getFilterValue(),
                 (v) => table.getColumn("name")?.setFilterValue(v)
-              }
-            />
-          {/snippet}
-        </Field>
-
-        <Field
-          label="Approved"
-          class="w-fit"
-        >
-          {#snippet input({ props })}
-            <NativeSelect
-              {...props}
-              options={[
-                { value: undefined, label: "All" },
-                { value: true, label: "Yes" },
-                { value: false, label: "No" },
-              ]}
-              bind:value={
-                () => table.getColumn("admin_approved")?.getFilterValue(),
-                (v) => table.getColumn("admin_approved")?.setFilterValue(v)
               }
             />
           {/snippet}

@@ -1,6 +1,6 @@
 import { friendly_url_schema } from "../../../schema/url/url.schema";
 import { relations } from "drizzle-orm";
-import { boolean, pgTable, text, uuid, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 import { UserTable } from "./auth.model";
@@ -20,7 +20,7 @@ export const SellerProfileTable = pgTable("seller_profile", {
   logo: varchar({ length: 2047 }).default("").notNull(),
   description: text().default("").notNull(),
 
-  admin_approved: boolean().default(false).notNull(),
+  approved_at: timestamp({ mode: "date" }),
 
   ...Schema.timestamps,
 });

@@ -36,14 +36,11 @@ export const delete_image_remote = command(
   },
 );
 
-export const admin_set_image_approved_remote = command(
-  z.object({
-    id: z.uuid(),
-    admin_approved: z.boolean(),
-  }),
-  async (input) => {
+export const toggle_image_approved_at_remote = command(
+  z.uuid(),
+  async (image_id) => {
     await get_session({ admin: true });
 
-    return await ImageService.set_admin_approved(input);
+    return await ImageService.toggle_approved_at(image_id);
   },
 );

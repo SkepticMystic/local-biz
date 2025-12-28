@@ -20,7 +20,7 @@ export const load = (async () => {
           category: true,
           tags: true,
           createdAt: true,
-          admin_approved: true,
+          approved_at: true,
           formatted_address: true,
         },
 

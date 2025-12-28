@@ -12,8 +12,8 @@
 
 <nav class="flex flex-wrap items-center justify-between gap-3">
   <div class="flex flex-col gap-1">
-    <Badge variant={data.business.admin_approved ? "success" : "warning"}>
-      {data.business.admin_approved ? "Approved" : "Not approved"}
+    <Badge variant={data.business.approved_at ? "success" : "warning"}>
+      {data.business.approved_at ? "Approved" : "Not approved"}
     </Badge>
 
     <BackAnchor backto="Businesses" />

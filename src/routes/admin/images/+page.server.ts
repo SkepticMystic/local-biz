@@ -19,7 +19,7 @@ export const load = (async () => {
         thumbhash: true,
 
         createdAt: true,
-        admin_approved: true,
+        approved_at: true,
       },
     }),
   ]);

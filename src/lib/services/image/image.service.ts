@@ -1,6 +1,8 @@
 import { E } from "$lib/const/error/error.const";
 import { IMAGE_HOSTING } from "$lib/const/image/image_hosting.const";
 import { ImageRepo } from "$lib/repos/image.repo";
+import { Repo } from "$lib/repos/index.repo";
+import { db } from "$lib/server/db/drizzle.db";
 import { type Image } from "$lib/server/db/models/image.model";
 import { Format } from "$lib/utils/format.util";
 import { Log } from "$lib/utils/logger.util";
@@ -27,16 +29,29 @@ const check_count_limit = async (
   return count;
 };
 
-const set_admin_approved = async (input: {
-  id: string;
-  admin_approved: boolean;
-}): Promise<App.Result<void>> => {
+const toggle_approved_at = async (id: string): Promise<App.Result<Image>> => {
   try {
-    const res = await ImageRepo.set_admin_approved(input);
+    const image = await Repo.query(
+      db.query.image.findFirst({
+        where: (image, { eq }) => eq(image.id, id),
+        columns: { approved_at: true },
+      }),
+    );
+
+    if (!image.ok) {
+      return image;
+    } else if (!image.data) {
+      return result.err(E.NOT_FOUND);
+    }
+
+    const res = await ImageRepo.update_one(
+      { id },
+      { approved_at: image.data.approved_at ? null : new Date() },
+    );
 
     return res;
   } catch (error) {
-    Log.error(error, "BusinessService.set_admin_approved.error unknown");
+    Log.error(error, "BusinessService.toggle_approved_at.error unknown");
 
     captureException(error);
 
@@ -124,5 +139,5 @@ export const ImageService = {
     }
   },
 
-  set_admin_approved,
+  toggle_approved_at,
 };

@@ -19,16 +19,13 @@ export const get_all_public_seller_profiles_remote = query(async () => {
 export const upsert_seller_profile_remote = form(
   SellerProfileSchema.insert.extend({ id: z.uuid().optional() }),
   async (input) => {
-    console.log("upsert_seller_profile_remote.input", input);
-
     const { user } = await get_session();
 
     const res = input.id
-      ? await SellerProfileService.update({
-          ...input,
-          id: input.id,
-          user_id: user.id,
-        })
+      ? await SellerProfileService.update_one(
+          { id: input.id, user_id: user.id },
+          input,
+        )
       : await SellerProfileService.create({ ...input, user_id: user.id });
 
     console.log("upsert_seller_profile_remote.res", res);
@@ -37,14 +34,11 @@ export const upsert_seller_profile_remote = form(
   },
 );
 
-export const admin_set_seller_profile_approved_remote = command(
-  z.object({
-    id: z.uuid(),
-    admin_approved: z.boolean(),
-  }),
-  async (input) => {
+export const admin_toggle_seller_profile_approved_at_remote = command(
+  z.uuid(),
+  async (seller_profile_id) => {
     await get_session({ admin: true });
 
-    return await SellerProfileService.set_admin_approved(input);
+    return await SellerProfileService.toggle_approved_at(seller_profile_id);
   },
 );
