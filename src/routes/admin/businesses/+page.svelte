@@ -38,7 +38,7 @@
     column.accessor("approved_at", {
       meta: { label: "Approved" },
 
-      cell: ({ getValue }) => (getValue() ? "Yes" : "No"),
+      cell: CellHelpers.time,
     }),
 
     column.accessor("createdAt", {
@@ -71,6 +71,9 @@
   <DataTable
     {columns}
     data={businesses}
+    states={{
+      selection: {},
+    }}
     actions={(row) => [
       {
         icon: "lucide/pencil",
@@ -80,7 +83,7 @@
       },
       {
         icon: row.original.approved_at ? "lucide/x" : "lucide/check",
-        title: row.original.approved_at ? "Deny business" : "Approve business",
+        title: row.original.approved_at ? "Deny" : "Approve",
         onselect: () => actions.toggle_approval(row.id),
       },
       {
@@ -107,7 +110,7 @@
       },
       {
         icon: "lucide/trash",
-        title: "Delete business",
+        title: "Delete",
         variant: "destructive",
         onselect: () => actions.admin_delete(row.id),
       },
