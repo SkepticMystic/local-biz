@@ -4,9 +4,11 @@ import { BusinessRepo } from "$lib/repos/business.repo";
 import { Repo } from "$lib/repos/index.repo";
 import { db } from "$lib/server/db/drizzle.db";
 import { BusinessSchema } from "$lib/server/db/models/business.model";
+import { AIModerationService } from "$lib/services/ai/moderation/moderation.ai.service";
 import { BusinessService } from "$lib/services/business/business.service";
 import { result } from "$lib/utils/result.util";
 import { invalid } from "@sveltejs/kit";
+import { waitUntil } from "@vercel/functions";
 import z from "zod";
 import { BUSINESS } from "../../const/business/business.const";
 import { query_schema, where_schema } from "../../schema/query/query.schema";
@@ -45,15 +47,21 @@ export const upsert_business_remote = form(
 
     const { session } = await get_session();
 
+    waitUntil(
+      AIModerationService.moderate([
+        { type: "text", text: input.name },
+        { type: "text", text: input.description },
+        { type: "text", text: input.tags.join(", ") },
+        { type: "image_url", image_url: { url: input.logo } },
+      ]),
+    );
+
     const res = input.id
       ? await BusinessService.update(
           { id: input.id, user_id: session.userId },
           input,
         )
-      : await BusinessService.create({
-          ...input,
-          user_id: session.userId,
-        });
+      : await BusinessService.create({ ...input, user_id: session.userId });
 
     console.log("upsert_business_remote.res", res);
 

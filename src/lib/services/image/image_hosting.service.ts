@@ -5,16 +5,18 @@ import {
   CLOUDINARY_UPLOAD_PRESET,
 } from "$env/static/private";
 import { E } from "$lib/const/error/error.const";
-import type { IMAGE_HOSTING } from "$lib/const/image/image_hosting.const";
-import type { Result } from "$lib/interfaces/result.type";
-import { Log } from "$lib/utils/logger.util";
-import { result } from "$lib/utils/result.util";
+import type { Image } from "$lib/server/db/models/image.model";
+import * as Sentry from "@sentry/sveltekit";
 import { captureException } from "@sentry/sveltekit";
 import {
   v2 as cloudinary,
   type UploadApiErrorResponse,
   type UploadApiResponse,
 } from "cloudinary";
+import type { IMAGE_HOSTING } from "../../const/image/image_hosting.const";
+import type { Result } from "../../interfaces/result.type";
+import { Log } from "../../utils/logger.util";
+import { result } from "../../utils/result.util";
 
 cloudinary.config({
   api_secret: CLOUDINARY_API_SECRET,
@@ -22,11 +24,15 @@ cloudinary.config({
   cloud_name: CLOUDINARY_CLOUD_NAME,
 });
 
+const provider = "cloudinary" as (typeof IMAGE_HOSTING.PROVIDER.IDS)[number];
+
 export const ImageHostingService = {
-  provider: "cloudinary" as (typeof IMAGE_HOSTING.PROVIDER.IDS)[number],
+  provider,
 
   upload: async (file: File) => {
     try {
+      const start_ms = performance.now();
+
       const array_buffer = await file.arrayBuffer();
       const buffer = Buffer.from(array_buffer);
 
@@ -47,7 +53,20 @@ export const ImageHostingService = {
             .end(buffer);
         });
 
-      console.log("Upload result:", res);
+      Sentry.metrics.distribution(
+        "ImageHostingService.upload",
+        performance.now() - start_ms,
+        {
+          unit: "millisecond",
+          attributes: {
+            provider,
+            file_size: file.size,
+            file_type: file.type,
+          },
+        },
+      );
+
+      Log.info(res, "Upload result:");
       if (!res.ok) {
         Log.error(res.error, "ImageHostingService.upload.error");
 
@@ -57,11 +76,14 @@ export const ImageHostingService = {
       } else {
         return result.suc({
           response: res.data,
-          image: {
-            url: res.data.secure_url,
-            external_id: res.data.public_id,
-          },
-        });
+
+          size: res.data.bytes,
+          width: res.data.width,
+          height: res.data.height,
+
+          url: res.data.secure_url,
+          external_id: res.data.public_id,
+        } satisfies Partial<Image>);
       }
     } catch (error) {
       Log.error(error, "ImageHostingService.upload.error");
@@ -74,6 +96,8 @@ export const ImageHostingService = {
 
   delete: async (external_id: string): Promise<App.Result<null>> => {
     try {
+      const start_ms = performance.now();
+
       await cloudinary.uploader
         .destroy(external_id, { resource_type: "image" })
         .then((result) => {
@@ -83,6 +107,15 @@ export const ImageHostingService = {
             return Promise.reject(result);
           }
         });
+
+      Sentry.metrics.distribution(
+        "ImageHostingService.delete",
+        performance.now() - start_ms,
+        {
+          unit: "millsecond",
+          attributes: { provider },
+        },
+      );
 
       return result.suc(null);
     } catch (error) {

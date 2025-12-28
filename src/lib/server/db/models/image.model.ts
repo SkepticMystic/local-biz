@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import {
   index,
+  integer,
   jsonb,
   pgEnum,
   pgTable,
@@ -47,6 +48,10 @@ export const ImageTable = pgTable(
     resource_kind: image_resource_kind_enum().notNull(),
 
     thumbhash: varchar({ length: 100 }),
+
+    size: integer(),
+    width: integer(),
+    height: integer(),
 
     approved_at: timestamp({ mode: "date" }),
 

@@ -1,8 +1,10 @@
 import { form } from "$app/server";
 import { safe_get_session } from "$lib/auth/server";
 import { UserReportSchema } from "$lib/server/db/models/user_report.model";
+import { AIModerationService } from "$lib/services/ai/moderation/moderation.ai.service";
 import { CaptchaService } from "$lib/services/captcha/captcha.service";
 import { UserReportService } from "$lib/services/user_report/user_report.service";
+import { waitUntil } from "@vercel/functions";
 import z from "zod";
 
 export const create_user_report_remote = form(
@@ -16,6 +18,8 @@ export const create_user_report_remote = form(
     }
 
     const session = await safe_get_session();
+
+    waitUntil(AIModerationService.text(input.details));
 
     return await UserReportService.create({
       ...input,

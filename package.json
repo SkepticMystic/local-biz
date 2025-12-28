@@ -114,6 +114,7 @@
     "drizzle-zod": "^0.8.3",
     "isomorphic-dompurify": "2.26.0",
     "mode-watcher": "^1.1.0",
+    "openai": "^6.15.0",
     "pino": "^9.14.0",
     "resend": "^6.6.0",
     "runed": "^0.37.1",

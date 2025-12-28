@@ -8,6 +8,9 @@ import { Format } from "$lib/utils/format.util";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
+import { waitUntil } from "@vercel/functions";
+import { transformUrl } from "unpic";
+import { AIModerationService } from "../ai/moderation/moderation.ai.service";
 import { ResourceService } from "../resource/resource.service";
 import { ImageHostingService } from "./image_hosting.service";
 import { ThumbhashService } from "./thumbhash.image.service";
@@ -97,12 +100,24 @@ export const ImageService = {
     ]);
     if (!upload.ok) return upload;
 
+    const moderation_url = transformUrl({
+      quality: "50",
+      format: "auto",
+      url: upload.data.url,
+      provider: ImageHostingService.provider,
+      width: Math.min(upload.data.width, 250),
+      height: Math.min(upload.data.height, 250),
+    });
+    if (!moderation_url) {
+      Log.error("ImageService.upload moderation_url is null");
+    } else {
+      waitUntil(AIModerationService.image(moderation_url));
+    }
+
     const res = await ImageRepo.create({
       ...input,
-      url: upload.data.image.url,
-      response: upload.data.response,
+      ...upload.data,
       provider: ImageHostingService.provider,
-      external_id: upload.data.image.external_id,
       thumbhash: thumbhash.ok ? thumbhash.data : null,
     });
 

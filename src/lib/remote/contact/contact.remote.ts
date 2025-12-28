@@ -1,10 +1,12 @@
 import { form } from "$app/server";
 import { EMAIL } from "$lib/const/email.const";
+import { AIModerationService } from "$lib/services/ai/moderation/moderation.ai.service";
 import { CaptchaService } from "$lib/services/captcha/captcha.service";
 import { EmailService } from "$lib/services/email.service";
 import { Log } from "$lib/utils/logger.util";
 import { result } from "$lib/utils/result.util";
 import { captureException } from "@sentry/sveltekit";
+import { waitUntil } from "@vercel/functions";
 import z from "zod";
 
 export const contact_us_remote = form(
@@ -20,6 +22,8 @@ export const contact_us_remote = form(
       if (!captcha.ok) {
         return captcha;
       }
+
+      waitUntil(AIModerationService.text(input.message));
 
       await EmailService.send(EMAIL.TEMPLATES["admin-contact-form"](input));
 
