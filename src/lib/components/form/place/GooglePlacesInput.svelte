@@ -128,7 +128,7 @@
 
       Sentry.metrics.count("GooglePlacesInput.onError", 1, {
         unit: "error",
-        attributes: { error },
+        attributes: { message: error }, // NOTE: Sentry seems to redact it if it's called `error`
       });
     }}
     onResponse={(response) => {

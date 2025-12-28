@@ -6,7 +6,19 @@ import { metrics } from "@sentry/sveltekit";
 import type { ModerationMultiModalInput } from "openai/resources/moderations.mjs";
 
 const moderate = async (input: ModerationMultiModalInput[]) => {
-  const res = await OpenAI.moderation(input);
+  // NOTE: Because of svelte remote forms, some of our fields accept a z.literal("") value
+  // So we filter here before trying to moderate
+  const filtered = input.filter((d) => {
+    if (d.type === "text") {
+      return d.text.length > 0;
+    } else if (d.type === "image_url") {
+      return d.image_url.url.length > 0;
+    } else {
+      return true;
+    }
+  });
+
+  const res = await OpenAI.moderation(filtered);
   if (!res.ok) {
     return res;
   }
