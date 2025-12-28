@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
+  import { goto, refreshAll } from "$app/navigation";
   import { resolve } from "$app/paths";
   import FormButton from "$lib/components/buttons/FormButton.svelte";
   import PhoneInput from "$lib/components/inputs/PhoneInput.svelte";
   import UrlInput from "$lib/components/inputs/UrlInput.svelte";
   import Anchor from "$lib/components/ui/anchor/Anchor.svelte";
+  import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
+  import Button from "$lib/components/ui/button/button.svelte";
   import FieldError from "$lib/components/ui/field/field-error.svelte";
   import FieldGroup from "$lib/components/ui/field/field-group.svelte";
   import FieldSeparator from "$lib/components/ui/field/field-separator.svelte";
@@ -38,10 +40,14 @@
 
   if (props.mode === "update") {
     form.fields.set(props.initial);
+  } else {
+    form.fields.urls.set([{ data: "", label: "", id: crypto.randomUUID() }]);
   }
   $effect(() => {
     if (props.mode === "update") {
       form.fields.set(props.initial);
+    } else {
+      form.fields.urls.set([{ data: "", label: "", id: crypto.randomUUID() }]);
     }
   });
 </script>
@@ -81,6 +87,8 @@
         await goto(resolve("/s/businesses/[slug]", res.data));
       } else {
         toast.success("Business updated successfully");
+
+        await refreshAll();
       }
     } else if (res?.error) {
       toast.error(res.error.message);
@@ -207,61 +215,62 @@
         {/snippet}
       </Field>
 
-      <Field
-        label="Website"
-        orientation="responsive"
-        field={form.fields.urls[0]!.data}
-        description="Your business's website, or a link to your social media account."
-      >
-        {#snippet input({ props, field })}
-          {#if field}
-            <UrlInput
-              {...props}
-              {...field.as("text")}
-              class="sm:min-w-[300px]"
-              placeholder="example.com"
-            />
-          {/if}
-        {/snippet}
-      </Field>
+      <FieldGroup>
+        {@const urls = form.fields.urls.value() ?? []}
 
-      <Field
-        label="Facebook"
-        orientation="responsive"
-        field={form.fields.urls[1]!.data}
-        description="A link to your business's Facebook page."
-      >
-        {#snippet input({ props, field })}
-          {#if field}
-            <UrlInput
-              {...props}
-              {...field.as("text")}
-              icon="mdi/facebook"
-              class="sm:min-w-[300px]"
-            />
-          {/if}
-        {/snippet}
-      </Field>
-      <input {...form.fields.urls[1]!.label.as("hidden", "Facebook")} />
+        <FieldError errors={form.fields.urls.issues()} />
 
-      <Field
-        label="Instagram"
-        orientation="responsive"
-        field={form.fields.urls[2]!.data}
-        description="A link to your business's Instagram page."
+        {#each urls as url, i (url.id ?? i)}
+          <Field
+            label="Link {i + 1}"
+            orientation="responsive"
+            field={form.fields.urls[i]!.data}
+            description="Your business's website, or a link to your social media account."
+          >
+            {#snippet input({ props, field })}
+              {#if field}
+                <ButtonGroup>
+                  <UrlInput
+                    {...props}
+                    {...field.as("text")}
+                    class="sm:min-w-[300px]"
+                    placeholder="example.com"
+                  />
+
+                  <Button
+                    type="button"
+                    icon="lucide/x"
+                    variant="outline"
+                    onclick={() =>
+                      form.fields.urls.set(urls.filter((_, j) => i !== j))}
+                  />
+                </ButtonGroup>
+              {/if}
+            {/snippet}
+          </Field>
+
+          <input
+            {...form.fields.urls[i]!.id.as(
+              "hidden",
+              url.id ?? crypto.randomUUID(),
+            )}
+          />
+        {/each}
+      </FieldGroup>
+
+      <Button
+        variant="outline"
+        icon="lucide/plus"
+        class="ml-auto"
+        onclick={() => {
+          form.fields.urls.set([
+            ...(form.fields.urls.value() ?? []),
+            { label: "", data: "", id: crypto.randomUUID() },
+          ]);
+        }}
       >
-        {#snippet input({ props, field })}
-          {#if field}
-            <UrlInput
-              {...props}
-              {...field.as("text")}
-              icon="mdi/instagram"
-              class="sm:min-w-[300px]"
-            />
-          {/if}
-        {/snippet}
-      </Field>
-      <input {...form.fields.urls[2]!.label.as("hidden", "Instagram")} />
+        Add another URL
+      </Button>
 
       <FieldSeparator />
     </FieldGroup>

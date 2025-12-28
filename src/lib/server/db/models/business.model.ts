@@ -44,15 +44,15 @@ export const BusinessTable = pgTable(
     urls: jsonb()
       .default([])
       .notNull()
-      .$type<{ data: Branded<"Url">; label: string }[]>(),
+      .$type<{ id?: string; data: Branded<"Url">; label: string }[]>(),
     phones: jsonb()
       .default([])
       .notNull()
-      .$type<{ data: Branded<"Phone">; label: string }[]>(),
+      .$type<{ id?: string; data: Branded<"Phone">; label: string }[]>(),
     emails: jsonb()
       .default([])
       .notNull()
-      .$type<{ data: Branded<"Email">; label: string }[]>(),
+      .$type<{ id?: string; data: Branded<"Email">; label: string }[]>(),
 
     google_place_id: varchar({ length: 255 }).default("").notNull(),
     formatted_address: varchar({ length: 511 }).default("").notNull(),
@@ -139,36 +139,44 @@ const refinements = {
   urls: z
     .array(
       z.object({
+        // NOTE: The default is just for old data before we added the id field
+        id: z.uuid().default(() => crypto.randomUUID()),
         label: z.string().trim().default(""),
         data: z.union([z.literal(""), friendly_url_schema]),
       }),
     )
-    .max(3)
+    .max(5, "Cannot have more than 5 URLs")
     .transform(
       (arr) =>
         arr.filter((v) => v.data) as {
+          id?: string;
           label: string;
           data: Branded<"Url">;
         }[],
     ),
+
   emails: z
     .array(
       z.object({
+        id: z.uuid().default(() => crypto.randomUUID()),
         label: z.string().trim().default(""),
         data: z.union([z.literal(""), z.email()]),
       }),
     )
-    .max(3)
+    .max(3, "Cannot have more than 3 emails")
     .transform(
       (arr) =>
         arr.filter((v) => v.data) as {
+          id?: string;
           label: string;
           data: Branded<"Email">;
         }[],
     ),
+
   phones: z
     .array(
       z.object({
+        id: z.uuid().default(() => crypto.randomUUID()),
         label: z.string().trim().default(""),
         data: z.union(
           [z.literal(""), tel_schema],
@@ -176,10 +184,11 @@ const refinements = {
         ),
       }),
     )
-    .max(3)
+    .max(3, "Cannot have more than 3 phone numbers")
     .transform(
       (arr) =>
         arr.filter((v) => v.data) as {
+          id?: string;
           label: string;
           data: Branded<"Phone">;
         }[],
