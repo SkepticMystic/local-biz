@@ -47,17 +47,25 @@
   } else {
     form.fields.urls.set([{ data: "", label: "", id: crypto.randomUUID() }]);
   }
-  $effect(() => {
-    if (props.mode === "update") {
-      form.fields.set(props.initial);
 
-      if (form.fields.urls.value() === undefined) {
+  let hydrated = $state(false);
+  $effect(() => {
+    if (!hydrated) {
+      if (props.mode === "update") {
+        form.fields.set(props.initial);
+
+        if (form.fields.urls.value() === undefined) {
+          form.fields.urls.set([
+            { data: "", label: "", id: crypto.randomUUID() },
+          ]);
+        }
+      } else {
         form.fields.urls.set([
           { data: "", label: "", id: crypto.randomUUID() },
         ]);
       }
-    } else {
-      form.fields.urls.set([{ data: "", label: "", id: crypto.randomUUID() }]);
+
+      hydrated = true;
     }
   });
 </script>
@@ -350,6 +358,7 @@
             markdown
           </Anchor> to format your text.
         {/snippet}
+
         {#snippet input({ props, field })}
           <Textarea
             {...props}
