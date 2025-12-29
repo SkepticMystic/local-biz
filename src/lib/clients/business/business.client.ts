@@ -1,5 +1,6 @@
 import {
   admin_delete_business_remote,
+  admin_refresh_business_approved_at_remote,
   admin_toggle_business_approved_at_remote,
   admin_transfer_business_ownership_remote,
   delete_business_remote,
@@ -71,6 +72,10 @@ export const BusinessClient = {
 
   toggle_approved_at: Client.wrap((business_id: string) =>
     admin_toggle_business_approved_at_remote(business_id),
+  ),
+
+  refresh_approved_at: Client.wrap((business_id: string) =>
+    admin_refresh_business_approved_at_remote(business_id),
   ),
 
   admin_transfer_ownership: Client.wrap(

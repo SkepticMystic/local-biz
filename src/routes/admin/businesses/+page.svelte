@@ -7,6 +7,7 @@
   import { renderComponent } from "$lib/components/ui/data-table/render-helpers.js";
   import Field from "$lib/components/ui/field/Field.svelte";
   import Input from "$lib/components/ui/input/input.svelte";
+  import { Dates } from "$lib/utils/dates.js";
   import { Format } from "$lib/utils/format.util.js";
   import { Items } from "$lib/utils/items.util.js";
   import { CellHelpers } from "$lib/utils/tanstack/table.util.js";
@@ -38,7 +39,18 @@
     column.accessor("approved_at", {
       meta: { label: "Approved" },
 
-      cell: CellHelpers.time,
+      cell: (c) => {
+        const value = c.getValue();
+
+        return CellHelpers.time(c, {
+          class:
+            // NOTE: When we re-approve, the db updates updatedAt as well,
+            // so we have to add a little lee-way
+            value && c.row.original.updatedAt > Dates.add_ms(1_000, value)
+              ? "text-destructive"
+              : "",
+        });
+      },
     }),
 
     column.accessor("createdAt", {
@@ -49,6 +61,10 @@
   ];
 
   const actions = {
+    refresh_approval: (id: string) =>
+      BusinessClient.refresh_approved_at(id, {
+        on_success: (data) => (businesses = Items.patch(businesses, id, data)),
+      }),
     toggle_approval: (id: string) =>
       BusinessClient.toggle_approved_at(id, {
         on_success: (data) => (businesses = Items.patch(businesses, id, data)),
@@ -85,6 +101,12 @@
         icon: row.original.approved_at ? "lucide/x" : "lucide/check",
         title: row.original.approved_at ? "Deny" : "Approve",
         onselect: () => actions.toggle_approval(row.id),
+      },
+      {
+        hide: !row.original.approved_at,
+        icon: "lucide/reload",
+        title: "Refresh approval",
+        onselect: () => actions.refresh_approval(row.id),
       },
       {
         icon: "lucide/chevron-right",

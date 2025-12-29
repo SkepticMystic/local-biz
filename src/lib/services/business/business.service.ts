@@ -163,6 +163,43 @@ const toggle_approved_at = async (
   }
 };
 
+const refresh_approved_at = async (
+  id: string,
+): Promise<App.Result<Business>> => {
+  try {
+    const business = await Repo.query(
+      db.query.business.findFirst({
+        where: (business, { eq }) => eq(business.id, id),
+        columns: { approved_at: true },
+      }),
+    );
+
+    if (!business.ok) {
+      return business;
+    } else if (!business.data) {
+      return result.err(E.NOT_FOUND);
+    } else if (business.data.approved_at === null) {
+      return result.err({
+        ...E.INVALID_INPUT,
+        message: "Not approved",
+      });
+    }
+
+    const res = await BusinessRepo.update_one(
+      { id },
+      { approved_at: new Date() },
+    );
+
+    return res;
+  } catch (error) {
+    Log.error(error, "BusinessService.refresh_approved_at.error unknown");
+
+    captureException(error);
+
+    return result.err(E.INTERNAL_SERVER_ERROR);
+  }
+};
+
 const admin_transfer_ownership = async (input: {
   business_id: string;
   target_user_email: string;
@@ -257,6 +294,7 @@ export const BusinessService = {
   update,
   delete_by_id,
   toggle_approved_at,
+  refresh_approved_at,
   admin_transfer_ownership,
   admin_delete,
 };

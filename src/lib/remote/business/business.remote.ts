@@ -105,6 +105,15 @@ export const admin_toggle_business_approved_at_remote = command(
   },
 );
 
+export const admin_refresh_business_approved_at_remote = command(
+  z.uuid(),
+  async (business_id) => {
+    await get_session({ admin: true });
+
+    return await BusinessService.refresh_approved_at(business_id);
+  },
+);
+
 export const admin_transfer_business_ownership_remote = command(
   z.object({
     business_id: z.uuid(),

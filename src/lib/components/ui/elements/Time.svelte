@@ -28,7 +28,7 @@
   <time
     class={klass}
     datetime={resolved.toISOString()}
-    title={title ?? resolved.toISOString()}
+    title={title ?? resolved.toLocaleString()}
   >
     {format(resolved)}
   </time>
