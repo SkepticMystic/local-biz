@@ -40,12 +40,22 @@
 
   if (props.mode === "update") {
     form.fields.set(props.initial);
+
+    if (form.fields.urls.value() === undefined) {
+      form.fields.urls.set([{ data: "", label: "", id: crypto.randomUUID() }]);
+    }
   } else {
     form.fields.urls.set([{ data: "", label: "", id: crypto.randomUUID() }]);
   }
   $effect(() => {
     if (props.mode === "update") {
       form.fields.set(props.initial);
+
+      if (form.fields.urls.value() === undefined) {
+        form.fields.urls.set([
+          { data: "", label: "", id: crypto.randomUUID() },
+        ]);
+      }
     } else {
       form.fields.urls.set([{ data: "", label: "", id: crypto.randomUUID() }]);
     }
