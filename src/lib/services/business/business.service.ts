@@ -144,14 +144,26 @@ const toggle_approved_at = async (
       { approved_at: business.data.approved_at ? null : new Date() },
     );
 
-    // TODO: Send email notification to user about approval status
-    // if (res.ok) {
-    //   await EmailService.sendBusinessApprovalNotification({
-    //     user_id: business.data.user_id,
-    //     business_name: business.data.name,
-    //     approved: res.data.approved_at !== null,
-    //   });
-    // }
+    if (res.ok && res.data.approved_at !== null) {
+      waitUntil(
+        Repo.query(
+          db.query.user.findFirst({
+            where: (user, { eq }) => eq(user.id, res.data.user_id),
+          }),
+        ).then(async (user) => {
+          if (!user.ok || !user.data) {
+            return;
+          }
+
+          return await EmailService.send(
+            EMAIL.TEMPLATES["user-business-approved"]({
+              user: user.data,
+              business: res.data,
+            }),
+          );
+        }),
+      );
+    }
 
     return res;
   } catch (error) {

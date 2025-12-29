@@ -174,5 +174,42 @@ ${COMMON.SIGNATURE.HTML}`.trim();
         subject: `New business: ${input.business.name}`,
       };
     },
+
+    "user-business-approved": (input: {
+      user: Pick<User, "email" | "name">;
+      business: Pick<Business, "name" | "slug">;
+    }) => {
+      const seller_href = App.full_url(`/s/businesses/${input.business.slug}`);
+
+      const html = `
+<p>Hi ${HTMLUtil.sanitize(input.user.name)},</p>
+
+<p>
+  We're happy to let you know that your business "${HTMLUtil.sanitize(input.business.name)}" has been approved on ${APP.NAME}.
+</p>
+
+<p>
+  Now that your listing is live, you can start adding some details:
+
+  <ul>
+    <li>Update your <a href="${App.full_url("/s/profile")}">seller profile</a> to let people know more about you</li>
+    <li>Upload some <strong>photos</strong> of your business</li>
+  </ul>
+</p>
+
+<p>
+  You can view and edit your business at <a href="${seller_href}">
+    ${seller_href}
+  </a>
+</p>
+
+${COMMON.SIGNATURE.HTML}`.trim();
+
+      return {
+        html,
+        to: input.user.email,
+        subject: `Your business ${input.business.name} has been approved`,
+      };
+    },
   },
 };
