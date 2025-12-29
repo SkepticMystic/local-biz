@@ -153,8 +153,8 @@ const refinements = {
           label: string;
           data: Branded<"Url">;
         }[],
-    ),
-
+    )
+    .default([]),
   emails: z
     .array(
       z.object({
@@ -171,7 +171,8 @@ const refinements = {
           label: string;
           data: Branded<"Email">;
         }[],
-    ),
+    )
+    .default([]),
 
   phones: z
     .array(
@@ -192,7 +193,8 @@ const refinements = {
           label: string;
           data: Branded<"Phone">;
         }[],
-    ),
+    )
+    .default([]),
 };
 
 export const BusinessSchema = {
