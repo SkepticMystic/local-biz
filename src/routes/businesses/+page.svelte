@@ -12,6 +12,8 @@
   import { get_all_public_businesses_remote } from "$lib/remote/business/business.remote";
   import { createColumnHelper } from "@tanstack/table-core";
 
+  let { data } = $props();
+
   type TData = Awaited<
     ReturnType<typeof get_all_public_businesses_remote>
   >[number];
@@ -20,8 +22,8 @@
 
   const columns = [
     column.accessor("name", {}),
-    column.accessor("category", {}),
     column.accessor("tags", {}),
+    column.accessor("category", {}),
     column.accessor("formatted_address", {}),
   ];
 </script>
@@ -43,6 +45,11 @@
     <TanstackTable
       {columns}
       data={await get_all_public_businesses_remote()}
+      states={{
+        column_filters: data.search.category
+          ? [{ id: "category", value: data.search.category }]
+          : undefined,
+      }}
     >
       {#snippet children(table)}
         <search class="flex flex-wrap items-end gap-2">
@@ -70,11 +77,11 @@
             {#snippet input({ props })}
               <NativeSelect
                 {...props}
+                value={table.getColumn("category")?.getFilterValue()}
                 options={BUSINESS.CATEGORY.IDS.map((c) => ({
                   value: c,
                   label: BUSINESS.CATEGORY.MAP[c].label,
                 }))}
-                value={table.getColumn("category")?.getFilterValue()}
                 on_value_select={(value) =>
                   table.getColumn("category")?.setFilterValue(value)}
               >
@@ -85,10 +92,22 @@
 
           <Button
             icon="lucide/x"
-            variant="outline"
+            variant={table.getRowModel().flatRows.length
+              ? "outline"
+              : "default"}
             onclick={() => table.resetColumnFilters()}
           ></Button>
         </search>
+
+        {#snippet empty_action()}
+          <Button
+            icon="lucide/x"
+            variant={"outline"}
+            onclick={() => table.resetColumnFilters()}
+          >
+            Reset filters
+          </Button>
+        {/snippet}
 
         <ItemList
           items={table.getRowModel().flatRows.map((r) => r.original)}
@@ -96,6 +115,7 @@
             icon: "lucide/slash",
             title: "No businesses found",
             description: "No businesses match your search",
+            content: empty_action,
           }}
         >
           {#snippet item(business)}

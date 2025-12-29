@@ -7,8 +7,13 @@
   import BusinessCard from "$lib/components/cards/business/BusinessCard.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import ItemCarousel from "$lib/components/ui/carousel/ItemCarousel.svelte";
+  import ChipGroup from "$lib/components/ui/chip/chip-group.svelte";
+  import Chip from "$lib/components/ui/chip/chip.svelte";
+  import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
+  import { BUSINESS } from "$lib/const/business/business.const";
   import { search_public_businesses_remote } from "$lib/remote/business/business.remote";
+  import { App } from "$lib/utils/app";
 </script>
 
 <article class="mx-auto flex max-w-4xl flex-col gap-y-16 pb-16">
@@ -23,7 +28,7 @@
 
       <svelte:boundary>
         {#snippet pending()}
-          <Skeleton class="h-32 w-full" />
+          <Skeleton class="h-64 w-full" />
         {/snippet}
 
         <ItemCarousel
@@ -47,6 +52,45 @@
       </div>
 
       <FeaturesBlock />
+    </section>
+
+    <section id="categories">
+      <div class="mb-8 text-center">
+        <h2 class="text-3xl font-bold">Categories</h2>
+        <p class="text-muted-foreground">
+          Browse Hermanus by category to find the perfect business
+        </p>
+      </div>
+
+      <ChipGroup>
+        {#each BUSINESS.CATEGORY.IDS as category}
+          {@const { icon, label } = BUSINESS.CATEGORY.MAP[category] ?? {}}
+
+          <Chip
+            size="lg"
+            variant="outline"
+            class="hidden md:inline-flex"
+            href={App.url("/businesses", { category })}
+          >
+            <Icon
+              {icon}
+              {label}
+            />
+          </Chip>
+
+          <Chip
+            size="default"
+            variant="outline"
+            class="inline-flex md:hidden"
+            href={App.url("/businesses", { category })}
+          >
+            <Icon
+              {icon}
+              {label}
+            />
+          </Chip>
+        {/each}
+      </ChipGroup>
     </section>
 
     <section id="stats">

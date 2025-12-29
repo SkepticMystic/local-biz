@@ -35,24 +35,24 @@
 </script>
 
 <Item {...rest}>
-  {#snippet media()}
-    <Picture
-      {href}
-      width={64}
-      height={64}
-      src={business.logo}
-      alt={business.name}
-      fallback={business.name[0]}
-    />
-  {/snippet}
-
   {#snippet title()}
-    <Anchor
-      {href}
-      class="text-lg font-semibold"
-    >
-      {business.name}
-    </Anchor>
+    <div class="flex items-center gap-2">
+      <Picture
+        {href}
+        width={48}
+        height={48}
+        src={business.logo}
+        alt={business.name}
+        fallback={business.name[0]}
+      />
+
+      <Anchor
+        {href}
+        class="text-lg font-semibold"
+      >
+        {business.name}
+      </Anchor>
+    </div>
   {/snippet}
 
   {#snippet description()}
