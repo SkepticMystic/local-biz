@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { page } from "$app/state";
   import BusinessLikeToggle from "$lib/components/buttons/BusinessLikeToggle.svelte";
   import ShareButton from "$lib/components/buttons/ShareButton.svelte";
   import Favicon from "$lib/components/image/Favicon.svelte";
@@ -91,11 +90,9 @@
         <ShareButton
           data={{
             title: business.name,
+            text: `${business.name} on ${APP.NAME}`,
             // NOTE: Don't use `resolve` here, it adds a base route which breaks things
             url: App.full_url(`/businesses/${business.slug}`).toString(),
-            text:
-              page.data.seo?.description ||
-              `Check out this business on ${APP.NAME}`,
           }}
         />
       </ButtonGroup>

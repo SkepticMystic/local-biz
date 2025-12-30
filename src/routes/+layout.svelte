@@ -5,13 +5,42 @@
   import SEO from "$lib/components/shell/SEO.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Sonner from "$lib/components/ui/sonner/sonner.svelte";
+  import { session } from "$lib/stores/session.store";
+  import { setUser } from "@sentry/sveltekit";
   import { injectAnalytics } from "@vercel/analytics/sveltekit";
   import { ModeWatcher } from "mode-watcher";
   import "./layout.css";
 
+  let { children } = $props();
+
   injectAnalytics({ mode: dev ? "development" : "production", debug: false });
 
-  let { children } = $props();
+  const session_listener = session.subscribe(($session) => {
+    if ($session.isPending || $session.isRefetching) {
+      //
+    } else if ($session.data) {
+      setUser({
+        id: $session.data.user.id,
+        email: $session.data.user.email,
+        username: $session.data.user.name,
+        ip_address: $session.data.session.ipAddress,
+      });
+
+      try {
+        session_listener();
+      } catch {
+        //
+      }
+    } else {
+      setUser(null);
+
+      try {
+        session_listener();
+      } catch {
+        //
+      }
+    }
+  });
 </script>
 
 <svelte:head>

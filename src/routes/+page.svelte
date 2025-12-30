@@ -1,5 +1,6 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
+  import { page } from "$app/state";
   import FAQBlock from "$lib/components/blocks/faq/FAQBlock.svelte";
   import FeaturesBlock from "$lib/components/blocks/features/FeaturesBlock.svelte";
   import HeroBlock from "$lib/components/blocks/hero/HeroBlock.svelte";
@@ -12,8 +13,12 @@
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
   import { BUSINESS } from "$lib/const/business/business.const";
+  import { useMedia } from "$lib/hooks/use-media.svelte";
   import { search_public_businesses_remote } from "$lib/remote/business/business.remote";
   import { App } from "$lib/utils/app";
+  import { metrics } from "@sentry/sveltekit";
+
+  const media = useMedia();
 </script>
 
 <article class="mx-auto flex max-w-4xl flex-col gap-y-16 pb-16">
@@ -67,22 +72,13 @@
           {@const { icon, label } = BUSINESS.CATEGORY.MAP[category] ?? {}}
 
           <Chip
-            size="lg"
             variant="outline"
-            class="hidden md:inline-flex"
+            size={media.md ? "lg" : "default"}
             href={App.url("/businesses", { category })}
-          >
-            <Icon
-              {icon}
-              {label}
-            />
-          </Chip>
-
-          <Chip
-            size="default"
-            variant="outline"
-            class="inline-flex md:hidden"
-            href={App.url("/businesses", { category })}
+            onclick={() =>
+              metrics.count("click_business_category_chip", 1, {
+                attributes: { category, from: page.route.id },
+              })}
           >
             <Icon
               {icon}
