@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { dev } from "$app/environment";
+  import { browser, dev } from "$app/environment";
+  import {
+    PUBLIC_UMAMI_BASE_URL,
+    PUBLIC_UMAMI_WEBSITE_ID,
+  } from "$env/static/public";
   import FooterBlock from "$lib/components/blocks/footer/FooterBlock.svelte";
   import Navbar from "$lib/components/shell/Navbar.svelte";
   import SEO from "$lib/components/shell/SEO.svelte";
@@ -8,13 +12,12 @@
   import Sonner from "$lib/components/ui/sonner/sonner.svelte";
   import { session } from "$lib/stores/session.store";
   import { setUser } from "@sentry/sveltekit";
-  import { injectAnalytics } from "@vercel/analytics/sveltekit";
   import { ModeWatcher } from "mode-watcher";
   import "./layout.css";
 
   let { children } = $props();
 
-  injectAnalytics({ mode: dev ? "development" : "production", debug: false });
+  // injectAnalytics({ mode: dev ? "development" : "production", debug: false });
 
   const session_listener = session.subscribe(($session) => {
     if ($session.isPending || $session.isRefetching) {
@@ -26,6 +29,16 @@
         username: $session.data.user.name,
         ip_address: $session.data.session.ipAddress,
       });
+
+      if (browser && umami) {
+        umami.identify($session.data.user.id, {
+          name: $session.data.user.name,
+          email: $session.data.user.email,
+          session_id: $session.data.session.id,
+          ip_address: $session.data.session.ipAddress,
+          user_agent: $session.data.session.userAgent,
+        });
+      }
 
       try {
         session_listener();
@@ -46,6 +59,14 @@
 
 <svelte:head>
   <SEO />
+
+  <script
+    defer
+    data-do-not-track="true"
+    data-tag={dev ? "dev" : "prod"}
+    src="{PUBLIC_UMAMI_BASE_URL}/script.js"
+    data-website-id={PUBLIC_UMAMI_WEBSITE_ID}
+  ></script>
 </svelte:head>
 
 <ModeWatcher defaultMode="light" />
