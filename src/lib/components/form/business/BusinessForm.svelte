@@ -91,16 +91,15 @@
     console.log("form.result", res);
     if (res?.ok) {
       if (props.mode === "create") {
-        toast.success(
-          "Application submitted, we'll get back to you soon. In the meantime, update your seller profile.",
-          {
-            duration: Infinity,
-            action: {
-              label: "Profile",
-              onClick: () => goto(resolve("/s/profile")),
-            },
+        toast.success("Application submitted", {
+          duration: Infinity,
+          description:
+            "We'll get back to you soon. In the meantime, update your seller profile.",
+          action: {
+            label: "Profile",
+            onClick: () => goto(resolve("/s/profile")),
           },
-        );
+        });
 
         await goto(resolve("/s/businesses/[slug]", res.data));
       } else {

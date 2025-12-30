@@ -35,7 +35,6 @@
     } else {
       // NOTE: Bit weird. We throw a redirect in the remote form, so there isn't a suc result to branch on.
       // Instead, we assume that any non-error result is successful, and notify the session signal
-      toast.success("Signed in successfully");
       BetterAuthClient.$store.notify("$sessionSignal");
     }
   })}
