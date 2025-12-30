@@ -32,7 +32,7 @@ const get_all_public = () =>
   Repo.query(
     db.query.business.findMany({
       where: (business, { isNotNull }) => isNotNull(business.approved_at),
-      orderBy: (business, { desc }) => [desc(business.createdAt)],
+      orderBy: (_, { sql }) => [sql.raw("RANDOM()")],
 
       columns: {
         id: true,

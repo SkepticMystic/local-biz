@@ -10,7 +10,7 @@
 
 <DropdownMenuRoot>
   <DropdownMenuTrigger
-    class={buttonVariants({ variant: "outline", size: "icon" })}
+    class={buttonVariants({ variant: "ghost", size: "icon" })}
   >
     <Icon
       icon="lucide/sun"

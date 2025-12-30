@@ -3,6 +3,7 @@
   import FooterBlock from "$lib/components/blocks/footer/FooterBlock.svelte";
   import Navbar from "$lib/components/shell/Navbar.svelte";
   import SEO from "$lib/components/shell/SEO.svelte";
+  import BottomNav from "$lib/components/ui/bottom-nav/BottomNav.svelte";
   import Icon from "$lib/components/ui/icon/Icon.svelte";
   import Sonner from "$lib/components/ui/sonner/sonner.svelte";
   import { session } from "$lib/stores/session.store";
@@ -59,6 +60,11 @@
   </main>
 
   <FooterBlock />
+</div>
+
+<!-- Place this in your layout or page wrapper -->
+<div class="fixed bottom-0 w-full md:hidden">
+  <BottomNav />
 </div>
 
 <!-- NOTE: I struggled to get shad semantic classes working to style the toasts

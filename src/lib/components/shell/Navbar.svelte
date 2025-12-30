@@ -113,7 +113,7 @@
 
     <ButtonGroup>
       <DropdownMenu
-        variant="outline"
+        variant="ghost"
         title="Open menu"
         items={[
           {
